@@ -1,3 +1,9 @@
+function setCopyright() {
+  $("#copyright").html(
+    `Copyright ©${new Date().getFullYear()} ${$("#copyright").html()}`
+  );
+}
+
 function escapeHTML(str) {
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
