@@ -21,7 +21,7 @@ function appendToRoot(objArray, index) {
       )
       .replace(endCodeSnippetRegex, "</code></pre></div>");
     console.log(processedSnippet);
-    return `<div><h1 class="main"><u>${snippet.title}</u></h1>${processedSnippet}`;
+    return `<div><h1 class="main">🔴 ${snippet.title} 🔴</h1>${processedSnippet}`;
     //<div><pre><code>${snippet.code}</code></pre></div></div>;
   });
   //pageBody.push(pageTitle);
@@ -167,10 +167,80 @@ const typescript = {
 //==========================================
 
 
-//## Rules of thumbs ##
-    //Avoid type 'any' at all costs
-    //Use 'void' for function that does not return anything and not 'undefined'
-    //In order to use TypeScript, install: npm install ts-node tsx typescript
+//## Type Aliases and Interfaces ##
+    //type and interface in TypeScript are both used to define custom types, especially for objects, but they have slightly different use cases and capabilities.
+    //in both cases, it's good practice to capitalize your type aliases/interfaces
+
+    //Interface
+        //Object and declaration merging
+        interface UserInterface {
+        name: string;
+        age: number;
+        }
+
+        interface UserInterface{
+            country: string;
+        } //in this way you can easily extend an existing interface and add properties to it > declaration merging
+
+        let user1: UserInterface = {name: "Jon Doe", age: 33, country: "Spain"}
+
+        //Function type
+        interface AddFunc {(num1: number, num2:number): number;} //can also be used for function types
+
+        //Extension
+        interface Animal { legs: number }
+        interface Dog extends Animal { breed: string }
+        let cat: Animal = {legs: 4}
+        let lucky: Dog = {breed: "Dalmatian", legs: 4}
+
+        //Classes implementation
+        interface Credentials {
+            email: string,
+            password: string
+        }
+
+        class AuthCredentials implements Credentials{
+            email: string;
+            password: string;
+            username: string
+        } //when implementing an interface in a class, you must at least use the properties declared in the interface
+
+        //Ideal for modeling objects and classes. Cannot be used for other types except for function types
+        //Supports extension, class implementation, declaration merging
+
+
+    //Type aliases
+        //Union types
+        type StringOrNum = string | number
+        let userId2: StringOrNum = "helloWorld" //could also be a number 
+
+        //Objects
+        type UserType = {
+        name: string;
+        age: number;
+        }
+        let user2: UserType = {name: "Jane Doe", age: 32}
+
+        //Functions
+        type AddFn =  (num1: number, num2:number) => number;
+
+        //Extension
+        type AnimalType = { legs: number }
+        type DogType = AnimalType & { breed: string }
+        let cat2: AnimalType = {legs: 4}
+        let bluey: DogType = {breed: "Doge", legs: 4}
+
+        //Can define any kind of type: unions, intersections, primitives, tuples, functions
+        //Can be extended
+
+
+//==========================================
+
+
+//## Tips ##
+    //• Avoid type 'any' at all costs
+    //• Use 'void' for function that does not return anything and not 'undefined'
+    //• In order to use TypeScript, install: npm install ts-node tsx typescript
 //==========================================
     `,
     },
