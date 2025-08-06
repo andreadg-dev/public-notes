@@ -42,6 +42,10 @@
         padding: 0 26px;
       }
 
+      #root {
+        width: 95vw;
+      }
+
       .main {
         margin-top: 6rem;
       }
@@ -180,7 +184,13 @@
 
         //Apply the highlightAll method to format corresponding code
         hljs.highlightAll();
+
+        updateHeadingBasedOnDevice();
       };
+
+      $(window).on("resize", function () {
+        updateHeadingBasedOnDevice();
+      });
     </script>
   </body>
 </html>

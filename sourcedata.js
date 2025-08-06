@@ -1,3 +1,19 @@
+function updateHeadingBasedOnDevice() {
+  const isMobile = window.innerWidth <= 768;
+
+  isMobile
+    ? $("h1").css("font-size", "1.8rem")
+    : $("h1").css("font-size", "2.5rem");
+
+  $("h1, h2").each(function () {
+    const currentText = $(this).text();
+    isMobile
+      ? $(this).text(currentText.replace(/_/g, " "))
+      : $(this).text(currentText.replace(/ /g, "_"));
+    // Replace underscores with spaces on a table/laptop screen and the opposite on a mobile
+  });
+}
+
 function setCopyright() {
   $("#copyright").html(
     `Copyright ©${new Date().getFullYear()} ${$("#copyright").html()}`
@@ -20,7 +36,7 @@ function appendToRoot(objArray, index) {
         `<div class="snippet"><h2 class="snippet-title">🟡 $1</h2><pre><code class="language-${objArray[index].language}">`
       )
       .replace(endCodeSnippetRegex, "</code></pre></div>");
-    console.log(processedSnippet);
+    //console.log(processedSnippet);
     return `<div><h1 class="main">🔴 ${snippet.title} 🔴</h1>${processedSnippet}`;
     //<div><pre><code>${snippet.code}</code></pre></div></div>;
   });
