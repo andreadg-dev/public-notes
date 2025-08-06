@@ -25,15 +25,15 @@ function escapeHTML(str) {
 }
 
 function appendToRoot(objArray, index) {
-  const snippetTitleRegex = /^\s*(?:\/\/## |### )(.+?) ##/gm;
-  const endCodeSnippetRegex = /^\s*(?:\/\/|#)={3,}/gm;
+  const snippetTitleRegex = /^\s*(?:\/\/## |### |::## |REM## )(.+?) ##/gm;
+  const endCodeSnippetRegex = /^\s*(?:\/\/|#|::|REM)={3,}/gm;
   let pageBody = [];
   //pageTitle = objArray[index].title && `<h1 class="main"><u>${objArray[index].title}</u></h1>`;
   pageSnippets = objArray[index].snippets.map((snippet) => {
     let processedSnippet = escapeHTML(snippet.code)
       .replace(
         snippetTitleRegex,
-        `<div class="snippet"><h2 class="snippet-title">🟡 $1</h2><pre><code class="language-${objArray[index].language}">`
+        `<div class="snippet"><h2 class="snippet-title">🟡 $1</h2><pre><code class="language-${objArray[index].language}">` //
       )
       .replace(endCodeSnippetRegex, "</code></pre></div>");
     //console.log(processedSnippet);
@@ -81,13 +81,54 @@ const navBar = `
                     </nav>
                     `;
 
-const samplescript = {
-  title: "samplescript",
-  language: "powershell",
+const cmd = {
+  title: "cmd",
+  language: "plaintext",
   snippets: [
     {
-      title: "my_samplescript_notes",
-      code: `Get-Content "file.txt"`,
+      title: "my_cmd_notes",
+      code: `
+REM## Basics ##
+:: Turn off command echoing. You can use :: or REM for comments
+@echo off
+
+:: Suspend execution
+pause
+::==========================================
+
+::## VARIABLES ##
+:: Set a variable — no spaces around '='
+set variablename=variablevalue
+
+:: Retrieve a variable
+echo %variablename%
+::==========================================
+
+::## OUTPUT TO FILE ##
+:: Overwrite file with output of a command
+ipconfig /all > C:\temp\ipconfig.log
+ipconfig /all > C:\temp\ipconfig.txt
+ipconfig /all > "C:\directory with space\ipconfig.txt"
+
+:: Overwrite a file with a blank line
+ECHO. > "C:\directory with space\Myfile.log"
+
+:: Append a blank line to a file
+ECHO. >> "C:\My folder\Myfile.log"
+
+:: Append text to a file
+ECHO Some text >> "C:\My folder\Myfile.log"
+
+:: Append a variable to a file
+ECHO %MY_VARIABLE% >> "C:\My folder\Myfile.log"
+
+:: Overwrite a file with the output of multiple commands
+> C:\temp\output.log (
+    ipconfig /all
+    ipconfig
+)
+::==========================================      
+      `,
     },
   ],
 };
@@ -262,3 +303,41 @@ const typescript = {
     },
   ],
 };
+
+const languageHljs = [
+  "bash",
+  "c",
+  "cpp",
+  "csharp",
+  "css",
+  "diff",
+  "go",
+  "graphql",
+  "ini",
+  "java",
+  "json",
+  "kotlin",
+  "less",
+  "lua",
+  "makefile",
+  "markdown",
+  "objectivec",
+  "perl",
+  "php",
+  "php_template",
+  "plaintext",
+  "python",
+  "python_repl",
+  "r",
+  "ruby",
+  "rust",
+  "scss",
+  "shell",
+  "sql",
+  "swift",
+  "typescript",
+  "vbnet",
+  "wasm",
+  "xml",
+  "yaml",
+];
