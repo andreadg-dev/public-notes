@@ -106,24 +106,24 @@ echo %variablename%
 
 ::## OUTPUT TO FILE ##
 :: Overwrite file with output of a command
-ipconfig /all > C:\temp\ipconfig.log
-ipconfig /all > C:\temp\ipconfig.txt
-ipconfig /all > "C:\directory with space\ipconfig.txt"
+ipconfig /all > C:\\temp\\ipconfig.log
+ipconfig /all > C:\\temp\\ipconfig.txt
+ipconfig /all > "C:\\directory with space\\ipconfig.txt"
 
 :: Overwrite a file with a blank line
-ECHO. > "C:\directory with space\Myfile.log"
+ECHO. > "C:\\directory with space\\Myfile.log"
 
 :: Append a blank line to a file
-ECHO. >> "C:\My folder\Myfile.log"
+ECHO. >> "C:\\My folder\\Myfile.log"
 
 :: Append text to a file
-ECHO Some text >> "C:\My folder\Myfile.log"
+ECHO Some text >> "C:\\My folder\\Myfile.log"
 
 :: Append a variable to a file
-ECHO %MY_VARIABLE% >> "C:\My folder\Myfile.log"
+ECHO %MY_VARIABLE% >> "C:\\My folder\\Myfile.log"
 
 :: Overwrite a file with the output of multiple commands
-> C:\temp\output.log (
+> C:\\temp\\output.log (
     ipconfig /all
     ipconfig
 )

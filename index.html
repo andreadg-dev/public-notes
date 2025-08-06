@@ -185,11 +185,16 @@
         //Apply the highlightAll method to format corresponding code
         hljs.highlightAll();
 
-        updateHeadingBasedOnDevice();
+        setTimeout(updateHeadingBasedOnDevice, 50);
       };
 
       $(window).on("resize", function () {
         updateHeadingBasedOnDevice();
+      });
+
+      $(document).on("click", ".nav-link", function () {
+        // Wait briefly after DOM change
+        setTimeout(updateHeadingBasedOnDevice, 50);
       });
     </script>
   </body>
