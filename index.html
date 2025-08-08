@@ -46,7 +46,7 @@
         width: 95vw;
       }
 
-      .main {
+      .mt-6 {
         margin-top: 6rem;
       }
 
@@ -96,6 +96,11 @@
         font-size: 1.4rem;
       }
 
+      .highlight {
+        color: #ffe626 !important;
+        font-weight: bold !important;
+      }
+
       /*Footer styling*/
       #paddingCopyright {
         display: block;
@@ -123,7 +128,7 @@
 
       /*Navbar styling*/
       .navbar {
-        border-bottom: 2px solid rgb(63, 63, 63);
+        border-bottom: 2px solid white;
       }
 
       .navbar-expand-lg {
@@ -148,6 +153,64 @@
 
       .navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top {
         height: 56px;
+      }
+
+      /*Table styling*/
+      thead {
+        background-color: black;
+        color: white;
+      }
+
+      tbody {
+        background-color: var(--dark);
+        color: white;
+      }
+
+      th,
+      td {
+        white-space: nowrap;
+        max-width: 25rem;
+        cursor: pointer;
+      }
+
+      /* Apply horizontal scroll only to the last column's td elements */
+      td:nth-child(2) {
+        text-overflow: ellipsis;
+        overflow-x: hidden; /* Hide the horizontal scrollbar by default */
+        overflow-y: hidden; /* Hide the vertical scrollbar by default */
+        max-width: 25rem;
+      }
+
+      /* Show horizontal scrollbar on hover */
+      td:nth-child(2):hover {
+        text-overflow: clip;
+        overflow-x: auto; /* Show horizontal scrollbar on hover */
+        overflow-y: hidden; /* Hide the vertical scrollbar */
+      }
+
+      td:nth-child(1) {
+        font-family: monospace;
+        white-space: normal;
+        overflow-wrap: break-word;
+        max-width: 25rem;
+      }
+
+      /* Customize scrollbar appearance */
+      td:nth-child(2)::-webkit-scrollbar {
+        height: 6px;
+      }
+
+      td:nth-child(2)::-webkit-scrollbar-thumb {
+        background-color: #00000033; /* Set the color of the scrollbar thumb */
+        border-radius: 3px; /* Set the border radius of the scrollbar thumb */
+      }
+
+      td:nth-child(2)::-webkit-scrollbar-track {
+        background-color: transparent; /* Set the background color of the scrollbar track */
+      }
+
+      td:nth-child(2)::-webkit-scrollbar-thumb:hover {
+        background-color: #00000066; /* Change the color of the scrollbar thumb on hover */
       }
     </style>
   </head>
@@ -178,7 +241,7 @@
       window.onload = (event) => {
         setCopyright();
 
-        const sourceData = [typescript, cmd];
+        const sourceData = [typescript, cmd, troubleshooting];
         appendSectionToNavbar(sourceData);
         displaySectionOnClick(sourceData);
 
