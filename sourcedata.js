@@ -53,6 +53,7 @@ function escapeHTML(str) {
 
 function appendToRoot(objArray, index) {
   const spaceDiv = `<div class="mt-6"></div>`;
+
   if (objArray[index].type === "sections") {
     const snippetTitleRegex = /^\s*(?:\/\/## |### |::## |REM## )(.+?) ##/gm;
     const endCodeSnippetRegex = /^\s*(?:\/\/|#|::|REM)={3,}/gm;
@@ -95,14 +96,16 @@ function appendToRoot(objArray, index) {
     table.push(headers.join(""));
     table.push(tbody.join(""));
     table.push("</table>");
-    let finalTable = `${spaceDiv}${table.join("")}`;
+    let finalTable = `${spaceDiv}<h1>🔴 ${
+      objArray[index].title
+    } 🔴</h1>${table.join("")}`;
     $("#root").append(finalTable);
     copySingleItemToClipBoard();
     highlightElement();
   }
 }
 
-function appendSectionToNavbar(objArray) {
+/* function appendSectionToNavbar(objArray) {
   let navItems = [];
   objArray.forEach((element, index) => {
     let navItem = `<li class="nav-item ${
@@ -114,11 +117,32 @@ function appendSectionToNavbar(objArray) {
   });
   $("#navbar").append(navBar.replace("{{navItems}}", navItems.join("")));
   appendToRoot(objArray, 0);
+} */
+
+function appendSectionToNavbar(objArray) {
+  let navDevItems = [];
+  let navOtherItems = [];
+  objArray.forEach((element, index) => {
+    let navItem = `<a class="dropdown-item ${
+      index === 0 ? "active" : ""
+    }" href="#" id="navitem${index}">${element.title}</a>`;
+
+    element.navcategory === "dev" && navDevItems.push(navItem);
+    element.navcategory === "other" && navOtherItems.push(navItem);
+  });
+
+  let navbarComponent = navBarWithDropDowns
+    .replace("{{navDevItems}}", navDevItems.join(""))
+    .replace("{{navOtherItems}}", navOtherItems.join(""));
+
+  console.log(navbarComponent);
+  $("#navbar").append(navbarComponent);
+  appendToRoot(objArray, 0);
 }
 
 function displaySectionOnClick(objArray) {
-  $(document).on("click", ".nav-item", function () {
-    $(".nav-item").each(function (index, element) {
+  $(document).on("click", ".dropdown-item", function () {
+    $(".dropdown-item").each(function (index, element) {
       $(element).removeClass("active");
     });
     $(this).addClass("active");
@@ -129,19 +153,45 @@ function displaySectionOnClick(objArray) {
   });
 }
 
-const navBar = `
+const navBarWithDropDowns = `<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <a class="navbar-brand" href="#">{a}</a>
+  <div id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item dropdown dropend" id="devDropDown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          dev
+        </a>
+        <div class="dropdown-menu" data-bs-popper="static" aria-labelledby="navbarDropdownMenuLink">
+          {{navDevItems}}
+        </div>
+      </li>
+      <li class="nav-item dropdown dropend" id="otherDropDown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          other
+        </a>
+        <div class="dropdown-menu" data-bs-popper="static" aria-labelledby="navbarDropdownMenuLink">
+          {{navOtherItems}}
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+`;
+
+/* const navBar = `
                     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
                     <a class="navbar-brand" href="#">{a}</a>
                     <div id="navbarNav">
                         <ul class="navbar-nav">{{navItems}}</ul>
                     </div>
                     </nav>
-                    `;
+                    `; */
 
 const cmd = {
   title: "cmd",
   type: "sections",
   language: "plaintext",
+  navcategory: "dev",
   snippets: [
     {
       title: "my_cmd_notes",
@@ -195,6 +245,7 @@ const typescript = {
   title: "typescript",
   type: "sections",
   language: "typescript",
+  navcategory: "dev",
   snippets: [
     {
       title: "my_typescript_notes",
@@ -376,6 +427,7 @@ const typescript = {
 const troubleshooting = {
   title: "troubleshooting",
   type: "list",
+  navcategory: "other",
   snippets: [
     {
       item: "notepad.exe",
