@@ -154,7 +154,7 @@ function displaySectionOnClick(objArray) {
 }
 
 const navBarWithDropDowns = `<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-  <a class="navbar-brand" href="#">{a}</a>
+  <a class="navbar-brand" href="#"><img src="favicon.png" alt="brand-image" style="height:50px"></a>
   <div id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item dropdown dropend" id="devDropDown">
