@@ -1,3 +1,18 @@
+function updateCounts() {
+  $("#filteredItemsCount").text($("tbody tr:visible").length);
+}
+
+function filterItems() {
+  // Filter function
+  $("#filter").on("keyup", function () {
+    var value = $(this).val().toLowerCase();
+    $("tbody tr").filter(function () {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+    });
+    updateCounts();
+  });
+}
+
 //Function to parse google bookmarks into JSON
 function parseGoogleBookmarks() {
   // Select all dt elements
@@ -87,7 +102,7 @@ function escapeHTML(str) {
 }
 
 //Children function that appends const type 'sections' to 'root' element
-function appendSectionsToRoot(objArray, index, spaceDiv) {
+function appendSectionsToRoot(objArray, index) {
   const snippetTitleRegex = /^\s*(?:\/\/## |### |::## |REM## )(.+?) ##/gm;
   const endCodeSnippetRegex = /^\s*(?:\/\/|#|::|REM)={3,}/gm;
   let pageBody = [];
@@ -107,7 +122,7 @@ function appendSectionsToRoot(objArray, index, spaceDiv) {
 }
 
 //Children function that appends const type 'list' to 'root' element
-function appendListToRoot(objArray, index, spaceDiv) {
+function appendListToRoot(objArray, index) {
   objArray[index].snippets.sort((a, b) =>
     a.item.localeCompare(b.item, undefined, { sensitivity: "base" })
   );
@@ -134,14 +149,17 @@ function appendListToRoot(objArray, index, spaceDiv) {
   table.push("</table>");
   let finalTable = `${spaceDiv}<h1>🔴 ${
     objArray[index].title
-  } 🔴</h1>${table.join("")}`;
+  } 🔴</h1>${searchCard.replace(
+    "{{totalItemsCount}}",
+    objArray[index].snippets.length
+  )}${table.join("")}`;
   $("#root").append(finalTable);
   copySingleItemToClipBoard();
   highlightElement();
 }
 
 //Children function that appends const type 'cards' to 'root' element
-function appendCardsToRoot(objArray, index, spaceDiv) {
+function appendCardsToRoot(objArray, index) {
   let cards = [];
 
   const linksGroupedByCat = objArray[index].links.reduce((acc, link) => {
@@ -187,16 +205,14 @@ function appendCardsToRoot(objArray, index, spaceDiv) {
 
 //Parent function to append item to 'root' element depending on the type
 function appendToRoot(objArray, index) {
-  const spaceDiv = `<div class="mt-6"></div>`;
+  objArray[index].type === "sections" && appendSectionsToRoot(objArray, index);
 
-  objArray[index].type === "sections" &&
-    appendSectionsToRoot(objArray, index, spaceDiv);
+  objArray[index].type === "list" && appendListToRoot(objArray, index);
 
-  objArray[index].type === "list" &&
-    appendListToRoot(objArray, index, spaceDiv);
+  objArray[index].type === "cards" && appendCardsToRoot(objArray, index);
 
-  objArray[index].type === "cards" &&
-    appendCardsToRoot(objArray, index, spaceDiv);
+  updateCounts();
+  filterItems();
 }
 
 /* function appendSectionToNavbar(objArray) {
@@ -245,6 +261,21 @@ function displaySectionOnClick(objArray) {
     hljs.highlightAll();
   });
 }
+
+const spaceDiv = `<div class="mt-6"></div>`;
+
+const searchCard = `<div class="card text-white bg-dark mb-3" id="filterCard">
+      <div class="card-body">
+        <p style="justify-content:space-between;display:flex"><span>Search:</span><span style="font-weight:bold;">results: <span id="filteredItemsCount">{{filteredItemsCount}}</span>/<span id="totalItemsCount">{{totalItemsCount}}</span></span></p>
+        <input type="text" id="filter" class="form-control" placeholder="Type a keyword..."/>
+      </div>
+    </div>
+
+    <div class="buttonDiv" style="display:none">
+        <button class="btn btn-dark btn-lg" onclick="copyAllCommands()">
+          Copy all commands!
+        </button>
+    </div>`;
 
 const card = `<div class="col" style="display:flex;justify-content:center;">
     <div class="card text-white bg-dark mb-3" style="width: 18rem; min-height:12rem; border: solid 1px white;border-radius:1rem;">
