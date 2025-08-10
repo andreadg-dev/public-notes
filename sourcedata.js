@@ -86,102 +86,117 @@ function escapeHTML(str) {
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+//Children function that appends const type 'sections' to 'root' element
+function appendSectionsToRoot(objArray, index, spaceDiv) {
+  const snippetTitleRegex = /^\s*(?:\/\/## |### |::## |REM## )(.+?) ##/gm;
+  const endCodeSnippetRegex = /^\s*(?:\/\/|#|::|REM)={3,}/gm;
+  let pageBody = [];
+
+  pageSnippets = objArray[index].snippets.map((snippet) => {
+    let processedSnippet = escapeHTML(snippet.code)
+      .replace(
+        snippetTitleRegex,
+        `<div class="snippet"><h2 class="snippet-title">🟡 $1</h2><pre><code class="language-${objArray[index].language}">` //
+      )
+      .replace(endCodeSnippetRegex, "</code></pre></div>");
+    return `${spaceDiv}<div><h1>🔴 ${snippet.title} 🔴</h1>${processedSnippet}`;
+  });
+
+  pageBody.push(pageSnippets.join(""));
+  $("#root").append(pageBody);
+}
+
+//Children function that appends const type 'list' to 'root' element
+function appendListToRoot(objArray, index, spaceDiv) {
+  objArray[index].snippets.sort((a, b) =>
+    a.item.localeCompare(b.item, undefined, { sensitivity: "base" })
+  );
+
+  let table = [`<table class="table">`];
+  let headers = ["<thead><tr>"];
+  let objectKeys = Object.keys(objArray[index].snippets[0]);
+  objectKeys.map((header) => {
+    headers.push(`<th>${header}</th>`);
+  });
+  headers.push("</tr></thead>");
+  let tbody = ["<tbody>"];
+
+  pageSnippets = objArray[index].snippets.map((snippet) => {
+    return `<tr><td>${snippet[objectKeys[0]]}</td><td>${
+      snippet[objectKeys[1]]
+    }</td><td>${snippet[objectKeys[2]]}</td></tr>`;
+  });
+  tbody.push(pageSnippets.join(""));
+  tbody.push("</tbody>");
+
+  table.push(headers.join(""));
+  table.push(tbody.join(""));
+  table.push("</table>");
+  let finalTable = `${spaceDiv}<h1>🔴 ${
+    objArray[index].title
+  } 🔴</h1>${table.join("")}`;
+  $("#root").append(finalTable);
+  copySingleItemToClipBoard();
+  highlightElement();
+}
+
+//Children function that appends const type 'cards' to 'root' element
+function appendCardsToRoot(objArray, index, spaceDiv) {
+  let cards = [];
+
+  const linksGroupedByCat = objArray[index].links.reduce((acc, link) => {
+    const category =
+      link.category.trim() === "" ? "no_defined_category" : link.category;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(link);
+    return acc;
+  }, {});
+
+  // Sort items in each category by title
+  Object.keys(linksGroupedByCat).forEach((category) => {
+    linksGroupedByCat[category].sort((a, b) =>
+      a.title.localeCompare(b.title, undefined, { sensitivity: "base" })
+    );
+  });
+
+  // Sort categories alphabetically
+  Object.keys(linksGroupedByCat)
+    .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }))
+    .forEach((category) => {
+      cards.push(
+        `<h2 class="link-cat-title" style="margin-top:2rem;">🟡 ${category} 🟡</h2><div class="linksGrid" id="links${category}">`
+      );
+      linksGroupedByCat[category].forEach((item) => {
+        cards.push(
+          card
+            .replace("{{title}}", `${item.title}`)
+            .replace("{{link}}", `${item.link}`)
+        );
+      });
+      cards.push(`</div>`);
+    });
+
+  let finalCards = `${spaceDiv}<h1>🔴 ${
+    objArray[index].title
+  } 🔴</h1><div>${cards.join("")}</div>`;
+
+  $("#root").append(finalCards);
+}
+
+//Parent function to append item to 'root' element depending on the type
 function appendToRoot(objArray, index) {
   const spaceDiv = `<div class="mt-6"></div>`;
 
-  if (objArray[index].type === "sections") {
-    const snippetTitleRegex = /^\s*(?:\/\/## |### |::## |REM## )(.+?) ##/gm;
-    const endCodeSnippetRegex = /^\s*(?:\/\/|#|::|REM)={3,}/gm;
-    let pageBody = [];
-    //pageTitle = objArray[index].title && `<h1 class="main"><u>${objArray[index].title}</u></h1>`;
-    pageSnippets = objArray[index].snippets.map((snippet) => {
-      let processedSnippet = escapeHTML(snippet.code)
-        .replace(
-          snippetTitleRegex,
-          `<div class="snippet"><h2 class="snippet-title">🟡 $1</h2><pre><code class="language-${objArray[index].language}">` //
-        )
-        .replace(endCodeSnippetRegex, "</code></pre></div>");
-      //console.log(processedSnippet);
-      return `${spaceDiv}<div><h1>🔴 ${snippet.title} 🔴</h1>${processedSnippet}`;
-      //<div><pre><code>${snippet.code}</code></pre></div></div>;
-    });
-    //pageBody.push(pageTitle);
-    pageBody.push(pageSnippets.join(""));
-    $("#root").append(pageBody);
-  }
+  objArray[index].type === "sections" &&
+    appendSectionsToRoot(objArray, index, spaceDiv);
 
-  if (objArray[index].type === "list") {
-    let table = [`<table class="table">`];
-    let headers = ["<thead><tr>"];
-    let objectKeys = Object.keys(objArray[index].snippets[0]);
-    objectKeys.map((header) => {
-      headers.push(`<th>${header}</th>`);
-    });
-    headers.push("</tr></thead>");
-    let tbody = ["<tbody>"];
-    //pageTitle = objArray[index].title && `<h1 class="main"><u>${objArray[index].title}</u></h1>`;
-    pageSnippets = objArray[index].snippets.map((snippet) => {
-      return `<tr><td>${snippet[objectKeys[0]]}</td><td>${
-        snippet[objectKeys[1]]
-      }</td><td>${snippet[objectKeys[2]]}</td></tr>`;
-    });
-    tbody.push(pageSnippets.join(""));
-    tbody.push("</tbody>");
+  objArray[index].type === "list" &&
+    appendListToRoot(objArray, index, spaceDiv);
 
-    table.push(headers.join(""));
-    table.push(tbody.join(""));
-    table.push("</table>");
-    let finalTable = `${spaceDiv}<h1>🔴 ${
-      objArray[index].title
-    } 🔴</h1>${table.join("")}`;
-    $("#root").append(finalTable);
-    copySingleItemToClipBoard();
-    highlightElement();
-  }
-
-  if (objArray[index].type === "cards") {
-    let cards = [];
-
-    const linksGroupedByCat = objArray[index].links.reduce((acc, link) => {
-      const category =
-        link.category.trim() === "" ? "no_defined_category" : link.category;
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(link);
-      return acc;
-    }, {});
-
-    // Sort items in each category by title
-    Object.keys(linksGroupedByCat).forEach((category) => {
-      linksGroupedByCat[category].sort((a, b) =>
-        a.title.localeCompare(b.title, undefined, { sensitivity: "base" })
-      );
-    });
-
-    // Sort categories alphabetically
-    Object.keys(linksGroupedByCat)
-      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }))
-      .forEach((category) => {
-        cards.push(
-          `<h2 class="link-cat-title" style="margin-top:2rem;">🟡 ${category} 🟡</h2><div class="linksGrid" id="links${category}">`
-        );
-        linksGroupedByCat[category].forEach((item) => {
-          cards.push(
-            card
-              .replace("{{title}}", `${item.title}`)
-              .replace("{{link}}", `${item.link}`)
-          );
-        });
-        cards.push(`</div>`);
-      });
-
-    let finalCards = `${spaceDiv}<h1>🔴 ${
-      objArray[index].title
-    } 🔴</h1><div>${cards.join("")}</div>`;
-
-    $("#root").append(finalCards);
-  }
+  objArray[index].type === "cards" &&
+    appendCardsToRoot(objArray, index, spaceDiv);
 }
 
 /* function appendSectionToNavbar(objArray) {
