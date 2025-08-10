@@ -1,3 +1,38 @@
+//Function to parse google bookmarks into JSON
+function parseGoogleBookmarks() {
+  // Select all dt elements
+  const dtElements = document.querySelectorAll("dt");
+
+  // Initialize an array to store the extracted data
+  const extractedData = [];
+
+  // Loop through each dt element
+  dtElements.forEach((dt) => {
+    // Select the anchor element inside the dt
+    const anchor = dt.querySelector("a");
+
+    // Extract the href and title attributes
+    const href = anchor.getAttribute("href");
+    const title = anchor.textContent;
+
+    // Create an object with the extracted data
+    const data = {
+      title: title,
+      href: href,
+      category: "",
+    };
+
+    // Add the object to the array
+    extractedData.push(data);
+  });
+
+  // Convert the array to a JSON string
+  const jsonString = JSON.stringify(extractedData, null, 2);
+
+  // Output the JSON string
+  console.log(jsonString);
+}
+
 // Function to copy element to clipboard
 function copySingleItemToClipBoard() {
   $("td").on("click", function () {
@@ -103,6 +138,50 @@ function appendToRoot(objArray, index) {
     copySingleItemToClipBoard();
     highlightElement();
   }
+
+  if (objArray[index].type === "cards") {
+    let cards = [];
+
+    const linksGroupedByCat = objArray[index].links.reduce((acc, link) => {
+      const category =
+        link.category.trim() === "" ? "no_defined_category" : link.category;
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(link);
+      return acc;
+    }, {});
+
+    // Sort items in each category by title
+    Object.keys(linksGroupedByCat).forEach((category) => {
+      linksGroupedByCat[category].sort((a, b) =>
+        a.title.localeCompare(b.title, undefined, { sensitivity: "base" })
+      );
+    });
+
+    // Sort categories alphabetically
+    Object.keys(linksGroupedByCat)
+      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }))
+      .forEach((category) => {
+        cards.push(
+          `<h2 class="link-cat-title" style="margin-top:2rem;">🟡 ${category} 🟡</h2><div class="linksGrid" id="links${category}">`
+        );
+        linksGroupedByCat[category].forEach((item) => {
+          cards.push(
+            card
+              .replace("{{title}}", `${item.title}`)
+              .replace("{{link}}", `${item.link}`)
+          );
+        });
+        cards.push(`</div>`);
+      });
+
+    let finalCards = `${spaceDiv}<h1>🔴 ${
+      objArray[index].title
+    } 🔴</h1><div>${cards.join("")}</div>`;
+
+    $("#root").append(finalCards);
+  }
 }
 
 /* function appendSectionToNavbar(objArray) {
@@ -135,7 +214,6 @@ function appendSectionToNavbar(objArray) {
     .replace("{{navDevItems}}", navDevItems.join(""))
     .replace("{{navOtherItems}}", navOtherItems.join(""));
 
-  console.log(navbarComponent);
   $("#navbar").append(navbarComponent);
   appendToRoot(objArray, 0);
 }
@@ -152,6 +230,15 @@ function displaySectionOnClick(objArray) {
     hljs.highlightAll();
   });
 }
+
+const card = `<div class="col" style="display:flex;justify-content:center;">
+    <div class="card text-white bg-dark mb-3" style="width: 18rem; min-height:12rem; border: solid 1px white;border-radius:1rem;">
+      <div class="card-body">
+        <h5 class="card-title" style="min-height:6rem;">{{title}}</h5>
+        <a href="{{link}}" class="btn btn-info">Take me there</a>
+      </div>
+    </div>
+</div>`;
 
 const navBarWithDropDowns = `<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
   <a class="navbar-brand" href="#"><img src="favicon.png" alt="brand-image" style="height:50px"></a>
@@ -1290,3 +1377,575 @@ const languageHljs = [
   "xml",
   "yaml",
 ];
+
+const usefulLinks = {
+  title: "useful_links",
+  type: "cards",
+  navcategory: "other",
+  links: [
+    {
+      title: "@react-oauth/google",
+      href: "https://react-oauth.vercel.app/",
+      category: "",
+    },
+    {
+      title:
+        "About Power Apps per app plans - Power Platform | Microsoft Learn",
+      href: "https://learn.microsoft.com/en-us/power-platform/admin/about-powerapps-perapp",
+      category: "",
+    },
+    {
+      title: "andreadg-dev · GitHub",
+      href: "https://github.com/andreadg-dev",
+      category: "",
+    },
+    {
+      title: "API - ResponsiveVoice.JS AI Text to Speech",
+      href: "https://responsivevoice.org/api/",
+      category: "API Services",
+    },
+    {
+      title: "API-JokeAPIDocumentation",
+      href: "https://sv443.net/jokeapi/v2/",
+      category: "API Services",
+    },
+    {
+      title: "API-KanyeRest",
+      href: "https://kanye.rest/",
+      category: "API Services",
+    },
+    {
+      title: "API-OpenWeatherMap",
+      href: "https://home.openweathermap.org/",
+      category: "API Services",
+    },
+    {
+      title: "Azure - adgdev-DevOps",
+      href: "https://dev.azure.com/adgdev-DevOps",
+      category: "",
+    },
+    {
+      title: "Bash scripting cheatsheet",
+      href: "https://devhints.io/bash",
+      category: "",
+    },
+    {
+      title: "boot.dev",
+      href: "https://www.boot.dev/tracks/backend",
+      category: "",
+    },
+    {
+      title: "Bootstrap Docs Local",
+      href: "file:///C:/Users/adelgiud/OneDrive%20-%20NTT%20DATA%20EMEAL/CONFIDENTIAL/MyProfile/_Docs_Local/bootstrap/bootstrap-getting-started-introduction.html",
+      category: "",
+    },
+    {
+      title: "Bootstrap Docs Online",
+      href: "https://getbootstrap.com/docs/5.2/getting-started/introduction/",
+      category: "",
+    },
+    {
+      title: "Bootstrap Icons Local",
+      href: "file:///C:/Users/adelgiud/OneDrive%20-%20NTT%20DATA%20EMEAL/CONFIDENTIAL/MyProfile/_Docs_Local/bootstrap/bootstrap-icons/0aaa-bootstrap-icons.html",
+      category: "",
+    },
+    {
+      title: "Bootstrap Icons Online",
+      href: "https://icons.getbootstrap.com/",
+      category: "",
+    },
+    {
+      title: "Canva - Free design tool",
+      href: "https://www.canva.com/en_gb/",
+      category: "",
+    },
+    {
+      title: "ChromeDriver - WebDriver for Chrome - Python/Selenium",
+      href: "https://chromedriver.chromium.org/downloads",
+      category: "",
+    },
+    {
+      title: "CodePen: Online Code Editor",
+      href: "https://codepen.io/",
+      category: "",
+    },
+    {
+      title: "Codeply: Online Code Editor",
+      href: "https://www.codeply.com/p",
+      category: "",
+    },
+    {
+      title: "CodeSandbox: Instant Cloud Development Environments",
+      href: "https://codesandbox.io/",
+      category: "",
+    },
+    {
+      title: "Colorhunt - Color Palettes",
+      href: "https://colorhunt.co/",
+      category: "",
+    },
+    {
+      title: "Coolors Palettes",
+      href: "https://coolors.co/palettes/trending",
+      category: "",
+    },
+    {
+      title: "Crowdstrike API",
+      href: "https://api.eu-1.crowdstrike.com/",
+      category: "",
+    },
+    {
+      title: "Crowdstrike API Doc",
+      href: "https://developer.crowdstrike.com/docs/openapi/",
+      category: "",
+    },
+    {
+      title: "Crowdstrike API for Python",
+      href: "https://falconpy.io/",
+      category: "",
+    },
+    {
+      title: "CrowdStrike API Hosts Endpoints",
+      href: "https://falconpy.io/Service-Collections/Hosts.html?highlight=devices-scroll#querydevicesbyfilterscroll",
+      category: "",
+    },
+    {
+      title: "CrowdStrike/psfalcon Wiki · GitHub",
+      href: "https://github.com/CrowdStrike/psfalcon/wiki/",
+      category: "",
+    },
+    {
+      title: "CSS Font Stack",
+      href: "https://www.cssfontstack.com/",
+      category: "",
+    },
+    {
+      title: "CSS Web Safe Fonts",
+      href: "https://www.w3schools.com/cssref/css_websafe_fonts.php",
+      category: "",
+    },
+    {
+      title:
+        "Cyclic.sh - Fullstack Javascript Apps - Deploy and Host in Seconds",
+      href: "https://app.cyclic.sh/#/deploy?intro=true",
+      category: "",
+    },
+    {
+      title: "DevDocs",
+      href: "https://devdocs.io/offline",
+      category: "",
+    },
+    {
+      title: "DevDocs - desktop app",
+      href: "https://github.com/egoist/devdocs-desktop",
+      category: "",
+    },
+    {
+      title: "Discord - Web Developing",
+      href: "https://discord.com/channels/445233163044782091/650379557588697088",
+      category: "",
+    },
+    {
+      title: "Download Custom Kali - zSecurity",
+      href: "https://zsecurity.org/download-custom-kali/",
+      category: "",
+    },
+    {
+      title: "Emmet Cheat Sheet",
+      href: "https://docs.emmet.io/cheat-sheet/",
+      category: "",
+    },
+    {
+      title: "Enterprise Skills Initiative: GetCertification",
+      href: "https://esi.microsoft.com/getcertification",
+      category: "",
+    },
+    {
+      title: "Exercism",
+      href: "https://exercism.org/",
+      category: "",
+    },
+    {
+      title:
+        "explainshell.com - match command-line arguments to their help text",
+      href: "https://explainshell.com/",
+      category: "",
+    },
+    {
+      title: "favicon.ico Generator",
+      href: "https://www.favicon.cc/",
+      category: "",
+    },
+    {
+      title: "favicon.io: favicon generator",
+      href: "https://favicon.io/",
+      category: "",
+    },
+    {
+      title: "Frontend Mentor: WebDev Challenges",
+      href: "https://www.frontendmentor.io/challenges",
+      category: "",
+    },
+    {
+      title:
+        "GDevelop: Free, Fast, Easy Game Engine - No-code, Lightweight, Super Powerful | GDevelop",
+      href: "https://gdevelop.io/",
+      category: "",
+    },
+    {
+      title: "Gemini AI",
+      href: "https://gemini.google.com/app",
+      category: "",
+    },
+    {
+      title: "Getting Started with Microsoft PowerShell",
+      href: "https://learn.microsoft.com/en-gb/shows/getting-started-with-microsoft-powershell/",
+      category: "",
+    },
+    {
+      title: "Git - Learn Git Branching",
+      href: "https://learngitbranching.js.org/",
+      category: "",
+    },
+    {
+      title: "GitHub - Authorized OAuth apps",
+      href: "https://github.com/settings/applications",
+      category: "",
+    },
+    {
+      title: "Go Packages - Standard library",
+      href: "https://pkg.go.dev/std",
+      category: "",
+    },
+    {
+      title: "Go Playground - The Go Programming Language",
+      href: "https://go.dev/play/",
+      category: "",
+    },
+    {
+      title: "GoDaddy UK",
+      href: "https://uk.godaddy.com/offers/domains/cctld/com-or-be/cheap-domain?currencyType=eur&isc=bedomEUR1&countryview=1&gclid=EAIaIQobChMIpYzS-d238wIVuG1vBB0WLgmJEAAYASAAEgKMBfD_BwE",
+      category: "",
+    },
+    {
+      title: "Google Fonts",
+      href: "https://fonts.google.com/",
+      category: "",
+    },
+    {
+      title: "GPT - OpenAI API",
+      href: "https://platform.openai.com/docs/guides/gpt",
+      category: "",
+    },
+    {
+      title: "Gradient Backgrounds",
+      href: "https://cssgradient.io/gradient-backgrounds/",
+      category: "",
+    },
+    {
+      title: "Graph Explorer | Try Microsoft Graph APIs - Microsoft Graph",
+      href: "https://developer.microsoft.com/en-us/graph/graph-explorer",
+      category: "",
+    },
+    {
+      title: "HackerRank - Online Coding Tests and Technical Interviews",
+      href: "https://www.hackerrank.com/",
+      category: "",
+    },
+    {
+      title:
+        "How to create an open file/folder dialog box with PowerShell – 4sysops",
+      href: "https://4sysops.com/archives/how-to-create-an-open-file-folder-dialog-box-with-powershell/",
+      category: "",
+    },
+    {
+      title:
+        "How to Embed an Image to Get a Self-Contained Web Page (thesitewizard.com)",
+      href: "https://www.thesitewizard.com/html-tutorial/embed-images-with-data-urls.shtml",
+      category: "",
+    },
+    {
+      title:
+        "How To Organize Constants in a Dedicated Layer in JavaScript - Semaphore",
+      href: "https://semaphoreci.com/blog/constants-layer-javascript",
+      category: "",
+    },
+    {
+      title: "How to Upload Your Website To The Internet - YouTube",
+      href: "https://www.youtube.com/watch?v=kvyWeTXCSKk&ab_channel=WebsiteLearners",
+      category: "",
+    },
+    {
+      title: "HTML Entities",
+      href: "https://www.w3schools.com/html/html_entities.asp",
+      category: "",
+    },
+    {
+      title: "HTML Standard",
+      href: "https://html.spec.whatwg.org/",
+      category: "",
+    },
+    {
+      title: "httpstat.us",
+      href: "https://httpstat.us/",
+      category: "",
+    },
+    {
+      title: "Intune Graph API - Reports and properties",
+      href: "https://learn.microsoft.com/en-us/mem/intune/fundamentals/reports-export-graph-available-reports",
+      category: "",
+    },
+    {
+      title: "Invoke-WebRequest",
+      href: "https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/invoke-webrequest?view=powershell-7.2",
+      category: "",
+    },
+    {
+      title: "Jamf Pro API Overview",
+      href: "https://developer.jamf.com/jamf-pro/docs/jamf-pro-api-overview",
+      category: "",
+    },
+    {
+      title: "JAMF Pro API Swagger UI",
+      href: "https://nttdataemeal.jamfcloud.com/api/doc/#/",
+      category: "",
+    },
+    {
+      title: "Javascript - Ternary Operator",
+      href: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_operator",
+      category: "",
+    },
+    {
+      title: "JavaScript Playground",
+      href: "https://playcode.io/javascript",
+      category: "",
+    },
+    {
+      title: "JS Puppeteer",
+      href: "https://pptr.dev/guides/what-is-puppeteer",
+      category: "",
+    },
+    {
+      title: "JSON Beautifier",
+      href: "https://codebeautify.org/jsonviewer",
+      category: "",
+    },
+    {
+      title: "JSON Online Validator and Formatter",
+      href: "https://jsonlint.com/",
+      category: "",
+    },
+    {
+      title: "JSON Web Tokens",
+      href: "https://jwt.io/",
+      category: "",
+    },
+    {
+      title: "JSONPlaceholder - Free Fake REST API",
+      href: "https://jsonplaceholder.typicode.com/",
+      category: "",
+    },
+    {
+      title: "Le Chat - Mistral AI",
+      href: "https://chat.mistral.ai/chat",
+      category: "",
+    },
+    {
+      title: "Learn ASP.NET",
+      href: "https://dotnet.microsoft.com/en-us/learn/aspnet",
+      category: "",
+    },
+    {
+      title: "localhost",
+      href: "http://localhost:3000/",
+      category: "",
+    },
+    {
+      title: "Lorem Picsum",
+      href: "https://picsum.photos/",
+      category: "",
+    },
+    {
+      title: "Markdown Cheat Sheet | Markdown Guide",
+      href: "https://www.markdownguide.org/cheat-sheet/",
+      category: "",
+    },
+    {
+      title: "Markdown Guide",
+      href: "https://www.markdownguide.org/",
+      category: "",
+    },
+    {
+      title: "Material UI - Docs",
+      href: "https://mui.com/material-ui/getting-started/",
+      category: "",
+    },
+    {
+      title: "Material UI: React components that implement Material Design",
+      href: "https://mui.com/material-ui/",
+      category: "",
+    },
+    {
+      title: "MDN Web Docs",
+      href: "https://developer.mozilla.org/en-US/",
+      category: "",
+    },
+    {
+      title:
+        "Microsoft Graph REST API v1.0 endpoint reference - Microsoft Graph v1.0 | Microsoft Learn",
+      href: "https://learn.microsoft.com/en-us/graph/api/overview?view=graph-rest-1.0&preserve-view=true",
+      category: "",
+    },
+    {
+      title:
+        "Microsoft Graph REST API v1.0 endpoint reference - Microsoft Graph v1.0 | Microsoft Learn",
+      href: "https://learn.microsoft.com/en-us/graph/api/overview?view=graph-rest-1.0",
+      category: "",
+    },
+    {
+      title: "Minify - JavaScript and CSS minifier",
+      href: "https://www.minifier.org/",
+      category: "",
+    },
+    {
+      title: "My Personal Power Apps Env",
+      href: "https://make.powerapps.com/environments/d59a2aba-bd70-ed78-a60c-ba3850fe0251/home",
+      category: "",
+    },
+    {
+      title: "MyServiceNow - REST API Explorer",
+      href: "https://dev319408.service-now.com/now/nav/ui/classic/params/target/%24restapi.do",
+      category: "",
+    },
+    {
+      title: "OKTA API Documentation",
+      href: "https://developer.okta.com/docs/api/openapi/okta-management/management/tag/User/",
+      category: "",
+    },
+    {
+      title: "PCF Gallery",
+      href: "https://pcf.gallery/",
+      category: "",
+    },
+    {
+      title: "Playwright",
+      href: "https://playwright.dev/docs/intro",
+      category: "",
+    },
+    {
+      title: "Poly Lens API Help",
+      href: "https://api.lens.poly.com/",
+      category: "",
+    },
+    {
+      title: "Power Apps Developer Plan | Microsoft Power Platform",
+      href: "https://www.microsoft.com/en-us/power-platform/products/power-apps/free",
+      category: "",
+    },
+    {
+      title: "Power Platform - Custom Connectors",
+      href: "https://learn.microsoft.com/en-us/connectors/custom-connectors/connection-parameters",
+      category: "",
+    },
+    {
+      title: "PowerShell - Approved Verbs",
+      href: "https://docs.microsoft.com/powershell/utility-modules/psscriptanalyzer/rules/UseApprovedVerbs",
+      category: "",
+    },
+    {
+      title: "PowerShell_ISE_Themes",
+      href: "https://github.com/marzme/PowerShell_ISE_Themes",
+      category: "",
+    },
+    {
+      title: "Qualys API Documentation",
+      href: "https://docs.qualys.com/en/vm/api/index.htm",
+      category: "",
+    },
+    {
+      title: "React Developer Tools – React",
+      href: "https://react.dev/learn/react-developer-tools",
+      category: "",
+    },
+    {
+      title: "React style guide",
+      href: "https://github.com/airbnb/javascript/tree/master/react",
+      category: "",
+    },
+    {
+      title: "ServiceNow - Catalog Items",
+      href: "https://nttdemealonedesk.service-now.com/sc_cat_item_list.do",
+      category: "",
+    },
+    {
+      title: "ServiceNow - Learning paths",
+      href: "https://www.servicenow.com/standard/infographic/learning-paths.html?state=seamless",
+      category: "",
+    },
+    {
+      title: "ServiceNow - REST API Explorer",
+      href: "https://www.servicenow.com/docs/bundle/yokohama-api-reference/page/integrate/inbound-rest/concept/use-REST-API-Explorer.html",
+      category: "",
+    },
+    {
+      title: "ServiceNow Developers",
+      href: "https://developer.servicenow.com/dev.do",
+      category: "",
+    },
+    {
+      title: "ServiceNow University | ServiceNow",
+      href: "https://learning.servicenow.com/now/lxp/home",
+      category: "",
+    },
+    {
+      title: "SharePoint - Examples of common formulas in lists",
+      href: "https://support.office.com/client/results?authdataboundary=US&authtype=unknown&lcid=1033&locale=en-us&microsoftapplicationstelemetrydeviceid=ba910abd-18a0-4f99-b103-cebce256f560&ns=SPOSTANDARD&omkt=en-us&version=16&helpid=WSSEndUser_FormulaSyntaxError",
+      category: "",
+    },
+    {
+      title: "Specificity Calculator",
+      href: "https://specificity.keegan.st/",
+      category: "",
+    },
+    {
+      title: "SQL OnLine IDE",
+      href: "https://sqliteonline.com/",
+      category: "",
+    },
+    {
+      title: "Superset - data visualization",
+      href: "https://superset.apache.org/",
+      category: "",
+    },
+    {
+      title: "TeamViewer API Documentation",
+      href: "https://webapi.teamviewer.com/api/v1/docs/index",
+      category: "",
+    },
+    {
+      title: "Timestamp Converter",
+      href: "https://www.epochconverter.com/ldap",
+      category: "",
+    },
+    {
+      title: "toHtml",
+      href: "https://tohtml.com/",
+      category: "",
+    },
+    {
+      title: "Transparent Textures",
+      href: "https://www.transparenttextures.com/",
+      category: "",
+    },
+    {
+      title: "Vercel",
+      href: "https://vercel.com/drekedg-devs-projects",
+      category: "",
+    },
+    {
+      title: "W3C Markup Validation Service",
+      href: "https://validator.w3.org/",
+      category: "",
+    },
+  ],
+};
