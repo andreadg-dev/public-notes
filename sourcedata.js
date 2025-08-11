@@ -287,26 +287,27 @@ const card = `<div class="col" style="display:flex;justify-content:center;">
 </div>`;
 
 const navBarWithDropDowns = `<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-  <a class="navbar-brand" href="#"><img src="favicon.png" alt="brand-image" style="height:50px"></a>
+  <div id="navbarBrand">
+    <a class="navbar-brand" href="#"><img src="favicon.png" alt="brand-image" style="height:50px"></a>
+    <div id="navbarAppName">myNotes</div>
+  </div>
   <div id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item dropdown dropend" id="devDropDown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          dev
-        </a>
-        <div class="dropdown-menu" data-bs-popper="static" aria-labelledby="navbarDropdownMenuLink">
-          {{navDevItems}}
-        </div>
-      </li>
-      <li class="nav-item dropdown dropend" id="otherDropDown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          other
-        </a>
-        <div class="dropdown-menu" data-bs-popper="static" aria-labelledby="navbarDropdownMenuLink">
-          {{navOtherItems}}
-        </div>
-      </li>
-    </ul>
+    <div class="dropdown">
+	  <div class="dropdown-toggle" type="button" id="dropdownMenuButtonDev" data-bs-toggle="dropdown" aria-expanded="false">
+		dev
+	  </div>
+	  <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButtonDev">
+		{{navDevItems}}
+	  </ul>
+	</div>
+	<div class="dropdown dropstart">
+	  <div class="dropdown-toggle" type="button" id="dropdownMenuButtonOther" data-bs-toggle="dropdown" aria-expanded="false">
+		other
+	  </div>
+	  <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButtonOther" id="dropdownmenuOther">
+		{{navOtherItems}}
+	  </ul>
+	</div>
   </div>
 </nav>
 `;
