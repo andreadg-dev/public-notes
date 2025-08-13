@@ -1,15 +1,15 @@
-function updateCounts() {
-  $("#filteredItemsCount").text($("tbody tr:visible").length);
+function updateCounts(elementsToCount) {
+  $("#filteredItemsCount").text($(`${elementsToCount}:visible`).length);
 }
 
-function filterItems() {
+function filterItems(elementsToFilter) {
   // Filter function
   $("#filter").on("keyup", function () {
-    var value = $(this).val().toLowerCase();
-    $("tbody tr").filter(function () {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+    let searchInput = $(this).val().toLowerCase();
+    $(elementsToFilter).filter(function () {
+      $(this).toggle($(this).text().toLowerCase().indexOf(searchInput) > -1);
     });
-    updateCounts();
+    updateCounts(elementsToFilter);
   });
 }
 
@@ -149,11 +149,11 @@ function appendListToRoot(objArray, index) {
   table.push("</table>");
   let finalTable = `${spaceDiv}<h1>🔴 ${
     objArray[index].title
-  } 🔴</h1>${searchCard.replace(
-    "{{totalItemsCount}}",
-    objArray[index].snippets.length
-  )}${table.join("")}`;
+  } 🔴</h1>${searchCard(objArray[index].snippets.length)}${table.join("")}`;
   $("#root").append(finalTable);
+
+  updateCounts("tbody tr");
+  filterItems("tbody tr");
   copySingleItemToClipBoard();
   highlightElement();
 }
@@ -187,10 +187,11 @@ function appendCardsToRoot(objArray, index) {
         `<h2 class="link-cat-title" style="margin-top:2rem;">🟡 ${category} 🟡</h2><div class="linksGrid" id="links${category}">`
       );
       linksGroupedByCat[category].forEach((item) => {
+        //console.log(item);
         cards.push(
           card
             .replace("{{title}}", `${item.title}`)
-            .replace("{{link}}", `${item.link}`)
+            .replace("{{link}}", `${item.href}`)
         );
       });
       cards.push(`</div>`);
@@ -198,9 +199,13 @@ function appendCardsToRoot(objArray, index) {
 
   let finalCards = `${spaceDiv}<h1>🔴 ${
     objArray[index].title
-  } 🔴</h1><div>${cards.join("")}</div>`;
+  } 🔴</h1>${searchCard(objArray[index].links.length)}<div>${cards.join(
+    ""
+  )}</div>`;
 
   $("#root").append(finalCards);
+  updateCounts(".col");
+  filterItems(".col");
 }
 
 //Parent function to append item to 'root' element depending on the type
@@ -210,9 +215,6 @@ function appendToRoot(objArray, index) {
   objArray[index].type === "list" && appendListToRoot(objArray, index);
 
   objArray[index].type === "cards" && appendCardsToRoot(objArray, index);
-
-  updateCounts();
-  filterItems();
 }
 
 /* function appendSectionToNavbar(objArray) {
@@ -264,9 +266,10 @@ function displaySectionOnClick(objArray) {
 
 const spaceDiv = `<div class="mt-6"></div>`;
 
-const searchCard = `<div class="card text-white bg-dark mb-3" id="filterCard">
+const searchCard = (totalItemsCount) => {
+  return `<div class="card text-white bg-dark mb-3" id="filterCard">
       <div class="card-body">
-        <p style="justify-content:space-between;display:flex"><span>Search:</span><span style="font-weight:bold;">results: <span id="filteredItemsCount">{{filteredItemsCount}}</span>/<span id="totalItemsCount">{{totalItemsCount}}</span></span></p>
+        <p style="justify-content:space-between;display:flex"><span>Search:</span><span style="font-weight:bold;">results: <span id="filteredItemsCount">{{filteredItemsCount}}</span>/<span id="totalItemsCount">${totalItemsCount}</span></span></p>
         <input type="text" id="filter" class="form-control" placeholder="Type a keyword..."/>
       </div>
     </div>
@@ -276,6 +279,7 @@ const searchCard = `<div class="card text-white bg-dark mb-3" id="filterCard">
           Copy all commands!
         </button>
     </div>`;
+};
 
 const card = `<div class="col" style="display:flex;justify-content:center;">
     <div class="card text-white bg-dark mb-3" style="width: 18rem; min-height:12rem; border: solid 1px white;border-radius:1rem;">
