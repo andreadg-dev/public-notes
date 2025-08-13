@@ -1,3 +1,35 @@
+function copyAllCommands() {
+  let arrayToCopyClipboard = [];
+  $("tr").each(function () {
+    if ($(this).is(":visible")) {
+      let tdText = $(this).children("td:nth-child(1)").text();
+      arrayToCopyClipboard.push(tdText);
+    }
+  });
+
+  // Remove empty values from the array
+  arrayToCopyClipboard = arrayToCopyClipboard.filter(function (text) {
+    return text.trim() !== "";
+  });
+
+  navigator.clipboard
+    .writeText(arrayToCopyClipboard.join("\n"))
+    .then(() => {
+      console.log("Copied to clipboard:", arrayToCopyClipboard);
+      // Optionally, display a notification or provide visual feedback to the user
+    })
+    .catch((error) => {
+      console.error("Error copying to clipboard:", error);
+    });
+
+  //Displays temporarily the alert div when copying a card-body to the clipboard
+  $(".alert").addClass("show"); // Add class to show the alert
+  // Set timeout to remove the class after 2 seconds
+  setTimeout(function () {
+    $(".alert").removeClass("show"); // Remove class to hide the alert
+  }, 2000);
+}
+
 function updateCounts(elementsToCount) {
   $("#filteredItemsCount").text($(`${elementsToCount}:visible`).length);
 }
@@ -149,7 +181,10 @@ function appendListToRoot(objArray, index) {
   table.push("</table>");
   let finalTable = `${spaceDiv}<h1>🔴 ${
     objArray[index].title
-  } 🔴</h1>${searchCard(objArray[index].snippets.length)}${table.join("")}`;
+  } 🔴</h1>${copiedToClipboardAlert}${searchCard(
+    objArray[index].snippets.length,
+    true
+  )}${table.join("")}`;
   $("#root").append(finalTable);
 
   updateCounts("tbody tr");
@@ -266,20 +301,35 @@ function displaySectionOnClick(objArray) {
 
 const spaceDiv = `<div class="mt-6"></div>`;
 
-const searchCard = (totalItemsCount) => {
-  return `<div class="card text-white bg-dark mb-3" id="filterCard">
-      <div class="card-body">
+const searchCard = (totalItemsCount, copyAllCommands = false) => {
+  let borderRoundSolidWhite = `border:1px solid white;border-radius: 1rem;`;
+  let searchCard = `<div class="card text-white bg-dark mb-3" id="filterCard">
+      <div class="card-body" style="${borderRoundSolidWhite}">
         <p style="justify-content:space-between;display:flex"><span>Search:</span><span style="font-weight:bold;">results: <span id="filteredItemsCount">{{filteredItemsCount}}</span>/<span id="totalItemsCount">${totalItemsCount}</span></span></p>
         <input type="text" id="filter" class="form-control" placeholder="Type a keyword..."/>
       </div>
     </div>
 
-    <div class="buttonDiv" style="display:none">
-        <button class="btn btn-dark btn-lg" onclick="copyAllCommands()">
+    ${
+      copyAllCommands
+        ? `<div class="buttonDiv">
+        <button class="btn btn-dark btn-lg" onclick="copyAllCommands()" style="${borderRoundSolidWhite}">
           Copy all commands!
         </button>
-    </div>`;
+    </div>`
+        : ``
+    }`;
+
+  //console.log(searchCard);
+  return searchCard;
 };
+
+const copiedToClipboardAlert = `<div class="alert">
+      <span
+        ><i class="bi bi-info-circle"></i
+        ><span> Copied to clipboard!</span></span
+      >
+    </div>`;
 
 const card = `<div class="col" style="display:flex;justify-content:center;">
     <div class="card text-white bg-dark mb-3" style="width: 18rem; min-height:12rem; border: solid 1px white;border-radius:1rem;">

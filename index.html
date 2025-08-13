@@ -104,6 +104,32 @@
         font-weight: bold !important;
       }
 
+      .alert {
+        background-color: #bddaee;
+        color: black;
+        border: 1px solid #5ea6d5;
+        border-radius: 4px;
+        padding: 10px;
+        box-sizing: border-box;
+        box-shadow: 0 5px 10px -5px #00000080;
+        width: 16rem;
+        height: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        position: sticky;
+        top: 1rem;
+        margin: auto;
+        z-index: 9999; /* Highest z-index: the item will appear on top of all other elements */
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out; /* Smooth transition */
+      }
+
+      .alert.show {
+        opacity: 1; /* Show the alert */
+      }
+
       .linksGrid {
         display: grid;
         grid-row-gap: 0.5em;
