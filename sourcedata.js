@@ -1,33 +1,38 @@
-function copyAllCommands() {
+function copyAllCommands(parentElement, elementToCopy) {
   let arrayToCopyClipboard = [];
-  $("tr").each(function () {
-    if ($(this).is(":visible")) {
-      let tdText = $(this).children("td:nth-child(1)").text();
-      arrayToCopyClipboard.push(tdText);
-    }
-  });
-
-  // Remove empty values from the array
-  arrayToCopyClipboard = arrayToCopyClipboard.filter(function (text) {
-    return text.trim() !== "";
-  });
-
-  navigator.clipboard
-    .writeText(arrayToCopyClipboard.join("\n"))
-    .then(() => {
-      console.log("Copied to clipboard:", arrayToCopyClipboard);
-      // Optionally, display a notification or provide visual feedback to the user
-    })
-    .catch((error) => {
-      console.error("Error copying to clipboard:", error);
+  $("#copyAllBtn").on("click", function () {
+    $(parentElement).each(function () {
+      if ($(this).is(":visible")) {
+        let elementText = $(this).children(elementToCopy).text();
+        arrayToCopyClipboard.push(elementText);
+      }
     });
 
-  //Displays temporarily the alert div when copying a card-body to the clipboard
-  $(".alert").addClass("show"); // Add class to show the alert
-  // Set timeout to remove the class after 2 seconds
-  setTimeout(function () {
-    $(".alert").removeClass("show"); // Remove class to hide the alert
-  }, 2000);
+    // Remove empty values from the array
+    arrayToCopyClipboard = arrayToCopyClipboard.filter(function (text) {
+      return text.trim() !== "";
+    });
+
+    navigator.clipboard
+      .writeText(arrayToCopyClipboard.join("\n"))
+      .then(() => {
+        console.log("Copied to clipboard:", arrayToCopyClipboard);
+        // Optionally, display a notification or provide visual feedback to the user
+      })
+      .then(() => {
+        arrayToCopyClipboard = [];
+      })
+      .catch((error) => {
+        console.error("Error copying to clipboard:", error);
+      });
+
+    //Displays temporarily the alert div when copying a card-body to the clipboard
+    $(".alert").addClass("show"); // Add class to show the alert
+    // Set timeout to remove the class after 2 seconds
+    setTimeout(function () {
+      $(".alert").removeClass("show"); // Remove class to hide the alert
+    }, 2000);
+  });
 }
 
 function updateCounts(elementsToCount) {
@@ -81,8 +86,8 @@ function parseGoogleBookmarks() {
 }
 
 // Function to copy element to clipboard
-function copySingleItemToClipBoard() {
-  $("td").on("click", function () {
+function copySingleItemToClipBoard(elementToCopy) {
+  $(elementToCopy).on("click", function () {
     let ptrContent = $(this).text();
     navigator.clipboard
       .writeText(ptrContent)
@@ -189,7 +194,8 @@ function appendListToRoot(objArray, index) {
 
   updateCounts("tbody tr");
   filterItems("tbody tr");
-  copySingleItemToClipBoard();
+  copyAllCommands("tr", "td:nth-child(1)");
+  copySingleItemToClipBoard("td");
   highlightElement();
 }
 
@@ -313,7 +319,7 @@ const searchCard = (totalItemsCount, copyAllCommands = false) => {
     ${
       copyAllCommands
         ? `<div class="buttonDiv">
-        <button class="btn btn-dark btn-lg" onclick="copyAllCommands()" style="${borderRoundSolidWhite}">
+        <button class="btn btn-dark btn-lg" id="copyAllBtn" style="${borderRoundSolidWhite}">
           Copy all commands!
         </button>
     </div>`
