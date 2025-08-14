@@ -309,8 +309,8 @@ const spaceDiv = `<div class="mt-6"></div>`;
 
 const searchCard = (totalItemsCount, copyAllCommands = false) => {
   let borderRoundSolidWhite = `border:1px solid white;border-radius: 1rem;`;
-  let searchCard = `<div class="card text-white bg-dark mb-3" id="filterCard">
-      <div class="card-body" style="${borderRoundSolidWhite}">
+  let searchCard = `<div class="card text-white bg-dark mb-3" id="filterCard" style="${borderRoundSolidWhite}">
+      <div class="card-body">
         <p style="justify-content:space-between;display:flex"><span>Search:</span><span style="font-weight:bold;">results: <span id="filteredItemsCount">{{filteredItemsCount}}</span>/<span id="totalItemsCount">${totalItemsCount}</span></span></p>
         <input type="text" id="filter" class="form-control" placeholder="Type a keyword..."/>
       </div>
