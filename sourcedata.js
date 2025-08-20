@@ -608,6 +608,73 @@ const typescript = {
 //==========================================
 
 
+
+//## Type literals ##
+
+    //A type literal is when you tell TypeScript that a value must be exactly equal to a specific value, not just any value of that type.
+        //Normally, string means any string ("hello", "world", "123", etc.).
+        //A string literal type like "hello" means the value must be exactly "hello".
+        //The same applies to numbers (42), booleans (true), or even combinations.
+    //When you combine multiple type literals with a union (|), you restrict a value to a small set of allowed options.
+    type Direction = "up" | "down" | "left" | "right"; // String literal union
+    type DiceRoll = 1 | 2 | 3 | 4 | 5 | 6; // Numeric literal union
+    type TrafficLight = "red" | "yellow" | "green" | 0 | 1 | 2; // Mixed string + number union
+    type SwitchState = "on" | "off"; // Boolean-like union
+    type Button = {label: string; color: "primary" | "secondary" | "danger";}; // Union inside object property
+
+    // Real-world examples  
+    type HttpMethod = "GET" | "POST" | "PUT" | "DELETE"; // HTTP methods
+    type UserRole = "admin" | "editor" | "viewer"; // User roles
+    type StatusCode = 200 | 400 | 401 | 404 | 500; // HTTP status codes
+    type Currency = "USD" | "EUR" | "GBP" | "JPY"; // Currency codes
+    type ShippingMethod = "standard" | "express" | "overnight"; // Shipping methods
+
+//==========================================
+
+
+//## Type Guards ##
+
+    //In TypeScript, a type guard is a way to check the type of a value at runtime so that TypeScript can narrow the type inside a code block.
+    //One way to do that is to use the built-in typeof JS operator that retrieves the type of a variable/value
+
+    function combine(value1: string | number, value2: string | number):void {
+        if (typeof value1 === "string" && typeof value2 === "string") {console.log(\`\${value1} \${value2}\`);} 
+        if (typeof value1 === "number" && typeof value2 === "number"){console.log(value1 + value2);}
+    }
+
+    combine("hello","world"); // hello world
+    combine(4,6);       // 10
+
+    
+    //Important: You can NOT check if a value meets the definition of a custom type (type alias) or interface type. These are TypeScript-specific features for which no JavaScript equivalent exists. Therefore, since those if checks need to run at runtime, you can't write any code that would be able to check for those types at runtime.
+    //For example, the below code won't work because the NormalUser type does not exist once the code is compiled to JavaScript:
+    type NormalUser = {
+        name: string;
+        age: number;
+    };
+    
+    type AdminUser = {
+        name: string;
+        age: number;
+        permissions: string[];
+    };
+    
+    function loginApp(u: NormalUser | AdminUser) {
+        if (typeof u === NormalUser) {
+            // do something
+        }
+    }
+
+    //But you could check for the existence of the permissions property since only the AdminUser object will have one:
+    function loginApp2(u: NormalUser | AdminUser) {
+        if ('permissions' in u) {
+            // do something
+        }
+    }   
+//==========================================
+
+
+
 //## Tips ##
     //• Avoid type 'any' at all costs
     //• Use 'void' for function that does not return anything and not 'undefined'
