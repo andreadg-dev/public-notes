@@ -148,7 +148,7 @@ function appendSectionsToRoot(objArray, index) {
     let processedSnippet = escapeHTML(snippet.code)
       .replace(
         snippetTitleRegex,
-        `<div class="snippet"><h2 class="snippet-title">🟡 $1</h2><pre><code class="language-${objArray[index].language}">` //
+        `<div class="snippet"><h2 class="snippet-title">🟡 $1</h2><pre><div class="abbreviation">${objArray[index].abbreviation}</div><code class="language-${objArray[index].language}">` //
       )
       .replace(endCodeSnippetRegex, "</code></pre></div>");
     return `${spaceDiv}<div><h1>🔴 ${snippet.title} 🔴</h1>${processedSnippet}`;
@@ -385,6 +385,7 @@ const cmd = {
   title: "cmd",
   type: "sections",
   language: "plaintext",
+  abbreviation: "cmd",
   navcategory: "dev",
   snippets: [
     {
@@ -439,6 +440,7 @@ const typescript = {
   title: "typescript",
   type: "sections",
   language: "typescript",
+  abbreviation: "ts",
   navcategory: "dev",
   snippets: [
     {
@@ -638,14 +640,13 @@ const typescript = {
     //One way to do that is to use the built-in typeof JS operator that retrieves the type of a variable/value
 
     function combine(value1: string | number, value2: string | number):void {
-        if (typeof value1 === "string" && typeof value2 === "string") {console.log(\`\${value1} \${value2}\`);} 
-        if (typeof value1 === "number" && typeof value2 === "number"){console.log(value1 + value2);}
+    if (typeof value1 === "string" && typeof value2 === "string") {console.log(\`\${value1} \${value2}\`);} 
+    if (typeof value1 === "number" && typeof value2 === "number"){console.log(value1 + value2);}
     }
 
     combine("hello","world"); // hello world
     combine(4,6);       // 10
 
-    
     //Important: You can NOT check if a value meets the definition of a custom type (type alias) or interface type. These are TypeScript-specific features for which no JavaScript equivalent exists. Therefore, since those if checks need to run at runtime, you can't write any code that would be able to check for those types at runtime.
     //For example, the below code won't work because the NormalUser type does not exist once the code is compiled to JavaScript:
     type NormalUser = {
@@ -659,8 +660,11 @@ const typescript = {
         permissions: string[];
     };
     
+    let newUser: NormalUser = {name: "Jonny",age: 43}
+    console.log(typeof newUser) //'object' instead of 'NormalUser'. As mentioned above typeof does not understand/know custom types but only built-in ones
+
     function loginApp(u: NormalUser | AdminUser) {
-        if (typeof u === NormalUser) {
+        if (typeof u === NormalUser) { //❌ Error: typeof does not work with custom type aliases/interfaces
             // do something
         }
     }
