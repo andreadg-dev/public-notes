@@ -199,6 +199,47 @@ function appendListToRoot(objArray, index) {
   highlightElement();
 }
 
+//Children function that appends const type 'list-items' to 'root' element
+function appendListItemsToRoot(objArray, index) {
+  let table = [`<table class="table">`];
+  let headers = ["<thead><tr>"];
+  let objectKeys = Object.keys(objArray[index].items[0]);
+  objectKeys.map((header) => {
+    headers.push(`<th>${header}</th>`);
+  });
+  headers.push("</tr></thead>");
+  let tbody = ["<tbody>"];
+
+  pageItems = objArray[index].items.map((item) => {
+    return `<tr><td>${item[objectKeys[0]]}</td><td style="white-space:normal">${
+      item[objectKeys[1]]
+    }</td><td style="white-space:normal;"><a href='${
+      item[objectKeys[2]]
+    }' target="_blank">${item[objectKeys[2]]}</a></td></tr>`;
+  });
+  tbody.push(pageItems.join(""));
+  tbody.push("</tbody>");
+
+  table.push(headers.join(""));
+  table.push(tbody.join(""));
+  table.push("</table>");
+  let finalTable = `${spaceDiv}<h1>🔴 ${
+    objArray[index].title
+  } 🔴</h1>${copiedToClipboardAlert}${searchCard(
+    objArray[index].items.length,
+    false
+  )}${table.join("")}`;
+
+  console.log(finalTable);
+  $("#root").append(finalTable);
+
+  updateCounts("tbody tr");
+  filterItems("tbody tr");
+  copyAllCommands("tr", "td:nth-child(1)");
+  copySingleItemToClipBoard("td");
+  highlightElement();
+}
+
 //Children function that appends const type 'cards' to 'root' element
 function appendCardsToRoot(objArray, index) {
   let cards = [];
@@ -256,6 +297,9 @@ function appendToRoot(objArray, index) {
   objArray[index].type === "list" && appendListToRoot(objArray, index);
 
   objArray[index].type === "cards" && appendCardsToRoot(objArray, index);
+
+  objArray[index].type === "list-items" &&
+    appendListItemsToRoot(objArray, index);
 }
 
 /* function appendSectionToNavbar(objArray) {
@@ -1293,6 +1337,12 @@ const troubleshooting = {
       tags: ["windows", "regedit"],
     },
     {
+      item: "https://{sp_instance}.sharepoint.com/sites/{sp_site_name}/_api/web/lists/getbytitle('{sp_list_name}')/items?$filter=substringof('valuecontained', Column1Name) and Column2Name eq 'NO' and substringof('2025-08', Column3Name)",
+      description:
+        "Provided that the user is logged in their Micrsoft tenant, they will get an XML response with the items of the corresponding list that match the filter criteria. Substringof refers to a value that is contained in Column1, Colum2 has to equal to 'NO' and Colum3 has to contain the string '2025-08'",
+      tags: ["microsoft", "support_url", "browser", "api", "sharepoint"],
+    },
+    {
       item: "/_layouts/15/people.aspx?MembershipGroupId=0",
       description:
         "Navigates to the corresponding MS Cloud collection's access right page when added to the base OneDrive/Teams/SharePoint url, for instance: https://domain-my.sharepoint.com/personal/user_domain or https://domain.sharepoint.com/sites/sitename",
@@ -2124,6 +2174,21 @@ const usefulLinks = {
       title: "W3C Markup Validation Service",
       href: "https://validator.w3.org/",
       category: "",
+    },
+  ],
+};
+
+const nextjs = {
+  title: "nextjs",
+  type: "list-items",
+  navcategory: "other",
+  items: [
+    {
+      title: "useSearchParams, usePathname, useRouter",
+      description: `<code>import { useSearchParams, usePathname, useRouter } from 'next/navigation';</code> are used 
+      to update a nextjs app page URL with the search parameters. Therefore the URL '.../dashboard/invoices' will
+      include the search parameters and become '.../dashboard/invoices?query=lee'`,
+      link: "https://nextjs.org/learn/dashboard-app/adding-search-and-pagination",
     },
   ],
 };
