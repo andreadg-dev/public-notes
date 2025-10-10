@@ -2181,14 +2181,127 @@ const usefulLinks = {
 const nextjs = {
   title: "nextjs",
   type: "list-items",
-  navcategory: "other",
+  navcategory: "dev",
   items: [
+    {
+      title: `npm install -g pnpm`,
+      description: `pnpm as your package manager, as it's faster and more efficient than npm or yarn`,
+      link: "https://nextjs.org/learn/dashboard-app/getting-started",
+      tag: "nextjs",
+    },
+    {
+      title: `npx create-next-app@latest --ts`,
+      description: `It is used to automatically initialize a new NextJS project with the default configuration and in this case
+      with typescript`,
+      link: "https://nextjs.org/learn/dashboard-app/getting-started",
+      tag: "nextjs",
+    },
+    {
+      title: `npm run dev<br/>pnpm dev`,
+      description: `Starts your Next.js development server on port 3000`,
+      link: "https://nextjs.org/learn/dashboard-app/getting-started",
+      tag: "nextjs",
+    },
+    {
+      title: `@tailwind base;<br/>
+              @tailwind components;<br/>
+              @tailwind utilities;`,
+      description: `@tailwind directives, Tailwind is a CSS framework that speeds up the development process by allowing 
+      you to quickly write utility classes directly in your React code.`,
+      link: "https://tailwindcss.com/docs/styling-with-utility-classes",
+      tag: "nextjs",
+    },
+    {
+      title: `CSS Modules`,
+      description: `You can create a file with with all css classes, then import it in the target file for instance 
+      <code>import styles from '@/app/ui/home.module.css';</code> and then add it to classes <code>&lt;div className={styles.shape} /&gt;</code>`,
+      link: "",
+      tag: "nextjs",
+    },
+    {
+      title: `clsx`,
+      description: `clsx is a library that lets you toggle class names easily. You can import it like this
+      <code>import clsx from 'clsx';</code>. For example <code>&lt;span
+      className={clsx(
+        &apos;inline-flex items-center rounded-full px-2 py-1 text-sm&apos;,
+        {
+          &apos;bg-gray-100 text-gray-500&apos;: status === &apos;pending&apos;,
+          &apos;bg-green-500 text-white&apos;: status === &apos;paid&apos;,
+        },
+      )}
+    &gt;</code>`,
+      link: "https://www.npmjs.com/package/clsx",
+      tag: "nextjs",
+    },
+    {
+      title: `next/font/google`,
+      description: `You can import a google font from the google module. For instance, <code>import { Inter } from 
+      'next/font/google'; export const inter = Inter({ subsets: ['latin'] });</code> and add it as a class in the className property,
+      for instance <code>&lt;body className={&grave;\${inter.className} antialiased&grave;}&gt;{children}&lt;/body&gt;</code>`,
+      link: "https://nextjs.org/learn/dashboard-app/optimizing-fonts-images",
+      tag: "nextjs",
+    },
+    {
+      title: `&lt;Image&gt;`,
+      description: ``,
+      link: "",
+      tag: "nextjs",
+    },
+    {
+      title: "'use client'",
+      description: `In Next.js (App Router), components can be either Server Components or Client Components. By default, 
+      all components in the app/ directory are Server Components, which are rendered on the server and sent as HTML to the 
+      browser. These components are ideal for tasks like secure data fetching (e.g., from a database), server-side rendering 
+      for SEO, and reducing client-side JavaScript. However, Server Components cannot use React hooks like useState or useEffect, 
+      and they do not have access to browser APIs such as window or localStorage. They are not interactive on their own but can 
+      include Client Components inside them. 
+      <br/><br/>
+      In contrast, Client Components are rendered in the browser and must be 
+      explicitly marked with the <code>'use client'</code> directive at the top of the file. These components support interactivity, such as 
+      button clicks or dynamic state updates, and can use all React hooks as well as browser APIs. They are essential when 
+      building UI elements that require user interaction. However, Client Components cannot perform secure server-side operations
+      directly and rely on API routes or Server Components for that. Also, Client Components cannot render Server Components 
+      within them — the flow of rendering must always start from the server.`,
+      link: "https://nextjs.org/learn/dashboard-app/adding-search-and-pagination",
+      tag: "nextjs",
+    },
     {
       title: "useSearchParams, usePathname, useRouter",
       description: `<code>import { useSearchParams, usePathname, useRouter } from 'next/navigation';</code> are used 
-      to update a nextjs app page URL with the search parameters. Therefore the URL '.../dashboard/invoices' will
-      include the search parameters and become '.../dashboard/invoices?query=lee'`,
+      to update a nextjs app page URL with the search parameters. They can be used in client components only.  
+      In case you need to access the search parameters from a server component, you can pass them as props to the page
+      itself, for instance <code>export default async function Page(props: {searchParams?: Promise<{query?: string;page?: string;}>;}...</code>
+      Therefore the URL '.../dashboard/invoices' will include the search parameters and become '.../dashboard/invoices?query=lee'`,
       link: "https://nextjs.org/learn/dashboard-app/adding-search-and-pagination",
+      tag: "nextjs",
+    },
+    {
+      title: `pnpm i use-debounce`,
+      description: `Install the library called use-debounce. Debouncing is a programming practice that limits the rate at which 
+      a function can fire. For instance, if you need to call a search query function to fetch data from the database and 
+      you only want to query the database when the user has stopped typing, you would use debouncing. If no debouncing is 
+      implemented, the function will be executed at every key stroke. You just have to import the debounce function and wrap
+      it around the function that needs to be delayed <code>import { useDebouncedCallback } from 'use-debounce';</code>`,
+      link: "https://nextjs.org/learn/dashboard-app/adding-search-and-pagination#best-practice-debouncing",
+      tag: "nextjs",
+    },
+    {
+      title: ``,
+      description: ``,
+      link: "",
+      tag: "nextjs",
+    },
+    {
+      title: ``,
+      description: ``,
+      link: "",
+      tag: "nextjs",
+    },
+    {
+      title: ``,
+      description: ``,
+      link: "",
+      tag: "nextjs",
     },
   ],
 };
