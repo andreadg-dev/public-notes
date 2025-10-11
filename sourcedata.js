@@ -205,15 +205,30 @@ function appendListItemsToRoot(objArray, index) {
   let headers = ["<thead><tr>"];
   let objectKeys = Object.keys(objArray[index].items[0]);
   objectKeys.map((header) => {
-    headers.push(`<th>${header}</th>`);
+    if (header !== "logo") {
+      headers.push(`<th>${header}</th>`);
+    }
   });
   headers.push("</tr></thead>");
   let tbody = ["<tbody>"];
 
   pageItems = objArray[index].items.map((item) => {
-    return `<tr><td>${item[objectKeys[0]]}</td><td style="white-space:normal">${
-      item[objectKeys[1]]
-    }</td><td style="white-space:normal;"><a href='${
+    return `<tr>
+              <td>
+                <div style="display:flex;gap:1rem;">
+                  <span>
+                    <img class="logo" 
+                         src="./images/${item.logo}.png" 
+                         alt="${item.logo}-logo" 
+                         height="25px" 
+                         width="25px"/>
+                  </span>
+                  <span>${item[objectKeys[0]]}</span>
+                </div>
+              </td>
+              <td style="white-space:normal">${
+                item[objectKeys[1]]
+              }</td><td style="white-space:normal;"><a href='${
       item[objectKeys[2]]
     }' target="_blank">${item[objectKeys[2]]}</a></td></tr>`;
   });
@@ -290,6 +305,15 @@ function appendCardsToRoot(objArray, index) {
   filterItems(".col");
 }
 
+//Children function that appends const type 'cards' to 'root' element
+function appendToolsToRoot(objArray, index) {
+  const finalTools = objArray[index].tools.map((item) => {
+    return `<div class="tools" id="${item.title}-tool"><h2>${item.title}</h2>${item.component}</div>`;
+  });
+
+  $("#root").append(`${spaceDiv}<h1>🔴 tools 🔴</h1>${finalTools}`);
+}
+
 //Parent function to append item to 'root' element depending on the type
 function appendToRoot(objArray, index) {
   objArray[index].type === "sections" && appendSectionsToRoot(objArray, index);
@@ -300,6 +324,8 @@ function appendToRoot(objArray, index) {
 
   objArray[index].type === "list-items" &&
     appendListItemsToRoot(objArray, index);
+
+  objArray[index].type === "tools" && appendToolsToRoot(objArray, index);
 }
 
 /* function appendSectionToNavbar(objArray) {
@@ -315,6 +341,15 @@ function appendToRoot(objArray, index) {
   $("#navbar").append(navBar.replace("{{navItems}}", navItems.join("")));
   appendToRoot(objArray, 0);
 } */
+
+function htmlEncode(input) {
+  return input
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/'/g, "&#39;")
+    .replace(/"/g, "&quot;");
+}
 
 function appendSectionToNavbar(objArray) {
   let navDevItems = [];
@@ -2187,20 +2222,20 @@ const nextjs = {
       title: `npm install -g pnpm`,
       description: `pnpm as your package manager, as it's faster and more efficient than npm or yarn`,
       link: "https://nextjs.org/learn/dashboard-app/getting-started",
-      tag: "nextjs",
+      logo: "nextjs",
     },
     {
       title: `npx create-next-app@latest --ts`,
       description: `It is used to automatically initialize a new NextJS project with the default configuration and in this case
       with typescript`,
       link: "https://nextjs.org/learn/dashboard-app/getting-started",
-      tag: "nextjs",
+      logo: "nextjs",
     },
     {
       title: `npm run dev<br/>pnpm dev`,
-      description: `Starts your Next.js development server on port 3000`,
+      description: `These are two ways to start your Next.js development server on port 3000`,
       link: "https://nextjs.org/learn/dashboard-app/getting-started",
-      tag: "nextjs",
+      logo: "nextjs",
     },
     {
       title: `@tailwind base;<br/>
@@ -2209,14 +2244,14 @@ const nextjs = {
       description: `@tailwind directives, Tailwind is a CSS framework that speeds up the development process by allowing 
       you to quickly write utility classes directly in your React code.`,
       link: "https://tailwindcss.com/docs/styling-with-utility-classes",
-      tag: "nextjs",
+      logo: "nextjs",
     },
     {
       title: `CSS Modules`,
       description: `You can create a file with with all css classes, then import it in the target file for instance 
       <code>import styles from '@/app/ui/home.module.css';</code> and then add it to classes <code>&lt;div className={styles.shape} /&gt;</code>`,
       link: "",
-      tag: "nextjs",
+      logo: "nextjs",
     },
     {
       title: `clsx`,
@@ -2231,7 +2266,7 @@ const nextjs = {
       )}
     &gt;</code>`,
       link: "https://www.npmjs.com/package/clsx",
-      tag: "nextjs",
+      logo: "nextjs",
     },
     {
       title: `next/font/google`,
@@ -2239,13 +2274,13 @@ const nextjs = {
       'next/font/google'; export const inter = Inter({ subsets: ['latin'] });</code> and add it as a class in the className property,
       for instance <code>&lt;body className={&grave;\${inter.className} antialiased&grave;}&gt;{children}&lt;/body&gt;</code>`,
       link: "https://nextjs.org/learn/dashboard-app/optimizing-fonts-images",
-      tag: "nextjs",
+      logo: "nextjs",
     },
     {
       title: `&lt;Image&gt;`,
       description: ``,
       link: "",
-      tag: "nextjs",
+      logo: "nextjs",
     },
     {
       title: "'use client'",
@@ -2263,17 +2298,17 @@ const nextjs = {
       directly and rely on API routes or Server Components for that. Also, Client Components cannot render Server Components 
       within them — the flow of rendering must always start from the server.`,
       link: "https://nextjs.org/learn/dashboard-app/adding-search-and-pagination",
-      tag: "nextjs",
+      logo: "nextjs",
     },
     {
-      title: "useSearchParams, usePathname, useRouter",
+      title: "useSearchParams<br/>usePathname<br/>useRouter",
       description: `<code>import { useSearchParams, usePathname, useRouter } from 'next/navigation';</code> are used 
       to update a nextjs app page URL with the search parameters. They can be used in client components only.  
       In case you need to access the search parameters from a server component, you can pass them as props to the page
       itself, for instance <code>export default async function Page(props: {searchParams?: Promise<{query?: string;page?: string;}>;}...</code>
       Therefore the URL '.../dashboard/invoices' will include the search parameters and become '.../dashboard/invoices?query=lee'`,
       link: "https://nextjs.org/learn/dashboard-app/adding-search-and-pagination",
-      tag: "nextjs",
+      logo: "nextjs",
     },
     {
       title: `pnpm i use-debounce`,
@@ -2283,25 +2318,49 @@ const nextjs = {
       implemented, the function will be executed at every key stroke. You just have to import the debounce function and wrap
       it around the function that needs to be delayed <code>import { useDebouncedCallback } from 'use-debounce';</code>`,
       link: "https://nextjs.org/learn/dashboard-app/adding-search-and-pagination#best-practice-debouncing",
-      tag: "nextjs",
+      logo: "nextjs",
     },
     {
       title: ``,
       description: ``,
       link: "",
-      tag: "nextjs",
+      logo: "nextjs",
     },
     {
       title: ``,
       description: ``,
       link: "",
-      tag: "nextjs",
+      logo: "nextjs",
     },
     {
       title: ``,
       description: ``,
       link: "",
-      tag: "nextjs",
+      logo: "nextjs",
+    },
+  ],
+};
+
+const tools = {
+  title: "tools",
+  type: "tools",
+  navcategory: "other",
+  tools: [
+    {
+      title: "htmlEntitiesEncoderTool",
+      component: `<div id="htmlEncoder">
+      <textarea
+        id="inputBox"
+        rows="10"
+        cols="70"
+        placeholder="Paste your code here..."
+        required=""
+      ></textarea>
+      <button id="encodeButton" class="btn btn-outline-light">
+        <span>Encode</span>
+      </button>
+      <textarea id="outputBox" rows="10" cols="70"></textarea>
+    </div>`,
     },
   ],
 };
