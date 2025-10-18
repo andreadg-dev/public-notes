@@ -24,6 +24,10 @@
       rel="stylesheet"
     />
     <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/atom-one-dark.min.css"
     />
@@ -332,20 +336,43 @@
       }
 
       /* Tools */
+      .tools {
+        margin-bottom: 2rem;
+      }
+
       #htmlEncoder {
         display: flex;
         justify-content: center;
         align-items: center;
         gap: 1rem;
+        flex-direction: column;
       }
 
-      #htmlEncoder button {
+      /*       #htmlEncoder button {
         height: 16.5rem;
-      }
+      } */
 
       #htmlEncoder textarea {
         border-radius: 1rem;
         padding: 1rem;
+        background-color: #1e1e1e;
+        color: white;
+        font-family: monospace;
+        font-size: 0.875rem;
+        max-width: 90vw;
+      }
+
+      #htmlEncoder #inputBox {
+        color: #d17323;
+      }
+
+      #htmlEncoder #outputBox {
+        color: #56b6c2;
+      }
+
+      .btn-tools {
+        width: 12rem;
+        border-radius: 1rem;
       }
     </style>
   </head>
@@ -403,10 +430,17 @@
         setTimeout(updateHeadingBasedOnDevice, 50);
       });
 
-      $(document).on("click", "#encodeButton", function () {
+      $(document).on("click", "#encodeHTMLButton", function () {
         const userInput = $("#inputBox").val();
         console.log(userInput);
         $("#outputBox").val(htmlEncode(userInput));
+        //$("#inputBox").val() = null;
+      });
+
+      $(document).on("click", "#decodeJWTButton", function () {
+        const userInput = $("#inputBox").val();
+        console.log(userInput);
+        $("#outputBox").val(decodeJWT(userInput));
         //$("#inputBox").val() = null;
       });
     </script>

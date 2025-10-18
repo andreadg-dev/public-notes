@@ -384,6 +384,56 @@ function displaySectionOnClick(objArray) {
   });
 }
 
+function decodeJWT(token) {
+  try {
+    if (
+      !token ||
+      typeof token !== "string" ||
+      !token.startsWith("eyJ") ||
+      !token.includes(".")
+    ) {
+      return "The token you provided is not a valid JWT token.";
+    }
+
+    if (token.split(".").length !== 3) {
+      return "The token you provided is not a valid JWT token.";
+    }
+
+    let parsedBase64Url = [];
+    for (let i = 0; i < token.split(".").length; i++) {
+      let element = token.split(".")[i].replace("-", "+").replace("_", "/");
+      switch (element.length % 4) {
+        case 0:
+          break;
+        case 2:
+          element += "==";
+          break;
+        case 3:
+          element += "=";
+          break;
+      }
+
+      parsedBase64Url.push(element);
+    }
+
+    let decodedJWT = parsedBase64Url.map((part, index) => {
+      if (index !== 2) {
+        return JSON.parse(atob(part));
+      } //only decode header and payload
+      if (index === 2) {
+        return { sig: part };
+      } //do not decode signature
+    });
+
+    const fullDecodedJWT = Object.assign({}, ...decodedJWT);
+    console.log(fullDecodedJWT);
+
+    return JSON.stringify(fullDecodedJWT, null, 2);
+  } catch (error) {
+    return "Error encountered while decoding the JWT token: " + error.message;
+  }
+}
+
 const spaceDiv = `<div class="mt-6"></div>`;
 
 const searchCard = (totalItemsCount, copyAllCommands = false) => {
@@ -2249,8 +2299,10 @@ const nextjs = {
     {
       title: `CSS Modules`,
       description: `You can create a file with with all css classes, then import it in the target file for instance 
-      <code>import styles from '@/app/ui/home.module.css';</code> and then add it to classes <code>&lt;div className={styles.shape} /&gt;</code>`,
-      link: "",
+      <code>import styles from '@/app/ui/home.module.css';</code> and then add it to classes using the className attribute 
+      <code>&lt;div className={styles.shape} /&gt;</code>. The class shape is for instance <code>.shape {
+      border-bottom: 30px solid black;border-left: 20px solid transparent;}</code>`,
+      link: "https://nextjs.org/learn/dashboard-app/css-styling",
       logo: "nextjs",
     },
     {
@@ -2349,17 +2401,24 @@ const tools = {
     {
       title: "htmlEntitiesEncoderTool",
       component: `<div id="htmlEncoder">
-      <textarea
-        id="inputBox"
-        rows="10"
-        cols="70"
-        placeholder="Paste your code here..."
-        required=""
-      ></textarea>
-      <button id="encodeButton" class="btn btn-outline-light">
-        <span>Encode</span>
-      </button>
-      <textarea id="outputBox" rows="10" cols="70"></textarea>
+      <div style="display: flex; flex-wrap: wrap; gap: 20px; margin: 1rem 2rem 0.5rem">
+        <button id="encodeHTMLButton" class="btn btn-warning btn-tools">
+            <span>Encode HTML</span>
+        </button>
+        <button id="decodeJWTButton" class="btn btn-info btn-tools">
+            <span>Decode JWT</span>
+        </button>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+        <textarea
+          id="inputBox"
+          rows="20"
+          cols="70"
+          placeholder="Paste your code here..."
+          required=""
+        ></textarea>
+        <textarea id="outputBox" rows="20" cols="70"></textarea>
+      </div>
     </div>`,
     },
   ],
