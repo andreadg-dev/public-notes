@@ -116,11 +116,12 @@ function updateHeadingBasedOnDevice() {
   const isMobile = window.innerWidth <= 768;
 
   isMobile
-    ? $("h1").css("font-size", "1.8rem")
-    : $("h1").css("font-size", "2.5rem");
+    ? $("#root h1").css("font-size", "1.5rem")
+    : $("#root h1").css("font-size", "2.5rem");
 
-  $("h1, h2").each(function () {
+  $("#root h1,#root h2").each(function () {
     const currentText = $(this).text();
+    console.log(currentText);
     isMobile
       ? $(this).text(currentText.replace(/_/g, " "))
       : $(this).text(currentText.replace(/ /g, "_"));
@@ -308,7 +309,7 @@ function appendCardsToRoot(objArray, index) {
 //Children function that appends const type 'cards' to 'root' element
 function appendToolsToRoot(objArray, index) {
   const finalTools = objArray[index].tools.map((item) => {
-    return `<div class="tools" id="${item.title}-tool"><h2>${item.title}</h2>${item.component}</div>`;
+    return `<div class="tools" id="${item.title}-tool"><h2>🟡 ${item.title}</h2>${item.component}</div>`;
   });
 
   $("#root").append(`${spaceDiv}<h1>🔴 tools 🔴</h1>${finalTools}`);
@@ -2399,9 +2400,9 @@ const tools = {
   navcategory: "other",
   tools: [
     {
-      title: "htmlEntitiesEncoderTool",
-      component: `<div id="htmlEncoder">
-      <div style="display: flex; flex-wrap: wrap; gap: 20px; margin: 1rem 2rem 0.5rem">
+      title: "EncoderDecoder Tool",
+      component: `<div id="encoderDecoder">
+      <div style="display: flex; flex-wrap: wrap; gap: 20px; margin: 1rem 2rem 0.5rem; justify-content: center;">
         <button id="encodeHTMLButton" class="btn btn-warning btn-tools">
             <span>Encode HTML</span>
         </button>
