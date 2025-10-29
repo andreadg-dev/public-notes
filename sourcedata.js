@@ -121,7 +121,6 @@ function updateHeadingBasedOnDevice() {
 
   $("#root h1,#root h2").each(function () {
     const currentText = $(this).text();
-    console.log(currentText);
     isMobile
       ? $(this).text(currentText.replace(/_/g, " "))
       : $(this).text(currentText.replace(/ /g, "_"));
@@ -315,6 +314,47 @@ function appendToolsToRoot(objArray, index) {
   $("#root").append(`${spaceDiv}<h1>🔴 tools 🔴</h1>${finalTools}`);
 }
 
+function appendSectionListToRoot(object) {
+  let awssections = [];
+  Object.keys(object).map((awscert) => {
+    if (["title", "type", "navcategory"].includes(awscert)) return;
+
+    let finalSection = [`<div class="aws-section">`];
+    if (object[awscert].title) {
+      const awscerttitle = `<h2>🟡 ${object[awscert].title} 🟡</h2>`;
+      finalSection.push(awscerttitle);
+    }
+
+    const awssection = object[awscert];
+
+    Object.keys(awssection).map((awssectionkey) => {
+      const awssectiontitle =
+        awssectionkey !== "title"
+          ? `<div style="margin-left: 1.5rem;"><h5>${awssection[awssectionkey].title}</h5><ul>`
+          : null;
+      if (awssectiontitle) {
+        finalSection.push(awssectiontitle);
+      }
+      const awssectioncontent = awssection[awssectionkey];
+
+      if (typeof awssectioncontent !== "object") return;
+
+      Object.keys(awssectioncontent).map((key) => {
+        key !== "title" &&
+          finalSection.push(`<li>${awssectioncontent[key]}</li>`);
+      });
+
+      finalSection.push(`</ul></div>`);
+    });
+
+    finalSection.push(`</div>`);
+
+    awssections.push(finalSection.join(""));
+  });
+
+  $("#root").append(`${spaceDiv}<h1>🔴 aws 🔴</h1>${awssections.join("")}`);
+}
+
 //Parent function to append item to 'root' element depending on the type
 function appendToRoot(objArray, index) {
   objArray[index].type === "sections" && appendSectionsToRoot(objArray, index);
@@ -327,6 +367,9 @@ function appendToRoot(objArray, index) {
     appendListItemsToRoot(objArray, index);
 
   objArray[index].type === "tools" && appendToolsToRoot(objArray, index);
+
+  objArray[index].type === "section-list" &&
+    appendSectionListToRoot(objArray[index]);
 }
 
 /* function appendSectionToNavbar(objArray) {
@@ -2278,7 +2321,7 @@ const nextjs = {
     {
       title: `npx create-next-app@latest --ts`,
       description: `It is used to automatically initialize a new NextJS project with the default configuration and in this case
-      with typescript`,
+      with typescript. You can choose the following options during the set up: <img width="600px" src=".\\images\\newnextapp-settings.jpg">`,
       link: "https://nextjs.org/learn/dashboard-app/getting-started",
       logo: "nextjs",
     },
@@ -2286,6 +2329,17 @@ const nextjs = {
       title: `npm run dev<br/>pnpm dev`,
       description: `These are two ways to start your Next.js development server on port 3000`,
       link: "https://nextjs.org/learn/dashboard-app/getting-started",
+      logo: "nextjs",
+    },
+    {
+      title: `npm run build<br/>npm run start`,
+      description: `<code>npm run build</code> prepares your Next.js application for deployment to a production environment 
+      compiling, minifying, and bundling your HTML, CSS, and JavaScript files to achieve the best possible performance.
+      The command generates a <code>.next</code> folder in your project's root directory, and you run this command when you are ready to 
+      deploy your application to a live server.<br/><br/>
+      <code>npm run start</code> runs your pre-compiled, production-ready Next.js application by serving the optimized code from the 
+      <code>.next</code> folder.`,
+      link: "",
       logo: "nextjs",
     },
     {
@@ -2309,15 +2363,17 @@ const nextjs = {
     {
       title: `clsx`,
       description: `clsx is a library that lets you toggle class names easily. You can import it like this
-      <code>import clsx from 'clsx';</code>. For example <code>&lt;span
-      className={clsx(
-        &apos;inline-flex items-center rounded-full px-2 py-1 text-sm&apos;,
-        {
-          &apos;bg-gray-100 text-gray-500&apos;: status === &apos;pending&apos;,
-          &apos;bg-green-500 text-white&apos;: status === &apos;paid&apos;,
-        },
-      )}
-    &gt;</code>`,
+      <code>import clsx from 'clsx';</code>. For example 
+      <pre><code class="language-html">
+      &lt;span
+        className={clsx(
+          &apos;inline-flex items-center rounded-full px-2 py-1 text-sm&apos;,
+          {
+            &apos;bg-gray-100 text-gray-500&apos;: status === &apos;pending&apos;,
+            &apos;bg-green-500 text-white&apos;: status === &apos;paid&apos;,
+          },
+        )}
+      &gt;</code></pre>`,
       link: "https://www.npmjs.com/package/clsx",
       logo: "nextjs",
     },
@@ -2331,8 +2387,163 @@ const nextjs = {
     },
     {
       title: `&lt;Image&gt;`,
-      description: ``,
-      link: "",
+      description: `You can import this component with <code>import Image from 'next/image';</code>.
+      Next.js can serve static assets, like images, under the top-level <code>/public</code> folder. This component
+      comes with automatic image optimization: preventing layout shift automatically when images are loading, resizing images to avoid 
+      shipping large images to devices with a smaller viewport and lazy loading images by default (images load as they enter 
+      the viewport). It's good practice to set the width and height of your images to avoid layout shift, these should be an 
+      aspect ratio identical to the source image. These values are not the size the image is rendered, but instead the size 
+      of the actual image file used to understand the aspect ratio, for instance:
+      <pre><code>
+        &lt;Image
+          src="/hero-desktop.png"
+          width={1000}
+          height={760}
+          className="hidden md:block"
+          alt="Screenshots of the dashboard project showing desktop version"
+        /&gt;
+      </code></pre>
+      `,
+      link: "https://nextjs.org/learn/dashboard-app/optimizing-fonts-images",
+      logo: "nextjs",
+    },
+    {
+      title: `&lt;Link /&gt;<br/>usePathname()`,
+      description: `You can import this component with <code>import Link from 'next/link';</code>. Next.js improves navigation 
+      by automatically splitting your app's code by route segments instead of loading everything at once like a traditional 
+      React SPA. This makes pages faster, isolates errors to individual pages, and reduces the amount of code the browser needs 
+      to process. Additionally, Next.js prefetches linked pages in the background when their <Link> components appear on screen,
+      enabling near-instant page transitions. This component can be used together with <code>usePathname()</code> to signal the user the 
+      page their currently in, for instance:
+      <pre><code>
+      import Link from &#39;next/link&#39;;
+      import { usePathname } from &#39;next/navigation&#39;;
+      import clsx from &#39;clsx&#39;;
+      
+      // ...
+      
+      export default function NavLinks() {
+        const pathname = usePathname();
+      
+        return (
+          &lt;&gt;
+            {links.map((link) =&gt; {
+              const LinkIcon = link.icon;
+              return (
+                &lt;Link
+                  key={link.name}
+                  href={link.href}
+                  className={clsx(
+                    &#39;flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3&#39;,
+                    {
+                      &#39;bg-sky-100 text-blue-600&#39;: pathname === link.href,
+                    },
+                  )}
+                &gt;
+                  &lt;LinkIcon className=&quot;w-6&quot; /&gt;
+                  &lt;p className=&quot;hidden md:block&quot;&gt;{link.name}&lt;/p&gt;
+                &lt;/Link&gt;
+              );
+            })}
+          &lt;/&gt;
+        );
+      }
+      </code></pre>`,
+      link: "https://nextjs.org/learn/dashboard-app/navigating-between-pages",
+      logo: "nextjs",
+    },
+    {
+      title: `page.tsx (ts,js,jsx)`,
+      description: `<code>page.tsx</code> is a special Next.js file that exports a React component, and it's required for the 
+      route to be accessible. The <code>/app/page.tsx</code> - this is the home page associated with the route /. For instance,
+      the file <code>/app/dashboard/page.tsx</code> is associated with the <code>/dashboard</code> path. In the app directory, 
+      nested folders define route structure. Each folder represents a route segment that is mapped to a corresponding segment 
+      in a URL path. However, even though route structure is defined through folders, a route is not publicly accessible until 
+      a <code>page.tsx</code> or <code>route.tsx</code> file is added to a route segment. And, even when a route is made publicly 
+      accessible, only the content returned by <code>page.tsx</code> or <code>route.tsx</code> is sent to the client. This means that project 
+      files can be safely colocated inside route segments in the app directory without accidentally being routable.`,
+      link: "https://nextjs.org/learn/dashboard-app/creating-layouts-and-pages",
+      logo: "nextjs",
+    },
+    {
+      title: `layout.tsx (ts,js,jsx)`,
+      description: `<code>layout.tsx</code> is a special Next.js file to create UI that is shared between multiple pages. The 
+      layout will apply to the sibling <code>page.tsx</code> file and all the children <code>page.tsx</code> files found in the 
+      subfolders/subroutes. One benefit of using layouts in Next.js is that on navigation, only the page components update while 
+      the layout won't re-render. This is called partial rendering which preserves client-side React state in the layout when 
+      transitioning between pages.
+      For example:
+      <pre><code>
+      import { inter } from '@/app/ui/fonts';
+ 
+      export default function RootLayout({
+        children,
+      }: {
+        children: React.ReactNode;
+      }) {
+        return (
+          &lt;html lang=&quot;en&quot;&gt;
+            &lt;body className={\`\${inter.className} antialiased\`}&gt;{children}&lt;/body&gt;
+          &lt;/html&gt;
+        );
+      }
+      </code></pre>`,
+      link: "https://nextjs.org/learn/dashboard-app/creating-layouts-and-pages",
+      logo: "nextjs",
+    },
+    {
+      title: `notFound()<br/>not-found.tsx`,
+      description: `The <code>notFound()</code> function imported from next navigation, allows you to specify when to display
+      a NOT FOUND page. You can even customize the page for each route by creating a <code>not-found.tsx</code> page in the 
+      corresponding segment and add your own html. If none is created, Next.js will use the default bult-in one. In the example
+      below, the server component shows the NOT FOUND page when a user is not in the users list:
+      <pre><code>
+      import { notFound } from 'next/navigation'
+ 
+      async function fetchUser(id) {
+        const res = await fetch('https://...')
+        if (!res.ok) return undefined
+        return res.json()
+      }
+      
+      export default async function Profile({ params }) {
+        const { id } = await params
+        const user = await fetchUser(id)
+      
+        if (!user) {
+          notFound()
+        }
+      
+        // ...
+      }
+      </code></pre>
+      `,
+      link: "https://nextjs.org/docs/app/api-reference/functions/not-found",
+      logo: "nextjs",
+    },
+    {
+      title: `loading.tsx (ts,js,jsx)`,
+      description: `<code>loading.tsx</code> is a special Next.js file that will display in loading state for the corresponding
+      route and subroutes. For instance, if you have a page that fetches data and it takes some time, the content of the loading page will
+      be displayed in the meantime, for instance:
+      <pre><code>
+      export default function Loading() {
+        // Or a custom loading skeleton component
+        return <p>Loading...</p>
+      }
+      </code></pre>
+      `,
+      link: "https://nextjs.org/docs/app/api-reference/file-conventions/loading",
+      logo: "nextjs",
+    },
+    {
+      title: `Route groups`,
+      description: `Route groups allow you to organize files into logical groups without affecting the URL path structure. 
+      When you create a new folder using parentheses (), the name won't be included in the URL path. So, for instance
+      if you have a dashboard folder and you want to group together the loading or not found pages so that they are not
+      used for the subroutes, you can group them like this: (overview). This segment won't appear in the URL:
+      /dashboard/(overview)/page.tsx becomes /dashboard.`,
+      link: "https://nextjs.org/learn/dashboard-app/streaming",
       logo: "nextjs",
     },
     {
@@ -2392,6 +2603,77 @@ const nextjs = {
       logo: "nextjs",
     },
   ],
+};
+
+const aws_administratoraccess = {
+  Version: "2012-10-17",
+  Statement: [
+    {
+      Effect: "Allow",
+      Action: "*",
+      Resource: "*",
+    },
+  ],
+};
+
+const aws_iamreadonlyaccess = {
+  Version: "2012-10-17",
+  Statement: [
+    {
+      Effect: "Allow",
+      Action: [
+        "iam:GenerateCredentialReport",
+        "iam:GenerateServiceLastAccessedDetails",
+        "iam:Get*",
+        "iam:List*",
+        "iam:SimulateCustomPolicy",
+        "iam:SimulatePrincipalPolicy",
+      ],
+      Resource: "*",
+    },
+  ],
+};
+
+const aws = {
+  title: "aws",
+  type: "section-list",
+  navcategory: "dev",
+  dvac02: {
+    title: "AWS Certified Developer - Associate (DVA-C02)",
+    intro: {
+      title: "Introduction",
+      0: "Create a free AWS account: <a href='https://signin.aws.amazon.com/signup?request_type=register'>Register</a>",
+      1: "Choose region depending on the use case: <a href='https://aws.amazon.com/about-aws/global-infrastructure/regions_az/'>AWS Regions</a> ",
+      2: "Services are region-scoped",
+      3: "Some services might be offered only some regions. Check service availability by region here: <a href='https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/'>Service availability by region</a>",
+      4: "There are also global services regardless of the region.",
+      5: "How to choose a region: legal data compliancy, proximity (reduced latency), availability of services, pricing",
+      6: "Regions are made up of availability zones (AZ): min 3, max 6",
+      7: "Each AZ is made up by one or more data centers and separate from each other",
+    },
+    iam: {
+      title: "Identity and Access Management (IAM - Global Serice)",
+      0: "Root account is created by default. It should not be used or shared (only has an Account ID)",
+      1: "Users can be grouped together",
+      2: "Groups can only contain users and not other groups",
+      3: "Users do not have to belong to a group",
+      4: "Users can belong to multiple groups",
+      5: "Users and groups are assigned access/permissions policies (JSON format)",
+      6: "Least privilige principle: assign no more than required permissions",
+      7: "Create an admin IAM user, create a group with AdministratorAccess policy and add the user to the group",
+      8: "Create an alias for the IAM user to customise the sign-in URL",
+      9: "Go to the sign-in page (for instance <a href='https://eu-north-1.signin.aws.amazon.com/'>Sign-in Page</a>), type the Account ID or Alias and then the IAM user credentials",
+      10: "IAM user has Account ID and IAM User on top right info",
+      11: "Turn on multi-sessions support > Add session. Allows to log in AWS with different accounts in the same browser",
+      12: "There are IAM Group and Inline policies (inline apply to single users)",
+      13: "IAM Policy is a json consisting of Version, Id (optional), Statement (one or more)",
+      14: `A IAM Policy statement consists of Sid (optional), Effect (Allow/Deny), Principal (account/user/role to which the 
+      policy is applied to), Action (actions that are allowed or denied), Resource (list of resources to which the actions apply 
+      to), Condtion (optional). See <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements.html">aws policies elements</a>`,
+      15: `Policies examples: <a href="https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AdministratorAccess.html">AdministratorAccess</a> and <a href="https://docs.aws.amazon.com/aws-managed-policy/latest/reference/IAMReadOnlyAccess.html">IAMReadOnlyAccess</a>`,
+      16: "MFA options: MFA app, SecurityKey, hardware key fob MFA device",
+    },
+  },
 };
 
 const tools = {
