@@ -377,8 +377,17 @@
         border-radius: 1rem;
       }
 
+      /*AWS Section Styling*/
       #root .aws-section li code {
         padding: 1.5rem;
+      }
+
+      #root .aws-section-toggle {
+        border: 1px solid white;
+        border-radius: 1rem;
+        padding: 0.5rem 1rem;
+        background-color: black;
+        cursor: pointer;
       }
     </style>
   </head>
@@ -424,6 +433,7 @@
 
         //Apply the highlightAll method to format corresponding code
         hljs.highlightAll();
+        toggleNextElement(".aws-section-toggle");
 
         setTimeout(updateHeadingBasedOnDevice, 50);
       };

@@ -1,3 +1,10 @@
+function toggleNextElement(togglerElement) {
+  //$(".aws-section-toggle").next().toggle()
+  $(document).on("click", togglerElement, function () {
+    $(this).next().toggle();
+  });
+}
+
 function copyAllCommands(parentElement, elementToCopy) {
   let arrayToCopyClipboard = [];
   $("#copyAllBtn").on("click", function () {
@@ -228,7 +235,7 @@ function appendListItemsToRoot(objArray, index) {
               </td>
               <td style="white-space:normal">${
                 item[objectKeys[1]]
-              }</td><td style="white-space:normal;"><a href='${
+              }</td><td style="white-space:normal;"><a target='_blank' href='${
       item[objectKeys[2]]
     }' target="_blank">${item[objectKeys[2]]}</a></td></tr>`;
   });
@@ -330,7 +337,7 @@ function appendSectionListToRoot(object) {
     Object.keys(awssection).map((awssectionkey) => {
       const awssectiontitle =
         awssectionkey !== "title"
-          ? `<div style="margin-left: 1.5rem;"><h5>${awssection[awssectionkey].title}</h5><ul>`
+          ? `<div style="margin-left: 1.5rem;"><h5 class="aws-section-toggle">${awssection[awssectionkey].title}</h5><ul>`
           : null;
       if (awssectiontitle) {
         finalSection.push(awssectiontitle);
@@ -514,7 +521,7 @@ const card = `<div class="col" style="display:flex;justify-content:center;">
     <div class="card text-white bg-dark mb-3" style="width: 18rem; min-height:12rem; border: solid 1px white;border-radius:1rem;">
       <div class="card-body">
         <h5 class="card-title" style="min-height:6rem;">{{title}}</h5>
-        <a href="{{link}}" class="btn btn-info">Take me there</a>
+        <a target='_blank' href="{{link}}" class="btn btn-info">Take me there</a>
       </div>
     </div>
 </div>`;
@@ -2642,10 +2649,10 @@ const aws = {
     title: "AWS Certified Developer - Associate (DVA-C02)",
     intro: {
       title: "Introduction",
-      0: "Create a free AWS account: <a href='https://signin.aws.amazon.com/signup?request_type=register'>Register</a>",
-      1: "Choose region depending on the use case: <a href='https://aws.amazon.com/about-aws/global-infrastructure/regions_az/'>AWS Regions</a> ",
+      0: "Create a free AWS account: <a target='_blank' href='https://signin.aws.amazon.com/signup?request_type=register'>Register</a>",
+      1: "Choose region depending on the use case: <a target='_blank' href='https://aws.amazon.com/about-aws/global-infrastructure/regions_az/'>AWS Regions</a> ",
       2: "Services are region-scoped",
-      3: "Some services might be offered only some regions. Check service availability by region here: <a href='https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/'>Service availability by region</a>",
+      3: "Some services might be offered only some regions. Check service availability by region here: <a target='_blank' href='https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/'>Service availability by region</a>",
       4: "There are also global services regardless of the region.",
       5: "How to choose a region: legal data compliancy, proximity (reduced latency), availability of services, pricing",
       6: "Regions are made up of availability zones (AZ): min 3, max 6",
@@ -2662,16 +2669,37 @@ const aws = {
       6: "Least privilige principle: assign no more than required permissions",
       7: "Create an admin IAM user, create a group with AdministratorAccess policy and add the user to the group",
       8: "Create an alias for the IAM user to customise the sign-in URL",
-      9: "Go to the sign-in page (for instance <a href='https://eu-north-1.signin.aws.amazon.com/'>Sign-in Page</a>), type the Account ID or Alias and then the IAM user credentials",
+      9: "Go to the sign-in page (for instance <a target='_blank' href='https://eu-north-1.signin.aws.amazon.com/'>Sign-in Page</a>), type the Account ID or Alias and then the IAM user credentials",
       10: "IAM user has Account ID and IAM User on top right info",
       11: "Turn on multi-sessions support > Add session. Allows to log in AWS with different accounts in the same browser",
       12: "There are IAM Group and Inline policies (inline apply to single users)",
-      13: "IAM Policy is a json consisting of Version, Id (optional), Statement (one or more)",
-      14: `A IAM Policy statement consists of Sid (optional), Effect (Allow/Deny), Principal (account/user/role to which the 
-      policy is applied to), Action (actions that are allowed or denied), Resource (list of resources to which the actions apply 
-      to), Condtion (optional). See <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements.html">aws policies elements</a>`,
-      15: `Policies examples: <a href="https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AdministratorAccess.html">AdministratorAccess</a> and <a href="https://docs.aws.amazon.com/aws-managed-policy/latest/reference/IAMReadOnlyAccess.html">IAMReadOnlyAccess</a>`,
-      16: "MFA options: MFA app, SecurityKey, hardware key fob MFA device",
+      13: "IAM Policy is a json consisting of <ul><li>Version</li><li>Id (optional)</li><li>Statement (one or more)</li></ul>",
+      14: `A IAM Policy statement consists of: <ul><li>Sid (optional)</li> <li>Effect (Allow/Deny)</li> <li>Principal (account/user/role to which the 
+      policy is applied to)</li> <li>Action (actions that are allowed or denied)</li> <li>Resource (list of resources to which the actions apply 
+      to)</li> <li>Condtion (optional)</li></ul> See <a target='_blank' href="https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements.html">aws policies elements</a>`,
+      15: `Policies examples: <a target='_blank' href="https://docs.aws.amazon.com/aws-managed-policy/latest/reference/AdministratorAccess.html">AdministratorAccess</a> and <a target='_blank' href="https://docs.aws.amazon.com/aws-managed-policy/latest/reference/IAMReadOnlyAccess.html">IAMReadOnlyAccess</a>`,
+      16: "MFA options: Authenticator App, Security Key, Hardware TOTP Token",
+      17: `You can define a password policy in Account Settings > Password policy`,
+      18: `Enable MFA for the root user: Account > Security credentials. You can add up to 8 MFA devices.`,
+      19: `Access AWS: <ul><li>AWS Management Console</li><li>AWS Command Line Interface/AWS CloudShell</li><li>AWS Software Developer Kit</li></ul>`,
+      20: `Install the AWS CLI as explained <a target='_blank' href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">here</a>`,
+      21: `Account > Security Credentials > Access keys: Create access key (needed when using AWS CLI and SDK)`,
+      22: `<code>aws --version</code>: to check if the CLI is installed`,
+      23: `<code>aws configure</code> then provide access key ID and secret`,
+      24: `<code>aws iam list-users</code>: lists all users in your aws`,
+      25: `When using the AWS CloudShell, you can upload and download files (it uses the logged in account and region by default)`,
+      26: `IAM Roles: allows to assign permissions to AWS services to perform actions in AWS (for instance EC2, Lambda etc). You first create a role and then assign a permission policy to it`,
+      27: `IAM Security Tools: <ul><li>IAM Credential Report: lists all users and the status of their credentials (download a csv file)</li><li>IAM Last Access: shows the service permissions granted to a user and when the services where last accessed (UI via User view)</li></ul>`,
+      28: `Shared Responsibility Model for IAM: <ul><li>AWS: Infrastructure, Config and Vulnerability analysis, Compliance validation</li><li>You: Users, Groups, Roles, Policies management, Enable MFA, analyze access patters  and review permissions</li></ul>`,
+      29: `Root account > Account > IAM user and role access to Billing information: Edit > Activate IAM Access > Update. Allows access to billing for admin users`,
+      30: `Admin account > Billing and Cost Management > Budgets > Use a template <ul><li>Zero spend budget: get an alert when reaching 1 cent</li><li>Monthly cost budget: get an alert when exceeding or forecast to exceeding set amount</li></ul>`,
+    },
+    ec2: {
+      title: `Amazon EC2 - Elastic Compute Cloud`,
+      0: `EC2 Service - <ul><li>EC2 Instances: virtual machines</li><li>EBS: virtual drives</li><li>ELB: load balancing machines</li><li>ASG: auto-scaling group to scale services</li></ul>`,
+      1: `EC2 OS - Linux, Windows or MacOS`,
+      2: `EC2 User Data - lets you pass a script to an instance at the time of its first launch  and only the first one and it is run as root user. It's commonly used to: <ul><li>Install software packages.</li><li>Configure the system.</li><li>Deploy applications.</li><li>Set up services (e.g., web servers, databases)</li></ul>`,
+      3: `EC2 Console > Instances > Launch an instance > add name > choose the OS > choose instance type > create a key pair`,
     },
   },
 };
