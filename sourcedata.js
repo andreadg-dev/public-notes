@@ -95,7 +95,7 @@ function parseGoogleBookmarks() {
 // Function to copy element to clipboard
 function copySingleItemToClipBoard(elementToCopy) {
   $(elementToCopy).on("click", function () {
-    let ptrContent = $(this).text();
+    let ptrContent = $(this).text().trim();
     navigator.clipboard
       .writeText(ptrContent)
       .then(() => {
@@ -167,9 +167,31 @@ function appendSectionsToRoot(objArray, index) {
 
 //Children function that appends const type 'list' to 'root' element
 function appendListToRoot(objArray, index) {
-  objArray[index].snippets.sort((a, b) =>
+  /*   objArray[index].snippets.sort((a, b) =>
     a.item.localeCompare(b.item, undefined, { sensitivity: "base" })
-  );
+  ); */
+
+  // ensure tags arrays are sorted alphabetically (case-insensitive) before rendering
+  objArray[index].snippets.forEach((s) => {
+    if (Array.isArray(s.tags)) {
+      s.tags.sort((a, b) =>
+        a
+          .toString()
+          .localeCompare(b.toString(), undefined, { sensitivity: "base" })
+      );
+    }
+  });
+
+  // sort by category, then by item (case-insensitive, handles missing values)
+  objArray[index].snippets.sort((a, b) => {
+    const catA = (a.category || "").toString();
+    const catB = (b.category || "").toString();
+    const catCmp = catA.localeCompare(catB, undefined, { sensitivity: "base" });
+    if (catCmp !== 0) return catCmp;
+    const itemA = (a.item || "").toString();
+    const itemB = (b.item || "").toString();
+    return itemA.localeCompare(itemB, undefined, { sensitivity: "base" });
+  });
 
   let table = [`<table class="table">`];
   let headers = ["<thead><tr>"];
@@ -183,7 +205,9 @@ function appendListToRoot(objArray, index) {
   pageSnippets = objArray[index].snippets.map((snippet) => {
     return `<tr><td>${snippet[objectKeys[0]]}</td><td>${
       snippet[objectKeys[1]]
-    }</td><td>${snippet[objectKeys[2]]}</td></tr>`;
+    }</td><td>${snippet[objectKeys[2]]}</td><td>${
+      snippet[objectKeys[3]]
+    }</td></tr>`;
   });
   tbody.push(pageSnippets.join(""));
   tbody.push("</tbody>");
@@ -432,6 +456,14 @@ function displaySectionOnClick(objArray) {
     appendToRoot(objArray, Number($(this).attr("id").replace("navitem", "")));
 
     hljs.highlightAll();
+    createDynamicInputFields();
+    updateDynamicInputFields();
+
+    if (document.querySelector(".placeholder-input")) {
+      $("#filterCard,#placeholderComponent").wrapAll(
+        `<div id="filer_dynamicvalues_wrapper"></div>`
+      );
+    }
   });
 }
 
@@ -483,6 +515,65 @@ function decodeJWT(token) {
   } catch (error) {
     return "Error encountered while decoding the JWT token: " + error.message;
   }
+}
+
+function onlyUnique(value, index, array) {
+  return array.indexOf(value) === index;
+}
+
+function createDynamicInputFields() {
+  let placeholderValues = [];
+  $(".placeholder").each(function () {
+    placeholderValues.push($(this).html());
+  });
+  let uniqueplaceholderValues = placeholderValues.filter(onlyUnique);
+
+  let placeholderInputElements = [];
+  uniqueplaceholderValues.forEach((value) => {
+    const placeholderClass = value
+      .replaceAll("{", "")
+      .replaceAll("}", "")
+      .replaceAll("/", "")
+      .replaceAll(" ", "")
+      .toLowerCase();
+
+    const placeholderLabel = value
+      .replaceAll("{", "")
+      .replaceAll("}", "")
+      .toLowerCase();
+
+    const placeholderInputElement = `<div class="placeholder-input">
+              <label for="ph-${placeholderClass}">${placeholderLabel}: </label>
+              <input class="ph-inputfield" type="text" name="ph-${placeholderClass}" id="${placeholderClass}" value="${value}"/>
+            </div>`;
+
+    placeholderInputElements.push(placeholderInputElement);
+  });
+
+  if (placeholderInputElements.length > 0) {
+    $("#filterCard").after(
+      `<div id="placeholderComponent"><h2>Dynamic values</h2><hr>${placeholderInputElements.join(
+        ""
+      )}</div>`
+    );
+  }
+}
+
+function updateDynamicInputFields() {
+  $(document).on("input", ".ph-inputfield", function () {
+    const name = $(this).attr("name"); // e.g. "ph-device_serial_number"
+    const value = $(this).val(); // what the user typed
+
+    // Find the matching placeholder span
+    const $matchedSpan = $("span.placeholder").filter(function () {
+      return $(this).hasClass(name);
+    });
+
+    // Update it (or do whatever you want)
+    $matchedSpan.text(value);
+
+    console.log("Updated:", name, "→", value);
+  });
 }
 
 const spaceDiv = `<div class="mt-6"></div>`;
@@ -869,6 +960,11 @@ const typescript = {
   ],
 };
 
+const placeholders = {
+  sp_instance: `<span class="placeholder ph-sp_instance">{SP_INSTANCE}</span>`,
+  sp_sitename: `<span class="placeholder ph-sp_sitename">{SP_SITENAME}</span>`,
+};
+
 const troubleshooting = {
   title: "troubleshooting",
   type: "list",
@@ -877,829 +973,1244 @@ const troubleshooting = {
     {
       item: "notepad.exe",
       description: "Opens Notepad",
+      category: "win-app",
       tags: ["windows", "apps"],
     },
     {
       item: "snippingtool.exe",
       description: "Opens Snipping tool",
+      category: "win-app",
       tags: ["windows", "apps"],
     },
     {
       item: "netsh winsock reset catalog",
       description: "description",
+      category: "win-network",
       tags: ["windows", "network", "cmd"],
     },
     {
       item: "netsh int ip reset resetlog.txt",
       description: "description",
+      category: "win-network",
       tags: ["windows", "network", "cmd"],
     },
     {
       item: "netsh advfirewall reset",
       description: "description",
+      category: "win-network",
       tags: ["windows", "network", "cmd"],
     },
     {
       item: "ipconfig /release",
       description:
         "ipconfig /release is a command used in Windows operating systems to release the current IP address assigned to a network interface. When you release the IP address, the interface effectively disconnects from the network, making it available for reassignment by a DHCP (Dynamic Host Configuration Protocol) server. This command is often used when troubleshooting network connectivity issues or when you want to obtain a new IP address from the DHCP server.",
+      category: "win-network",
       tags: ["windows", "network", "cmd"],
     },
     {
       item: "ipconfig /renew",
       description: "description",
+      category: "win-network",
       tags: ["windows", "network", "cmd"],
     },
     {
       item: "ipconfig /flushdns",
       description: "description",
+      category: "win-network",
       tags: ["windows", "network", "cmd"],
+    },
+    {
+      item: `diskpart<br/>list disk<br/>select disk 0<br/>list volume<br/>select volume 1<br/>assign letter=z<br/>exit`,
+      description: `Assign the letter Z to the volume 1 of the main disk (disk 0). This could be useful in case
+        of a boot issue and if there are problem with a drive.`,
+      category: "win-disk",
+      tags: ["windows", "diskpart", "cmd", "drives"],
+    },
+    {
+      item: `diskpart<br/>list disk<br/>select disk 0<br/>clean<br/>create partition primary<br/>format fs=ntfs quick<br/>assign letter=C<br/>exit`,
+      description: `Create a primary partition and assigning the letter C to it.`,
+      category: "win-disk",
+      tags: ["windows", "diskpart", "cmd", "drives"],
+    },
+    {
+      item: `diskpart<br/>list disk<br/>select disk 0<br/>list partition<br/>exit`,
+      description: `Lists all the partitions of the main disk (disk 0)`,
+      category: "win-disk",
+      tags: ["windows", "diskpart", "cmd", "drives"],
     },
     {
       item: "net use T: \\\\network\\drive\\path",
       description:
         "Maps/assigns \\\\network\\drive\\path network drive to the letter T:",
+      category: "win-path",
       tags: ["windows", "network", "cmd"],
     },
     {
       item: "net use T: /delete",
       description: "Disconnects the network drive with the letter T:",
+      category: "win-path",
       tags: ["windows", "network", "cmd"],
     },
     {
       item: "[Net.ServicePointManager]::SecurityProtocol",
       description: "Displays the current security protocol(s) in use",
+      category: "win-sec",
       tags: ["windows", "network", "cmd"],
     },
     {
       item: "[enum]::GetNames([Net.SecurityProtocolType])",
       description:
         "Lists all possible security protocols that can be configured",
+      category: "win-sec",
       tags: ["windows", "network", "cmd"],
     },
     {
       item: "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12",
       description:
         "Sets the security protocol to TLS 1.2 for all new connections",
+      category: "win-sec",
       tags: ["windows", "network", "cmd"],
     },
     {
       item: "net user",
       description:
         "Displays a list of all user accounts for the local computer",
+      category: "win-lusrmgr",
       tags: ["windows", "lusrmgr", "cmd"],
     },
     {
       item: "net user 'sampleaccount'",
       description: "Displays information about the user account sampleaccount",
+      category: "win-lusrmgr",
       tags: ["windows", "lusrmgr", "cmd"],
     },
     {
       item: "net localgroup 'docker-users' /add",
       description: "Creates a local group called docker-users",
+      category: "win-lusrmgr",
       tags: ["windows", "lusrmgr", "cmd"],
     },
     {
       item: "net localgroup 'docker-users' /delete",
       description: "Deletes the local group called docker-users",
+      category: "win-lusrmgr",
       tags: ["windows", "lusrmgr", "cmd"],
     },
     {
       item: "net localgroup 'administrators' 'domain\\username' /add",
       description: "Adds domain/username to the administrators group",
+      category: "win-lusrmgr",
       tags: ["windows", "lusrmgr", "cmd"],
     },
     {
       item: "net localgroup 'administrators' 'domain\\username' /delete",
       description: "Removes domain/username from the administrator group",
+      category: "win-lusrmgr",
       tags: ["windows", "lusrmgr", "cmd"],
     },
     {
       item: "net localgroup 'docker-users' 'domain\\username' /add",
       description:
         "Adds domain/username to the docker-users group in case the user wants to use the Docker app",
+      category: "win-lusrmgr",
       tags: ["windows", "lusrmgr", "cmd"],
     },
     {
       item: "whoami /user",
       description:
         "Displays the current domain and user name and the security identifier (SID)",
+      category: "win-lusrmgr",
       tags: ["windows", "lusrmgr", "cmd"],
     },
     {
       item: "whoami /all",
       description:
         "Displays user, group and privileges information for the user who is currently logged on to the local system. If used without parameters, whoami displays the current domain and user name",
+      category: "win-lusrmgr",
       tags: ["windows", "lusrmgr", "cmd"],
     },
     {
       item: "Get-LocalGroup",
       description: "Retrieves all local groups on a device",
+      category: "win-lusrmgr",
       tags: ["windows", "lusrmgr", "ps"],
     },
     {
       item: "New-LocalGroup -Name 'docker-users' -Description 'Docker users group'",
       description: "Creates a new local group called docker-users",
+      category: "win-lusrmgr",
       tags: ["windows", "lusrmgr", "ps"],
     },
     {
       item: "Add-LocalGroupMember -Group 'docker-users' -Member '$((Get-WMIObject -class Win32_ComputerSystem | select username).username)'",
       description: "Adds current logged-on user to the docker-users group",
+      category: "win-lusrmgr",
       tags: ["windows", "lusrmgr", "ps"],
     },
     {
       item: "Remove-LocalGroup -Name 'docker-users'",
       description: "Deletes the local group called docker-users",
+      category: "win-lusrmgr",
       tags: ["windows", "lusrmgr", "ps"],
     },
     {
       item: "(Get-WMIObject -class Win32_ComputerSystem | Select-Object -Property username).username",
       description: "Retrieves current logged-on user",
+      category: "win-lusrmgr",
       tags: ["windows", "lusrmgr", "ps"],
+    },
+    {
+      item: "Ctrl+K, Ctrl+J",
+      description: "Expands all regions in VS Code (functions, variables, etc)",
+      category: "win-shortcuts",
+      tags: ["windows", "keyboard", "vscode"],
+    },
+    {
+      item: "Ctrl+K, Ctrl+1",
+      description: "Folds/minimizes all regions to a specific level in VS Code",
+      category: "win-shortcuts",
+      tags: ["windows", "keyboard"],
+    },
+    {
+      item: "Ctrl+Shift+I",
+      description: "Opens Copilot in VS Code",
+      category: "win-shortcuts",
+      tags: ["windows", "keyboard", "vscode"],
     },
     {
       item: "Ctrl+C",
       description: "Copies selected text",
-      tags: ["windows", "keyboard"],
+      category: "win-shortcuts",
+      tags: ["windows", "keyboard", "vscode"],
     },
     {
       item: "Ctrl+X",
       description: "Cuts selected text",
+      category: "win-shortcuts",
       tags: ["windows", "keyboard"],
     },
     {
       item: "Ctrl+V",
       description: "Pastes copied text",
+      category: "win-shortcuts",
       tags: ["windows", "keyboard"],
     },
     {
       item: "Windows key+V",
       description: "Opens CLIPBOARD HISTORY",
+      category: "win-shortcuts",
       tags: ["windows", "keyboard"],
     },
     {
       item: "Ctrl+Shift+ESC",
       description: "Opens TASK MANAGER",
+      category: "win-shortcuts",
       tags: ["windows", "keyboard"],
     },
     {
       item: "ncpa.cpl",
       description: "Opens NETWORK CONNECTIONS",
+      category: "win-network",
       tags: ["windows", "control_panel", "cmd"],
     },
     {
       item: "appwiz.cpl",
       description: "Opens PROGRAMS AND FEATURES",
+      category: "win-app",
       tags: ["windows", "control_panel", "cmd"],
     },
     {
       item: "timedate.cpl",
       description: "Opens DATE AND TIME",
+      category: "win-cpl",
       tags: ["windows", "control_panel", "cmd"],
     },
     {
       item: "inetcpl.cpl",
       description: "Opens INTERNET OPTIONS",
+      category: "win-cpl",
       tags: ["windows", "control_panel", "cmd"],
     },
     {
       item: "powercfg.cpl",
       description: "Opens POWER OPTIONS",
+      category: "win-cpl",
       tags: ["windows", "control_panel", "cmd"],
     },
     {
       item: "intl.cpl",
       description: "Opens LANGUAGE AND REGION control",
+      category: "win-cpl",
       tags: ["windows", "control_panel", "cmd"],
     },
     {
       item: "control.exe srchadmin.dll",
       description: "Opens INDEXING OPTIONS",
+      category: "win-cpl",
       tags: ["windows", "control_panel", "cmd"],
     },
     {
       item: "shell:::{A8A91A66-3A7D-4424-8D24-04E180695C7A}",
       description:
         "Opens CONTROL PANEL\\HARDWARE AND SOUND\\DEVICES AND PRINTERS",
+      category: "win-cpl",
       tags: ["windows", "control_panel", "run"],
     },
     {
       item: "lusrmgr.msc",
       description: "Opens LOCAL USERS AND GROUPS wizard",
+      category: "win-lusrmgr",
       tags: ["windows", "msc_command", "cmd"],
     },
     {
       item: "devmgmt.msc",
       description: "Opens DEVICE MANAGER",
+      category: "win-cpl",
       tags: ["windows", "msc_command", "cmd"],
     },
     {
       item: "diskmgmt.msc",
       description: "Opens DISK MANAGEMENT",
+      category: "win-disk",
       tags: ["windows", "msc_command", "cmd"],
     },
     {
       item: "eventvwr.msc",
       description: "Opens EVENT VIEWER",
+      category: "win-system",
       tags: ["windows", "msc_command", "cmd"],
     },
     {
       item: "gpedit.msc",
       description: "Opens LOCAL GROUP POLICY EDITOR",
+      category: "win-system",
       tags: ["windows", "msc_command", "cmd"],
     },
     {
       item: "msinfo32",
       description: "Opens SISTEM INFORMATION",
+      category: "win-system",
       tags: ["windows", "msc_command", "cmd"],
     },
     {
       item: "regedit",
       description: "Opens REGISTRY EDITOR",
+      category: "win-system",
       tags: ["windows", "msc_command", "cmd"],
     },
     {
       item: "taskmgr",
       description: "Opens TASK MANAGER",
+      category: "xwin-system",
       tags: ["windows", "msc_command", "cmd"],
     },
     {
       item: "services.msc",
       description: "Opens SERVICES",
+      category: "win-system",
       tags: ["windows", "msc_command", "cmd"],
     },
     {
       item: "winver",
       description: "Opens WINDOWS VERSION wizard",
+      category: "win-system",
       tags: ["windows", "msc_command", "cmd"],
+    },
+    {
+      item: `(Get-ItemProperty -Path "HKLM:\\HARDWARE\\DESCRIPTION\\System\\BIOS" -Name "SystemProductName").SystemProductName`,
+      description: "Retrieves a device model from regedit using powershell",
+      category: "win-system",
+      tags: ["windows", "powershell", "regedit"],
+    },
+    {
+      item: `(Get-ItemProperty -Path "HKLM:\\HARDWARE\\DESCRIPTION\\System\\BIOS" -Name "SystemManufacturer").SystemManufacturer`,
+      description:
+        "Retrieves a device manufacturer from regedit using powershell",
+      category: "win-system",
+      tags: ["windows", "powershell", "regedit"],
     },
     {
       item: "printmanagement.msc",
       description: "Opens PRINT MANAGEMENT wizard",
+      category: "win-cpl",
       tags: ["windows", "msc_command", "cmd"],
     },
     {
       item: "sfc /scannow",
       description: "description",
+      category: "win-disk",
       tags: ["windows", "system", "cmd"],
     },
     {
       item: "dism /online /cleanup-image /checkhealth",
       description: "description",
+      category: "win-disk",
       tags: ["windows", "system", "cmd"],
     },
     {
       item: "dism /online /cleanup-image /scanhealth",
       description: "description",
+      category: "win-disk",
       tags: ["windows", "system", "cmd"],
     },
     {
       item: "dism /online /cleanup-image /restorehealth",
       description: "description",
+      category: "win-disk",
       tags: ["windows", "system", "cmd"],
     },
     {
       item: "Get-ComputerInfo | Select-Object -ExpandProperty OSUptime",
       description:
         "Retrieves the duration the operating system has been running since the last boot",
+      category: "win-system",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "(Get-CimInstance Win32_OperatingSystem).LastBootUpTime",
       description: "Retrieves the date when the device was last booted",
+      category: "win-system",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "wmic path win32_operatingsystem get lastbootuptime",
       description: "Retrieves the date when the device was last booted",
+      category: "win-system",
       tags: ["windows", "system", "cmd"],
     },
     {
       item: "start ms-settings:",
       description: "Opens SYSTEM SETTINGS",
+      category: "win-settings",
       tags: ["windows", "system"],
     },
     {
       item: "start ms-settings:workplace",
       description: "Opens SYSTEM SETTINGS > ACCOUNTS > ACCESS WORK OR SCHOOL",
+      category: "win-settings",
       tags: ["windows", "system"],
     },
     {
       item: "start ms-settings:emailandaccounts",
       description: "Opens SYSTEM SETTINGS > ACCOUNTS > EMAIL & ACCOUNTS",
+      category: "win-settings",
       tags: ["windows", "system"],
     },
     {
       item: "start ms-settings:signinoptions",
       description: "Opens SYSTEM SETTINGS > ACCOUNTS > SING-IN OPTIONS",
+      category: "win-settings",
       tags: ["windows", "system"],
     },
     {
       item: "start ms-settings:appsfeatures-app",
       description: "Opens SYSTEM SETTINGS > APPS > INSTALLED APPS",
+      category: "win-settings",
       tags: ["windows", "system"],
     },
     {
       item: "start ms-settings:defaultapps",
       description: "Opens SYSTEM SETTINGS > APPS > DEFAULT APPS",
+      category: "win-settings",
       tags: ["windows", "system"],
     },
     {
       item: "start ms-settings:startupapps",
       description: "Opens SYSTEM SETTINGS > APPS > STARTUP",
+      category: "win-settings",
       tags: ["windows", "system"],
     },
     {
       item: "start ms-settings:network-advancedsettings",
       description:
         "Opens SYSTEM SETTINGS > NETWORK & INTERNET > ADVANCED NETWORK SETTINGS",
+      category: "win-settings",
       tags: ["windows", "system"],
     },
     {
       item: "start ms-settings:sound-devices",
       description: "Opens SYSTEM SETTINGS > SYSTEM > SOUND > ALL SOUND DEVICES",
+      category: "win-settings",
       tags: ["windows", "system"],
     },
     {
       item: "start ms-settings:sound",
       description: "Opens SYSTEM SETTINGS > SYSTEM > SOUND",
+      category: "win-settings",
       tags: ["windows", "system"],
     },
     {
       item: "dir env:",
       description:
         "Displays the environment variables specific to the current session",
+      category: "win-env",
       tags: ["windows", "system", "cmd"],
     },
     {
       item: "Get-ChildItem env:",
       description:
         "Displays the environment variables specific to the current session",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:ALLUSERSPROFILE",
       description: "Retrieves env variable, for instance 'C:\\ProgramData'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:APPDATA",
       description:
         "Retrieves env variable, for instance 'C:\\Users\\username\\AppData\\Roaming'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:COMPUTERNAME",
       description: "Retrieves env variable, for instance 'NTTD-J92HGL3'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:HOMEDRIVE",
       description: "Retrieves env variable, for instance 'C:'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:HOMEPATH",
       description: "Retrieves env variable, for instance '\\Users\\username'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:LOCALAPPDATA",
       description:
         "Retrieves env variable, for instance 'C:\\Users\\username\\AppData\\Local'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:Model",
       description:
         "Retrieves the device model env variable, for instance '5520'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:OneDrive",
       description:
         "Retrieves env variable, for instance 'C:\\Users\\username\\OneDrive'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:OneDriveCommercial",
       description:
         "Retrieves env variable, for instance 'C:\\Users\\username\\OneDrive-Company'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:OS",
       description: "Retrieves env variable, for instance 'Windows_NT'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:Path",
       description: "Retrieves current path variable",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:POWERSHELL_DISTRIBUTION_CHANNEL",
       description:
         "Retrieves env variable, for instance 'MSI:Windows 10 Enterprise'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:PROCESSOR_ARCHITECTURE",
       description: "Retrieves env variable, for instance 'AMD64'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:ProgramData",
       description: "Retrieves env variable, for instance 'C:\\ProgramData'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:ProgramFiles",
       description: "Retrieves env variable, for instance 'C:\\Program Files'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:ProgramFiles(x86)",
       description:
         "Retrieves env variable, for instance 'C:\\Program Files (x86)'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:Serial",
       description: "Retrieves env variable, for instance 'J92HGL3'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:Type",
       description:
         "Retrieves device type env variable, for instance 'Latitude'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:USERDNSDOMAIN",
       description: "Retrieves the user dns domain env variable'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:USERDOMAIN",
       description: "Retrieves the user domain env variable",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:USERNAME",
       description: "Retrieves the username env variable",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "$env:USERPROFILE",
       description: "Retrieves env variable, for instance 'C:\\Users\\username'",
+      category: "win-env",
       tags: ["windows", "system", "ps"],
     },
     {
       item: "%localappdata%\\Microsoft\\OneDrive\\onedrive.exe /reset",
       description: "Resets OneDrive if installed in that location",
+      category: "win-onedrive",
       tags: ["windows", "system", "cmd"],
     },
     {
       item: "%programfiles%\\Microsoft OneDrive\\onedrive.exe /reset",
       description: "Resets OneDrive if installed in that location",
+      category: "win-onedrive",
       tags: ["windows", "system", "cmd"],
     },
     {
       item: "%programfiles(x86)%\\Microsoft OneDrive\\onedrive.exe /reset",
       description: "Resets OneDrive if installed in that location",
+      category: "win-onedrive",
       tags: ["windows", "system", "cmd"],
     },
     {
       item: "Get-Service -Name Windefend, Sense | Select-Object -Property Name, DisplayName, Status | Format-Table",
       description:
         "Retrieves Windows Defender Advanced Threat Protection Service and Microsoft Defender Antivirus Service service info",
+      category: "win-system",
       tags: ["windows", "system", "ps"],
     },
     {
       item: 'cmd /k "[command]"',
       description:
         'Opens a new Command Prompt window and runs the specified command between double-quotes ("[command]"). The /k switch keeps the Command Prompt window open after the command has executed, allowing you to see the output',
+      category: "win-system",
       tags: ["windows", "system", "run"],
     },
     {
       item: 'powershell -NoExit -Command "write \\"Hostname: ${env:COMPUTERNAME}\\"; gsv Windefend, Sense | select Name, DisplayName, Status | fl"',
       description:
         "Retrieves hostname, Windows Defender Advanced Threat Protection Service and Microsoft Defender Antivirus Service service info and it can be run from RUN",
+      category: "win-system",
       tags: ["windows", "system", "run"],
     },
     {
       item: 'powershell -NoExit -Command "[command]"',
       description:
         'Starts a new PowerShell process and keeps the window open after executing the command between double-quotes ("[command]") and it can be run from RUN',
+      category: "win-system",
       tags: ["windows", "system", "run"],
     },
     {
       item: 'cmd /k "sc query Windefend && sc query Sense"',
       description:
         "Retrieves Windows Defender Advanced Threat Protection Service and Microsoft Defender Antivirus Service service info and it can be run from RUN",
+      category: "win-system",
       tags: ["windows", "system", "run"],
     },
     {
       item: 'taskkill /IM "winword.exe" /F',
       description: "Kills all MS Words processes",
+      category: "win-app",
       tags: ["windows", "system"],
     },
     {
       item: 'taskkill /IM "teams.exe" /F',
       description: "Kills all MS Teams Classic processes",
+      category: "win-app",
       tags: ["windows", "system"],
     },
     {
       item: 'taskkill /IM "ms-teams.exe" /F',
       description: "Kills all MS New Teams processes",
+      category: "win-app",
       tags: ["windows", "system"],
     },
     {
       item: 'taskkill /IM "outlook.exe" /F',
       description: "Kills all MS Outlook processes",
+      category: "win-app",
       tags: ["windows", "system"],
     },
     {
       item: 'taskkill /IM "powerpnt.exe" /F',
       description: "Kills all MS PowerPoint processes",
+      category: "win-app",
       tags: ["windows", "system"],
     },
     {
       item: 'taskkill /IM "excel.exe" /F',
       description: "Kills all MS Excel processes",
+      category: "win-app",
       tags: ["windows", "system"],
     },
     {
       item: "New-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\FileSystem' -Name 'LongPathsEnabled' -Value 1 -PropertyType DWORD -Force",
       description:
         "Enables paths longer than 256 characters. Source: https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=powershell",
+      category: "win-reg",
       tags: ["windows", "regedit", "ps"],
     },
     {
       item: "reg add 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint' /v RestrictDriverInstallationToAdministrators /t REG_DWORD /d 0 /f",
       description:
         "Disable the restriction to allow printer driver installation only to device's administrators. See: https://support.microsoft.com/en-gb/topic/kb5005652-manage-new-point-and-print-default-driver-installation-behavior-cve-2021-34481-873642bf-2634-49c5-a23b-6d8e9a302872",
+      category: "win-reg",
       tags: ["windows", "regedit", "cmd"],
     },
     {
       item: "reg add HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System /v EnableLUA /t REG_DWORD /d 0 /f",
       description:
         "Disables the User Account Control (UAC) that prompts user to confirm something that got executed and for administrator's credentials if the logged in account does not have the required rights",
+      category: "win-reg",
       tags: ["windows", "regedit", "cmd"],
     },
     {
       item: "reg add HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System /v EnableLUA /t REG_DWORD /d 1 /f",
       description:
         "Enables the User Account Control (UAC) that prompts user to confirm something that got executed and for administrator's credentials if the logged in account does not have the required rights",
+      category: "win-reg",
       tags: ["windows", "regedit", "cmd"],
     },
     {
       item: "Computer\\HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall",
       description:
         "Navigates to the regkey containing the info for the uninstaller exe/msi for each app installed on the device",
+      category: "win-reg",
       tags: ["windows", "regedit"],
     },
     {
       item: "Computer\\HKEY_CLASSES_ROOT\\Installer\\Products",
       description:
         "Navigates to the regkey containing the info of all the software installed on a device",
+      category: "win-reg",
       tags: ["windows", "regedit"],
     },
     {
       item: "Computer\\HKEY_CURRENT_USER\\Control Panel\\Desktop",
       description:
         "Navigates to the regkey containing the Wallpaper info, transcoded image and wallpaper path",
+      category: "win-reg",
       tags: ["windows", "regedit"],
     },
     {
-      item: "https://{sp_instance}.sharepoint.com/sites/{sp_site_name}/_api/web/lists/getbytitle('{sp_list_name}')/items?$filter=substringof('valuecontained', Column1Name) and Column2Name eq 'NO' and substringof('2025-08', Column3Name)",
+      item: `https://${placeholders.sp_instance}.sharepoint.com/sites/${placeholders.sp_sitename}/_api/web/associatedownergroup/users`,
       description:
-        "Provided that the user is logged in their Micrsoft tenant, they will get an XML response with the items of the corresponding list that match the filter criteria. Substringof refers to a value that is contained in Column1, Colum2 has to equal to 'NO' and Colum3 has to contain the string '2025-08'",
+        "Provided that the user is logged in their Micrsoft tenant, they will get an XML response with the owners of a specific SharePoint site.",
+      category: "ms-sharepoint",
       tags: ["microsoft", "support_url", "browser", "api", "sharepoint"],
     },
     {
-      item: "/_layouts/15/people.aspx?MembershipGroupId=0",
+      item: `https://${placeholders.sp_instance}.sharepoint.com/sites/${placeholders.sp_sitename}/_api/web/lists/getbytitle('{sp_list_name}')/items?$filter=substringof('valuecontained', Column1Name) and Column2Name eq 'NO' and substringof('2025-08', Column3Name)`,
+      description:
+        "Provided that the user is logged in their Micrsoft tenant, they will get an XML response with the items of the corresponding list that match the filter criteria. Substringof refers to a value that is contained in Column1, Colum2 has to equal to 'NO' and Colum3 has to contain the string '2025-08'",
+      category: "ms-sharepoint",
+      tags: ["microsoft", "support_url", "browser", "api", "sharepoint"],
+    },
+    {
+      item: `https://${placeholders.sp_instance}.sharepoint.com/sites/${placeholders.sp_sitename}/_layouts/15/people.aspx?MembershipGroupId=0`,
       description:
         "Navigates to the corresponding MS Cloud collection's access right page when added to the base OneDrive/Teams/SharePoint url, for instance: https://domain-my.sharepoint.com/personal/user_domain or https://domain.sharepoint.com/sites/sitename",
+      category: "ms-sharepoint",
       tags: ["microsoft", "support_url", "browser"],
     },
     {
-      item: "/_layouts/15/people.aspx?MembershipGroupId=3",
+      item: `https://${placeholders.sp_instance}.sharepoint.com/sites/${placeholders.sp_sitename}/_layouts/15/people.aspx?MembershipGroupId=3`,
       description:
         "Navigates to the corresponding MS Cloud collection's owners page when added to the base OneDrive/Teams/SharePoint url, for instance: https://domain-my.sharepoint.com/personal/user_domain or https://domain.sharepoint.com/sites/sitename",
+      category: "ms-sharepoint",
       tags: ["microsoft", "support_url", "browser"],
     },
     {
-      item: "/_layouts/15/people.aspx?MembershipGroupId=4",
+      item: `https://${placeholders.sp_instance}.sharepoint.com/sites/${placeholders.sp_sitename}/_layouts/15/people.aspx?MembershipGroupId=4`,
       description:
         "Navigates to the corresponding MS Cloud collection's visitors page when added to the base OneDrive/Teams/SharePoint url, for instance: https://domain-my.sharepoint.com/personal/user_domain or https://domain.sharepoint.com/sites/sitename",
+      category: "ms-sharepoint",
       tags: ["microsoft", "support_url", "browser"],
     },
     {
-      item: "/_layouts/15/people.aspx?MembershipGroupId=5",
+      item: `https://${placeholders.sp_instance}.sharepoint.com/sites/${placeholders.sp_sitename}/_layouts/15/people.aspx?MembershipGroupId=5`,
       description:
         "Navigates to the corresponding MS Cloud collection's members page when added to the base OneDrive/Teams/SharePoint url, for instance: https://domain-my.sharepoint.com/personal/user_domain or https://domain.sharepoint.com/sites/sitename",
+      category: "ms-sharepoint",
       tags: ["microsoft", "support_url", "browser"],
     },
     {
-      item: "/_layouts/15/user.aspx",
+      item: `https://${placeholders.sp_instance}.sharepoint.com/sites/${placeholders.sp_sitename}/_layouts/15/user.aspx`,
       description:
         "Navigates to the corresponding MS Cloud collection's permissions page when added to the base OneDrive/Teams/SharePoint url, for instance: https://domain-my.sharepoint.com/personal/user_domain or https://domain.sharepoint.com/sites/sitename",
+      category: "ms-sharepoint",
       tags: ["microsoft", "support_url", "browser"],
     },
     {
-      item: "/_layouts/15/RecycleBin.aspx?view=5",
+      item: `https://${placeholders.sp_instance}.sharepoint.com/sites/${placeholders.sp_sitename}/_layouts/15/RecycleBin.aspx?view=5`,
       description:
         "Navigates to corresponding MS Cloud collection recycle bin page when added to the base OneDrive/Teams/SharePoint url, for instance: https://domain-my.sharepoint.com/personal/user_domain or https://domain.sharepoint.com/sites/sitename",
+      category: "ms-sharepoint",
       tags: ["microsoft", "support_url", "browser"],
     },
     {
-      item: "/_layouts/15/RecycleBin.aspx?view=13",
+      item: `https://${placeholders.sp_instance}.sharepoint.com/sites/${placeholders.sp_sitename}/_layouts/15/RecycleBin.aspx?view=13`,
       description:
         "Navigates to corresponding MS Cloud collection second stage recycle bin page when added to the base OneDrive/Teams/SharePoint url, for instance: https://domain-my.sharepoint.com/personal/user_domain or https://domain.sharepoint.com/sites/sitename",
+      category: "ms-sharepoint",
       tags: ["microsoft", "support_url", "browser"],
     },
     {
-      item: "/_layouts/15/storman.aspx",
+      item: `https://${placeholders.sp_instance}.sharepoint.com/sites/${placeholders.sp_sitename}/_layouts/15/storman.aspx`,
       description:
         "Navigates to corresponding MS Cloud collection storage metrics page when added to the base OneDrive/Teams/SharePoint url, for instance: https://domain-my.sharepoint.com/personal/user_domain or https://domain.sharepoint.com/sites/sitename",
+      category: "ms-sharepoint",
       tags: ["microsoft", "support_url", "browser"],
     },
     {
-      item: "/_layouts/15/AppPrincipals.aspx",
+      item: `https://${placeholders.sp_instance}.sharepoint.com/sites/${placeholders.sp_sitename}/_layouts/15/AppPrincipals.aspx`,
       description:
         "Navigates to corresponding MS Cloud collection app permissions page when added to the base OneDrive/Teams/SharePoint url, for instance: https://domain-my.sharepoint.com/personal/user_domain or https://domain.sharepoint.com/sites/sitename",
+      category: "ms-sharepoint",
       tags: ["microsoft", "support_url", "browser"],
     },
     {
-      item: "/_layouts/15/appinv.aspx",
+      item: `https://${placeholders.sp_instance}.sharepoint.com/sites/${placeholders.sp_sitename}/_layouts/15/appinv.aspx`,
       description:
         "Navigates to corresponding MS Cloud collection storage app permission creation when added to the base OneDrive/Teams/SharePoint url, for instance: https://domain-my.sharepoint.com/personal/user_domain or https://domain.sharepoint.com/sites/sitename",
+      category: "ms-sharepoint",
       tags: ["microsoft", "support_url", "browser"],
     },
     {
       item: "/options/general/storage",
       description:
         "Navigates to corresponding Outlook mailbox storage metrics page when added to the base mailbox url, for instance: https://outlook.office.com/mail/mailbox@domain/options/general/storage",
+      category: "ms-outlook",
       tags: ["microsoft", "support_url", "browser"],
     },
     {
       item: "https://myaccount.microsoft.com/device-list",
       description:
         "Navigates to corresponding user device list page where they can retrieve their BitLocker Recovery Key(s)",
+      category: "ms-account",
       tags: ["microsoft", "support_url", "browser"],
     },
     {
       item: "%programdata%\\Cisco\\Cisco AnyConnect Secure Mobility Client\\Profile",
       description: "Opens Cisco AnyConnect's profile path - VPN",
+      category: "win-path-cisco",
       tags: ["windows", "path"],
     },
     {
       item: "%localappdata%\\Cisco\\Cisco AnyConnect Secure Mobility Client",
       description: "Opens Cisco AnyConnect's local appdata path - VPN",
+      category: "win-path-cisco",
       tags: ["windows", "path"],
     },
     {
       item: "%programdata%\\Cisco\\Cisco Secure Client\\VPN\\Profile",
       description: "Opens Cisco Secure Client's profile path - VPN",
+      category: "win-path-cisco",
       tags: ["windows", "path"],
     },
     {
       item: "%localappdata%\\Cisco\\Cisco Secure Client\\VPN",
       description: "Opens Cisco Secure Client's local appdata path - VPN",
+      category: "win-path-cisco",
       tags: ["windows", "path"],
     },
     {
       item: "%localappdata%",
       description: "Opens C:\\Users\\{loggedInUser}\\AppData\\Local",
+      category: "win-app",
       tags: ["windows", "path"],
     },
     {
       item: "%appdata%",
       description: "Opens C:\\Users\\{loggedInUser}\\AppData\\Roaming",
+      category: "win-app",
       tags: ["windows", "path"],
     },
     {
       item: "%localappdata%\\Packages\\MSTeams_8wekyb3d8bbwe",
       description: "Opens the New Teams app's cache folder",
+      category: "win-path-teams",
       tags: ["windows", "path"],
     },
     {
       item: "%localappdata%\\Packages\\MSTeams_8wekyb3d8bbwe\\LocalCache\\Microsoft\\MSTeams\\Backgrounds",
       description: "Opens the New Teams app's backgrounds folder",
+      category: "win-path-teams",
       tags: ["windows", "path"],
     },
     {
       item: "%localappdata%\\Microsoft\\TeamsMeetingAdd-in",
       description:
         "Opens path to the Outlook's New Teams meeting add-in. The dll can be found for instance: '...\\TeamsMeetingAdd-in\\1.24.09301\\x64\\Microsoft.Teams.AddinLoader.dll'",
+      category: "win-path-teams",
       tags: ["windows", "path"],
     },
     {
       item: "%localappdata%\\Microsoft\\Teams",
       description:
         "Opens the Teams Classic's cache folder stored in Local Appdata",
+      category: "win-path-teams",
       tags: ["windows", "path"],
     },
     {
       item: "%appdata%\\Microsoft\\Teams",
       description:
         "Opens the Teams Classic's cache folder stored in Roaming Appdata",
+      category: "win-path-teams",
       tags: ["windows", "path"],
     },
     {
       item: "%localappdata%\\Microsoft\\Outlook",
       description:
         "Opens the folder where Outlook client app keeps .ost, .nst and .pst files",
+      category: "win-path-outlook",
       tags: ["windows", "path"],
     },
     {
       item: "C:\\Windows\\System32\\drivers\\etc",
       description:
         "Opens the folder where the hosts file is kept. This file is an operating system file that maps hostnames to IP addresses and it is used to override the DNS system for testing purposes so that a Web browser or other application can be redirected to a specific IP address",
+      category: "win-system",
       tags: ["windows", "path"],
     },
     {
       item: "C:\\Program Files\\nodejs",
       description:
         "Path to add to Path environment variable in order to use the corresponding CLI",
+      category: "win-path-nodejs",
       tags: ["windows", "path"],
     },
     {
       item: "%USERPROFILE%\\AppData\\Roaming\\npm",
       description:
         "Path to add to Path environment variable in order to use the corresponding CLI",
+      category: "win-path-npm",
       tags: ["windows", "path"],
     },
     {
       item: "%USERPROFILE%\\go\\bin",
       description:
         "Path to add to Path environment variable in order to use the corresponding CLI",
+      category: "win-path-go",
       tags: ["windows", "path"],
     },
     {
       item: "%localappdata%\\Programs\\Python\\Launcher\\",
       description:
         "Path to add to Path environment variable in order to use the corresponding CLI",
+      category: "win-path-python",
       tags: ["windows", "path"],
     },
     {
       item: "%localappdata%\\Programs\\Python\\Python312",
       description:
         "Path to add to Path environment variable in order to use the corresponding CLI",
+      category: "win-path-python",
       tags: ["windows", "path"],
     },
     {
       item: "shell:appsfolder",
       description:
         "Command to quickly open the Applications folder. This folder contains all the installed applications on your system, including both traditional desktop programs and universal Windows apps",
+      category: "win-app",
       tags: ["windows", "path"],
     },
     {
       item: "/opt/cisco/anyconnect/profile",
       description: "Opens Cisco AnyConnect's profile path - VPN",
+      category: "mac-path-cisco",
       tags: ["MacOS", "path"],
     },
     {
       item: "/opt/cisco/secureclient/vpn/profile",
       description: "Opens Cisco Secure Client's profile path - VPN",
+      category: "mac-path-cisco",
       tags: ["MacOS", "path"],
     },
     {
       item: "sudo jamf removeMDMProfile",
       description: "Removes the MDM profile from a MacBook",
+      category: "mac-jamf",
       tags: ["MacOS", "jamf", "bash"],
     },
     {
       item: "sudo jamf removeFramework",
       description: "Removes the JAMF agent from a MacBook",
+      category: "mac-jamf",
       tags: ["MacOS", "jamf", "bash"],
     },
     {
       item: "sudo jamf policy",
       description: "Forces an MDM profile policy check in from the client",
+      category: "mac-jamf",
       tags: ["MacOS", "jamf", "bash"],
     },
     {
       item: "sudo jamf recon",
       description: "Forces a full inventory check from the client",
+      category: "mac-jamf",
       tags: ["MacOS", "jamf", "bash"],
     },
     {
       item: "jamf about",
       description: "Checks for enrollment and Jamf version on local Mac",
+      category: "mac-jamf",
       tags: ["MacOS", "jamf", "bash"],
     },
     {
       item: "jamf help",
       description: "Retrieves useful Jamf related commands",
+      category: "mac-jamf",
       tags: ["MacOS", "jamf", "bash"],
     },
     {
       item: "sudo purge",
       description: "Clears RAM on a MacBook",
+      category: "mac-jamf",
       tags: ["MacOS", "jamf", "bash"],
+    },
+    {
+      item: `web.events during past 7d<br/>
+    | where application.name == "Zendesk"<br/>
+    | summarize usage_duration = duration.sum()/ user.name.count() by ad.department<br/>
+    | sort usage_duration desc`,
+      description: `Zendesk web app usage duration per department (past 7 days)`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `devices during past 7d<br/>
+        | include device_performance.events during past 7d<br/>
+        | compute avg_installed_memory = installed_memory.avg(), used_memory_percentage = used_memory.avg()*100/installed_memory.avg()<br/>
+        | where used_memory_percentage > 75`,
+      description: `Devices with high memory usage (>75%) during past 7 days`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `devices during past 7d<br/>
+| include device_performance.events during past 7d<br/>
+| compute avg_installed_memory = installed_memory.avg(), used_memory_percentage = used_memory.avg()*100/installed_memory.avg()<br/>
+| where used_memory_percentage > 75<br/>
+| summarize num_devices_mem_upgrade = count() by hardware.manufacturer`,
+      description: `Count of memory-upgrade candidates by manufacturer during past 7 days`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `devices
+packages.installed_packages`,
+      description: `Devices with installed packages (basic view)`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `devices <br/>
+| with package.installed_packages<br/>
+| where package.name == "*Chrome*" and package.version == "108.*"`,
+      description: `Devices with specific Chrome version patterns`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `devices <br/>
+| include package.installed_packages<br/>
+| where package.name == "*Chrome*"<br/>
+| compute number_of_packages_installed = package.count()<br/>
+| where number_of_packages_installed == 0`,
+      description: `Devices missing Chrome`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `execution.crashes during past 7d <br/>
+| where binary.name in ["zscaler", "zsaservice.exe"]<br/>
+| summarize num_of_crashes = number_of_crashes.sum(), devices_with_crashes = device.count(), version_with_crashes = binary.version.count() by 1d`,
+      description: `Zscaler crash reporting (past 7 days)`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `devices during past 10d<br/>
+| include device_performance.boots during past 10d<br/>
+| where device_performance.boot.type == full_boot<br/>
+| compute number_of_boots_ = number_of_boots.sum()<br/>
+| where number_of_boots_ = null`,
+      description: `Devices with missing full-boot records`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `devices during past 30d<br/>
+| summarize device_max_memory = hardware.memory.max()`,
+      description: `Maximum memory installed across devices (past 30 days)`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `web.page_views during past 7d<br/>
+| summarize ratio_of_frustrating_page_loads = number_of_page_views.sumif( experience_level = frustrating ) / number_of_page_views.sum()`,
+      description: `Ratio of frustrating web page loads`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `remote_action.#get_service_information_1.executions during past 7d<br/>
+| list device.name, outputs.ServiceInformation`,
+      description: `Service information remote action results`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `devices during past 24h<br/>
+| with execution.events during past 24h<br/>
+| where application.name == 'Microsoft Teams'<br/>
+| where number_of_freezes > 3<br/>
+| summarize number_of_devices_with_3_teams_freezes = count()`,
+      description: `Devices with >3 Teams freezes (per 15-minute buckets). It might look like it gets all devices with a combined total of at least 3 MS Teams freezes over the day. But in fact, it only gets devices with at least one 15-minute sample where MS Teams had more than 3 freezes (in the same location and with the same connectivity status). If a device experienced 1 freeze every 10 minutes, it would not be counted!`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `devices during past 24h<br/>
+| with execution.events during past 24h<br/>
+| where application.name == 'Microsoft Teams'<br/>
+| compute freezes_per_device = number_of_freezes.sum()<br/>
+| where freezes_per_device > 3<br/>
+| summarize devices_with_over_3_freezes = count()`,
+      description: `Devices with >3 Teams freezes. To find all devices with over 3 MS Teams freezes in the last 24 hours, you must use the compute keyword and aggregate number_of_freezes per device, before filtering the number of freezes. Look at the correct query below. It will count the devices without any concern about the location, the connectivity status, or whether you're using daily samples or 15-minute samples. `,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `devices<br/>
+| where operating_system.platform == windows and hardware.type == virtual<br/>
+| list device.name, operating_system.name, hardware.type`,
+      description: `Windows virtual machines`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `devices<br/>
+| where operating_system.platform == windows<br/>
+| list operating_system.name, hardware.type`,
+      description: `OS name and hardware type for Windows devices`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `custom_trend.#windows_migration.snapshots during past 60d<br/>
+| where device.hardware.type !in [virtual, null]<br/>
+| summarize 
+  windows_11_ratio = countif(operating_system_name == "*windows 11*")/count(), 
+  total = count() by 1d<br/>
+| sort start_time desc`,
+      description: `Windows 11 migration custom trend`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `execution.events<br/>
+| where application.name == '*onedrive*'<br/>
+| summarize devices_using_onedrive = device.count()`,
+      description: `Devices using OneDrive`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `devices<br/>
+| include execution.crashes<br/>
+| compute crash_cnt = device.count()<br/>
+| summarize devices_with_crashes = crash_cnt.sum(), total_devices = count()`,
+      description: `Devices with application crashes. Good exmaple for single metric gauge chart`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `devices <br/>
+| include device_performance.system_crashes<br/>
+| compute devices_with_sys_crashes = device.count()<br/>
+| summarize
+   without_system_crashes = count() - devices_with_sys_crashes.sum(),
+   with_system_crashes = devices_with_sys_crashes.sum()`,
+      description: `System crash presence summary. Example of investigation to be used with multi-metric gauge chart`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `users<br/>
+| include campaign.#welcome.responses<br/>
+| compute 
+  answered_campaign = user.countif(state == answered), 
+  not_answered_campaign = user.countif(state != answered)<br/>
+| summarize 
+   answered = answered_campaign.sum(),
+   not_answered = not_answered_campaign.sum()`,
+      description: `Campaign participation summary. Example of investigation to be used with multi-metric gauge chart`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `devices<br/>
+| include execution.events<br/>
+| where binary.name in ["firefox", "firefox.exe"]<br/>
+| compute 
+   num_devices_latest_versions = device.countif( binary.version >= v107),
+   num_devices_firefox = device.count()<br/>
+| summarize 
+   running_latest_versions = num_devices_latest_versions.sum() ,
+   not_running_latest_versions = num_devices_firefox.sum() - num_devices_latest_versions.sum()`,
+      description: `Firefox latest-version adoption. Example of investigation to be used with multi-metric gauge chart`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
+    {
+      item: `web.page_views<br/>
+| summarize 
+    good_experience = number_of_page_views.sumif(experience_level == good),
+    frustrating_experience = number_of_page_views.sumif(experience_level == frustrating)`,
+      description: `Good vs frustrating page experience. Example of investigation to be used with multi-metric gauge chart`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
     },
   ],
 };
@@ -2326,9 +2837,9 @@ const nextjs = {
       logo: "nextjs",
     },
     {
-      title: `npx create-next-app@latest --ts`,
+      title: `npx create-next-app@latest ./  --ts`,
       description: `It is used to automatically initialize a new NextJS project with the default configuration and in this case
-      with typescript. You can choose the following options during the set up: <img width="600px" src=".\\images\\newnextapp-settings.jpg">`,
+      with typescript in the current folder. You can choose the following options during the set up: <img width="600px" src=".\\images\\newnextapp-settings.jpg">`,
       link: "https://nextjs.org/learn/dashboard-app/getting-started",
       logo: "nextjs",
     },
@@ -2592,15 +3103,36 @@ const nextjs = {
       logo: "nextjs",
     },
     {
-      title: ``,
-      description: ``,
-      link: "",
+      title: `api<br />route.ts`,
+      description: `If you need to create api endpoints in your app, you must create the <code>api</code> folder inside 
+      the <code>app</code> folder, then you can create a subfolder for each specific endpoint and a <code>route.ts</code>
+      page that contains the API logic for each endpoint. When writing the API calls, you name the function like the method
+      the API call is using, for instance:
+      <pre><code>
+      import { NextResponse } from "next/server";
+
+      export async function GET() {
+        return NextResponse.json({ message: "Hello from the API" })
+      }
+      </code></pre>
+      `,
+      link: "https://nextjs.org/blog/building-apis-with-nextjs",
       logo: "nextjs",
     },
     {
-      title: ``,
-      description: ``,
-      link: "",
+      title: `Metadata`,
+      description: `Metadata is really important when it comes to SEO. You can add metadata globally by adding them in a
+      declarative way in the main layout.tsx page or add it to each page.tsx individually in case specific metadata is 
+      required. This is how you delcare it: <pre><code>
+      import type { Metadata } from 'next'
+
+      export const metadata: Metadata = {
+        title: "The best Next app out there",
+        description: "Next app generated to be the best",
+        keywords: "next, app, best, notes"	
+      };
+      </code></pre>`,
+      link: "https://nextjs.org/docs/app/getting-started/metadata-and-og-images",
       logo: "nextjs",
     },
     {
