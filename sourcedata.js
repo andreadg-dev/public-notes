@@ -203,11 +203,11 @@ function appendListToRoot(objArray, index) {
   let tbody = ["<tbody>"];
 
   pageSnippets = objArray[index].snippets.map((snippet) => {
-    return `<tr><td>${snippet[objectKeys[0]]}</td><td>${
-      snippet[objectKeys[1]]
-    }</td><td>${snippet[objectKeys[2]]}</td><td>${
-      snippet[objectKeys[3]]
-    }</td></tr>`;
+    return `<tr><td class="troubleshoot-snippet">${
+      snippet[objectKeys[0]]
+    }</td><td>${snippet[objectKeys[1]]}</td><td>${
+      snippet[objectKeys[2]]
+    }</td><td>${snippet[objectKeys[3]]}</td></tr>`;
   });
   tbody.push(pageSnippets.join(""));
   tbody.push("</tbody>");
@@ -1160,6 +1160,13 @@ const troubleshooting = {
       tags: ["windows", "lusrmgr", "ps"],
     },
     {
+      item: "([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)",
+      description:
+        "Returns true if the current session's account is an administrator and false if it is not",
+      category: "win-lusrmgr",
+      tags: ["windows", "lusrmgr", "ps"],
+    },
+    {
       item: "Ctrl+K, Ctrl+J",
       description: "Expands all regions in VS Code (functions, variables, etc)",
       category: "win-shortcuts",
@@ -1273,6 +1280,18 @@ const troubleshooting = {
       description: "Opens DISK MANAGEMENT",
       category: "win-disk",
       tags: ["windows", "msc_command", "cmd"],
+    },
+    {
+      item: "dsregcmd /status",
+      description: `Windows command-line tool used to check Azure AD / Entra ID device registration status, including: Azure AD Join, Hybrid Join, Intune MDM enrollment, SSO / PRT status, Tenant information`,
+      category: "win-system",
+      tags: ["windows", "system", "autopilot", "intune"],
+    },
+    {
+      item: "shutdown /r /f /t 0",
+      description: `Windows command-line tool that forces a Windows computer to immediately restart by restarting the computer (/r), forcing all applications to close without warning (/f), and setting the timeout to zero seconds (/t 0). This command will cause you to lose any unsaved data in open programs, so use it with caution.`,
+      category: "win-system",
+      tags: ["windows", "system"],
     },
     {
       item: "eventvwr.msc",
