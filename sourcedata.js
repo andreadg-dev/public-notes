@@ -2231,6 +2231,15 @@ packages.installed_packages`,
       category: `nexthink-nql`,
       tags: ["Nexthink", "nql"],
     },
+    {
+      item: `devices during past 30d<br/>
+| include session.events<br/>
+| compute session_user = user.name.last()<br/>
+| list device.name, device.entity, device.hardware.model, device.hardware.type, device.operating_system.name, login.last_login_user_name, session_user`,
+      description: `Gets devices information for the past 30 days and their last session username`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
+    },
   ],
 };
 
@@ -2860,6 +2869,13 @@ const nextjs = {
       description: `It is used to automatically initialize a new NextJS project with the default configuration and in this case
       with typescript in the current folder. You can choose the following options during the set up: <img width="600px" src=".\\images\\newnextapp-settings.jpg">`,
       link: "https://nextjs.org/learn/dashboard-app/getting-started",
+      logo: "nextjs",
+    },
+    {
+      title: `npm install @mui/material @emotion/react @emotion/styled @mui/material-nextjs @mui/icons-material`,
+      description: `It is used to install several Material UI (MUI) libraries. After installing these libraries
+      see <a href="https://mui.com/material-ui/integrations/nextjs/#configuration">https://mui.com/material-ui/integrations/nextjs/#configuration</a> for the full configuration`,
+      link: "https://mui.com/material-ui/integrations/nextjs/",
       logo: "nextjs",
     },
     {
