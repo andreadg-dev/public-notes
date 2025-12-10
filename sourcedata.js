@@ -245,7 +245,7 @@ function appendListItemsToRoot(objArray, index) {
 
   pageItems = objArray[index].items.map((item) => {
     return `<tr>
-              <td>
+              <td class="nextjs-snippet">
                 <div style="display:flex;gap:1rem;">
                   <span>
                     <img class="logo" 
@@ -2876,6 +2876,29 @@ const nextjs = {
       description: `It is used to install several Material UI (MUI) libraries. After installing these libraries
       see <a href="https://mui.com/material-ui/integrations/nextjs/#configuration">https://mui.com/material-ui/integrations/nextjs/#configuration</a> for the full configuration`,
       link: "https://mui.com/material-ui/integrations/nextjs/",
+      logo: "nextjs",
+    },
+    {
+      title: `npm install prisma<br/>
+      npm install @prisma/client<br/>
+      npx prisma init --datasource-provider postgresql<br/>
+      <span class="snippet-comment">#Adapt the datasource info in your schema.prisma file like so:*</span> datasource db {provider = "postgresql"; url = env("DATABASE_URL")}<br/>
+      <span class="snippet-comment">#Configure your supabase database as explained in the link in the description</span></br>
+      <span class="snippet-comment">#Create or locate the .env file in the root directory of your root directory</span><br/>
+      <span class="snippet-comment">#Copy all the secrets from the supabase vercel connection in the .env.local tab to your .env file</span><br/>
+      <span class="snippet-comment">#Add a DATABASE_URL var in the .env file like so:</span> 'DATABASE_URL="\${POSTGRES_URL_NON_POOLING}"<br/>
+      npx prisma generate<br/>
+      npx prisma migrate dev --name init<br/>
+      Create a db folder in the .src directory, create here a ts file and add the following code to it:
+      import { PrismaClient } from '@prisma/client'; export const prisma = new PrismaClient();'`,
+      description: `This database config uses a postgres sql supabase online with free tier and the prisma library 
+      to handle all db actions. To Set up a postgres database on supabase using a free plan for testing, see 
+      <a href="https://nextjs.org/learn/dashboard-app/setting-up-your-database">https://nextjs.org/learn/dashboard-app/setting-up-your-database</a>
+      
+      <br/><br/>*The url info in the schema.prisma file is required if using a Prisma version lower than 7,
+      whereas from version 7 and higher, the db url info should be added to the <code>prisma.config.ts</code> file. In case
+      you do not need the latter to load the db config, delete it or rename it.`,
+      link: "https://nextjs.org/learn/dashboard-app/",
       logo: "nextjs",
     },
     {
