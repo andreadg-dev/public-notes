@@ -1294,6 +1294,28 @@ const troubleshooting = {
       tags: ["windows", "system"],
     },
     {
+      item: `[System.Globalization.RegionInfo]::new("DE")`,
+      description: `Retrieves a country basic info, for instance:
+      <pre><code>
+      Name                         : DE
+      EnglishName                  : Germany
+      DisplayName                  : Germany
+      NativeName                   : Deutschland
+      TwoLetterISORegionName       : DE
+      ThreeLetterISORegionName     : DEU
+      ThreeLetterWindowsRegionName : DEU
+      IsMetric                     : True
+      GeoId                        : 94
+      CurrencyEnglishName          : Euro
+      CurrencyNativeName           : Euro
+      CurrencySymbol               : €
+      ISOCurrencySymbol            : EUR
+      </code></pre>
+      `,
+      category: "win-system",
+      tags: ["windows", "system"],
+    },
+    {
       item: "eventvwr.msc",
       description: "Opens EVENT VIEWER",
       category: "win-system",
