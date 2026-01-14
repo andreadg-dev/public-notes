@@ -1133,38 +1133,38 @@ const troubleshooting = {
       item: "Get-LocalGroup",
       description: "Retrieves all local groups on a device",
       category: "win-lusrmgr",
-      tags: ["windows", "lusrmgr", "ps"],
+      tags: ["windows", "lusrmgr", "powershell"],
     },
     {
       item: "New-LocalGroup -Name 'docker-users' -Description 'Docker users group'",
       description: "Creates a new local group called docker-users",
       category: "win-lusrmgr",
-      tags: ["windows", "lusrmgr", "ps"],
+      tags: ["windows", "lusrmgr", "powershell"],
     },
     {
       item: "Add-LocalGroupMember -Group 'docker-users' -Member '$((Get-WMIObject -class Win32_ComputerSystem | select username).username)'",
       description: "Adds current logged-on user to the docker-users group",
       category: "win-lusrmgr",
-      tags: ["windows", "lusrmgr", "ps"],
+      tags: ["windows", "lusrmgr", "powershell"],
     },
     {
       item: "Remove-LocalGroup -Name 'docker-users'",
       description: "Deletes the local group called docker-users",
       category: "win-lusrmgr",
-      tags: ["windows", "lusrmgr", "ps"],
+      tags: ["windows", "lusrmgr", "powershell"],
     },
     {
       item: "(Get-WMIObject -class Win32_ComputerSystem | Select-Object -Property username).username",
       description: "Retrieves current logged-on user",
       category: "win-lusrmgr",
-      tags: ["windows", "lusrmgr", "ps"],
+      tags: ["windows", "lusrmgr", "powershell"],
     },
     {
       item: "([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)",
       description:
         "Returns true if the current session's account is an administrator and false if it is not",
       category: "win-lusrmgr",
-      tags: ["windows", "lusrmgr", "ps"],
+      tags: ["windows", "lusrmgr", "powershell"],
     },
     {
       item: "Ctrl+K, Ctrl+J",
@@ -1294,6 +1294,12 @@ const troubleshooting = {
       tags: ["windows", "system"],
     },
     {
+      item: `[Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes("Ññèéáà"))`,
+      description: `Converts a string containing accented characters into ASCII. The output in this case would be <code>Nneeaa</code>`,
+      category: "win-system",
+      tags: ["windows", "system"],
+    },
+    {
       item: `[System.Globalization.RegionInfo]::new("DE")`,
       description: `Retrieves a country basic info, for instance:
       <pre><code>
@@ -1405,13 +1411,13 @@ const troubleshooting = {
       description:
         "Retrieves the duration the operating system has been running since the last boot",
       category: "win-system",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "(Get-CimInstance Win32_OperatingSystem).LastBootUpTime",
       description: "Retrieves the date when the device was last booted",
       category: "win-system",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "wmic path win32_operatingsystem get lastbootuptime",
@@ -1481,6 +1487,13 @@ const troubleshooting = {
       tags: ["windows", "system"],
     },
     {
+      item: `certutil -encode "inputimage.png" "outputbase64.txt"`,
+      description: `Convert an image to base64. You can then copy the base64 string and add it to <code>src</code> <code>img</code> attribute to hardcode the 
+      image in your html file, for instance <code>&lt;img src="data:image/[type];base64,[Base64-string]" alt="Description"&gt;</code>`,
+      category: "win-system",
+      tags: ["windows", "system"],
+    },
+    {
       item: "dir env:",
       description:
         "Displays the environment variables specific to the current session",
@@ -1492,147 +1505,147 @@ const troubleshooting = {
       description:
         "Displays the environment variables specific to the current session",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:ALLUSERSPROFILE",
       description: "Retrieves env variable, for instance 'C:\\ProgramData'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:APPDATA",
       description:
         "Retrieves env variable, for instance 'C:\\Users\\username\\AppData\\Roaming'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:COMPUTERNAME",
       description: "Retrieves env variable, for instance 'NTTD-J92HGL3'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:HOMEDRIVE",
       description: "Retrieves env variable, for instance 'C:'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:HOMEPATH",
       description: "Retrieves env variable, for instance '\\Users\\username'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:LOCALAPPDATA",
       description:
         "Retrieves env variable, for instance 'C:\\Users\\username\\AppData\\Local'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:Model",
       description:
         "Retrieves the device model env variable, for instance '5520'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:OneDrive",
       description:
         "Retrieves env variable, for instance 'C:\\Users\\username\\OneDrive'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:OneDriveCommercial",
       description:
         "Retrieves env variable, for instance 'C:\\Users\\username\\OneDrive-Company'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:OS",
       description: "Retrieves env variable, for instance 'Windows_NT'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:Path",
       description: "Retrieves current path variable",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:POWERSHELL_DISTRIBUTION_CHANNEL",
       description:
         "Retrieves env variable, for instance 'MSI:Windows 10 Enterprise'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:PROCESSOR_ARCHITECTURE",
       description: "Retrieves env variable, for instance 'AMD64'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:ProgramData",
       description: "Retrieves env variable, for instance 'C:\\ProgramData'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:ProgramFiles",
       description: "Retrieves env variable, for instance 'C:\\Program Files'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:ProgramFiles(x86)",
       description:
         "Retrieves env variable, for instance 'C:\\Program Files (x86)'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:Serial",
       description: "Retrieves env variable, for instance 'J92HGL3'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:Type",
       description:
         "Retrieves device type env variable, for instance 'Latitude'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:USERDNSDOMAIN",
       description: "Retrieves the user dns domain env variable'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:USERDOMAIN",
       description: "Retrieves the user domain env variable",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:USERNAME",
       description: "Retrieves the username env variable",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "$env:USERPROFILE",
       description: "Retrieves env variable, for instance 'C:\\Users\\username'",
       category: "win-env",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "%localappdata%\\Microsoft\\OneDrive\\onedrive.exe /reset",
@@ -1657,7 +1670,7 @@ const troubleshooting = {
       description:
         "Retrieves Windows Defender Advanced Threat Protection Service and Microsoft Defender Antivirus Service service info",
       category: "win-system",
-      tags: ["windows", "system", "ps"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: 'cmd /k "[command]"',
@@ -1728,7 +1741,7 @@ const troubleshooting = {
       description:
         "Enables paths longer than 256 characters. Source: https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=powershell",
       category: "win-reg",
-      tags: ["windows", "regedit", "ps"],
+      tags: ["windows", "regedit", "powershell"],
     },
     {
       item: "reg add 'HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint' /v RestrictDriverInstallationToAdministrators /t REG_DWORD /d 0 /f",
