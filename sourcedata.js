@@ -1494,6 +1494,15 @@ const troubleshooting = {
       tags: ["windows", "system"],
     },
     {
+      item: `function prompt { "PS> " }`,
+      description: `To remove the directory path from your PowerShell (PS) terminal line, you can customize the prompt function. This can be done temporarily 
+      for your current session or permanently by modifying your profile. This method is temporary change (Current Session) to hide the path immediately in your 
+      active window. For the permanent method, you need to open your ps profile file <code>notepad $PROFILE</code> (if not created, it will prompt to create one),
+      then open it copy/paste this <code>function prompt {"$((Get-Location).Path.Split('\')[-1]):  "}</code> and then call the function with <code>. $PROFILE</code>`,
+      category: "win-system",
+      tags: ["windows", "system", "powershell"],
+    },
+    {
       item: "dir env:",
       description:
         "Displays the environment variables specific to the current session",
