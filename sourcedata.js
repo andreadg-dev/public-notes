@@ -137,7 +137,7 @@ function updateHeadingBasedOnDevice() {
 
 function setCopyright() {
   $("#copyright").html(
-    `Copyright ©${new Date().getFullYear()} ${$("#copyright").html()}`
+    `Copyright ©${new Date().getFullYear()} ${$("#copyright").html()}`,
   );
 }
 
@@ -155,7 +155,7 @@ function appendSectionsToRoot(objArray, index) {
     let processedSnippet = escapeHTML(snippet.code)
       .replace(
         snippetTitleRegex,
-        `<div class="snippet"><h2 class="snippet-title">🟡 $1</h2><pre><div class="abbreviation">${objArray[index].abbreviation}</div><code class="language-${objArray[index].language}">` //
+        `<div class="snippet"><h2 class="snippet-title">🟡 $1</h2><pre><div class="abbreviation">${objArray[index].abbreviation}</div><code class="language-${objArray[index].language}">`, //
       )
       .replace(endCodeSnippetRegex, "</code></pre></div>");
     return `${spaceDiv}<div><h1>🔴 ${snippet.title} 🔴</h1>${processedSnippet}`;
@@ -177,7 +177,7 @@ function appendListToRoot(objArray, index) {
       s.tags.sort((a, b) =>
         a
           .toString()
-          .localeCompare(b.toString(), undefined, { sensitivity: "base" })
+          .localeCompare(b.toString(), undefined, { sensitivity: "base" }),
       );
     }
   });
@@ -219,7 +219,7 @@ function appendListToRoot(objArray, index) {
     objArray[index].title
   } 🔴</h1>${copiedToClipboardAlert}${searchCard(
     objArray[index].snippets.length,
-    true
+    true,
   )}${table.join("")}`;
   $("#root").append(finalTable);
 
@@ -260,8 +260,8 @@ function appendListItemsToRoot(objArray, index) {
               <td style="white-space:normal">${
                 item[objectKeys[1]]
               }</td><td style="white-space:normal;"><a target='_blank' href='${
-      item[objectKeys[2]]
-    }' target="_blank">${item[objectKeys[2]]}</a></td></tr>`;
+                item[objectKeys[2]]
+              }' target="_blank">${item[objectKeys[2]]}</a></td></tr>`;
   });
   tbody.push(pageItems.join(""));
   tbody.push("</tbody>");
@@ -273,7 +273,7 @@ function appendListItemsToRoot(objArray, index) {
     objArray[index].title
   } 🔴</h1>${copiedToClipboardAlert}${searchCard(
     objArray[index].items.length,
-    false
+    false,
   )}${table.join("")}`;
 
   console.log(finalTable);
@@ -303,7 +303,7 @@ function appendCardsToRoot(objArray, index) {
   // Sort items in each category by title
   Object.keys(linksGroupedByCat).forEach((category) => {
     linksGroupedByCat[category].sort((a, b) =>
-      a.title.localeCompare(b.title, undefined, { sensitivity: "base" })
+      a.title.localeCompare(b.title, undefined, { sensitivity: "base" }),
     );
   });
 
@@ -312,14 +312,14 @@ function appendCardsToRoot(objArray, index) {
     .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }))
     .forEach((category) => {
       cards.push(
-        `<h2 class="link-cat-title" style="margin-top:2rem;">🟡 ${category} 🟡</h2><div class="linksGrid" id="links${category}">`
+        `<h2 class="link-cat-title" style="margin-top:2rem;">🟡 ${category} 🟡</h2><div class="linksGrid" id="links${category}">`,
       );
       linksGroupedByCat[category].forEach((item) => {
         //console.log(item);
         cards.push(
           card
             .replace("{{title}}", `${item.title}`)
-            .replace("{{link}}", `${item.href}`)
+            .replace("{{link}}", `${item.href}`),
         );
       });
       cards.push(`</div>`);
@@ -328,7 +328,7 @@ function appendCardsToRoot(objArray, index) {
   let finalCards = `${spaceDiv}<h1>🔴 ${
     objArray[index].title
   } 🔴</h1>${searchCard(objArray[index].links.length)}<div>${cards.join(
-    ""
+    "",
   )}</div>`;
 
   $("#root").append(finalCards);
@@ -461,7 +461,7 @@ function displaySectionOnClick(objArray) {
 
     if (document.querySelector(".placeholder-input")) {
       $("#filterCard,#placeholderComponent").wrapAll(
-        `<div id="filer_dynamicvalues_wrapper"></div>`
+        `<div id="filer_dynamicvalues_wrapper"></div>`,
       );
     }
   });
@@ -553,8 +553,8 @@ function createDynamicInputFields() {
   if (placeholderInputElements.length > 0) {
     $("#filterCard").after(
       `<div id="placeholderComponent"><h2>Dynamic values</h2><hr>${placeholderInputElements.join(
-        ""
-      )}</div>`
+        "",
+      )}</div>`,
     );
   }
 }
@@ -1487,9 +1487,33 @@ const troubleshooting = {
       tags: ["windows", "system"],
     },
     {
+      item: `Get-AppXPackage -AllUsers | ForEach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\\AppXManifest.xml"}`,
+      description: `Re-registers all built-in Microsoft Store (AppX) apps for every user on the machine. It can fix: Microsoft Store not opening, Built-in apps missing or broken, Apps failing to launch, Start Menu tiles not working, App registration corruption after Windows Updates`,
+      category: "win-system",
+      tags: ["windows", "system", "powershell"],
+    },
+    {
       item: `certutil -encode "inputimage.png" "outputbase64.txt"`,
       description: `Convert an image to base64. You can then copy the base64 string and add it to <code>src</code> <code>img</code> attribute to hardcode the 
       image in your html file, for instance <code>&lt;img src="data:image/[type];base64,[Base64-string]" alt="Description"&gt;</code>`,
+      category: "win-system",
+      tags: ["windows", "system"],
+    },
+    {
+      item: `[System.IO.File]::WriteAllBytes("C:\\path\\output_image.png",[System.Convert]::FromBase64String("BASE64IMAGESTRING"))`,
+      description: `Decode an image base64 string back to an image file (png, jpeg etc). It should also work with PDF files.`,
+      category: "win-system",
+      tags: ["windows", "system"],
+    },
+    {
+      item: `[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("BASE64STRING"))`,
+      description: `Decode a base64 string. Useful, for instance, when decoding an API Basic Auth string`,
+      category: "win-system",
+      tags: ["windows", "system"],
+    },
+    {
+      item: `[System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("USERNAME:PASSWORD"))`,
+      description: `Encode to base64. Useful, for instance, when encoding an API Basic Auth string`,
       category: "win-system",
       tags: ["windows", "system"],
     },
