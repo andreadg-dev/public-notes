@@ -1562,6 +1562,16 @@ const troubleshooting = {
       tags: ["windows", "system"],
     },
     {
+      item: `dcu-cli.exe`,
+      description: `CLI functionality to managed Dell driver updates by using <strong>Dell Command Update</strong>. Usually it gets installed here
+      <code>C:\\Program Files\\Dell\\CommandUpdate</code>. For all CLI commands, see
+      <a href="https://www.dell.com/support/manuals/fr-be/command-update/dcu_rg/dell-command-update-cli-commands?guid=guid-92619086-5f7c-4a05-bce2-0d560c15e8ed&lang=en-us">
+      https://www.dell.com/support/manuals/fr-be/command-update/dcu_rg/dell-command-update-cli-commands?guid=guid-92619086-5f7c-4a05-bce2-0d560c15e8ed&lang=en-us</a>.
+       You can download <strong>Dell Command Update</strong>: <a href="https://dl.dell.com/FOLDER13922605M/1/Dell-Command-Update-Application_5CR1Y_WIN64_5.6.0_A00.EXE">https://dl.dell.com/FOLDER13922605M/1/Dell-Command-Update-Application_5CR1Y_WIN64_5.6.0_A00.EXE</a>`,
+      category: "win-drivers",
+      tags: ["windows", "dell", "drivers"],
+    },
+    {
       item: `[System.IO.File]::WriteAllBytes("C:\\path\\output_image.png",[System.Convert]::FromBase64String("BASE64IMAGESTRING"))`,
       description: `Decode an image base64 string back to an image file (png, jpeg etc). It should also work with PDF files. Most file types have distinct “magic numbers” in their binary headers, which, when Base64-encoded, show up as recognizable prefixes. These prefixes let you identify the file type without fully decoding it.
                     <div style="margin-top:1rem"><strong>Common File Types & Base64 Prefixes</strong></div><ul><li>JPEG / JPG &gt; base64 prefix: <code>/9j/</code></li><li>PNG &gt; base64 prefix: <code>iVBORw0KGgo</code></li><li>GIF &gt; base64 prefix: <code>R0lGOD</code></li><li>PDF &gt; base64 prefix: <code>JVBERi0</code></li><li>ZIP / DOCX / XLSX / PPTX &gt; base64 prefix: <code>UEsDB</code></li><li>MP3 &gt; base64 prefix: <code>//uQ</code> or <code>SUQz</code></li><li>MP4 / MOV &gt; base64 prefix: <code>AAAAFGZ0</code></li><li>BMP &gt; base64 prefix: <code>Qk</code></li><li>TIFF / TIF &gt; base64 prefix: <code>SUkq</code></li><li>WebP &gt; base64 prefix: <code>UklGR</code></li><li>RAR &gt; base64 prefix: <code>UmFy</code></li><li>7z &gt; base64 prefix: <code>77u/</code></li><li>ICO / CUR &gt; base64 prefix: <code>AAABAA</code></li><li>FLAC &gt; base64 prefix: <code>fLaC</code></li><li>OGG / OGV / OGA &gt; base64 prefix: <code>T2dn</code></li></ul>`,
