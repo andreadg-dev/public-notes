@@ -1493,6 +1493,68 @@ const troubleshooting = {
       tags: ["windows", "system", "powershell"],
     },
     {
+      item: `manage-bde -status`,
+      description: `Windows command-line tool command used to check the status of BitLocker Drive Encryption on a system. Must be run as administrator. For each drive, it reports things like:
+                      <ul>
+                      <li>Conversion Status: Fully Encrypted, Fully Decrypted, Encryption in Progress / Decryption in Progress</li>
+                      <li>Percentage Encrypted</li>
+                      <li>Encryption Method: (e.g., XTS-AES 128-bit, XTS-AES 256-bit)</li>
+                      <li>Protection Status: Protection On (BitLocker is enforcing encryption)/Protection Off (encryption exists but is not enforced)</li>
+                      <li>Lock Status (for data drives): Locked / Unlocked</li>
+                      <li>Key Protectors: (TPM, PIN, recovery password, startup key, etc.)</li>
+                      </ul>
+                      Output Example:
+                      <pre>
+                      <code>
+          Size:                 474,74 GB
+          BitLocker Version:    2.0
+          Conversion Status:    Used Space Only Encrypted
+          Percentage Encrypted: 100,0%
+          Encryption Method:    XTS-AES 256
+          Protection Status:    Protection On
+          Lock Status:          Unlocked
+          Identification Field: Unknown
+          Key Protectors:
+              TPM And PIN
+              Numerical Password
+                      </code>
+                      </pre>`,
+      category: "win-disk",
+      tags: ["windows", "system", "disk"],
+    },
+    {
+      item: `manage-bde -protectors -get [VOLUME_LETTER]`,
+      description: `Windows command-line tool command used to retrieve the a volume Bitlocker ID and Key. Must be run as administrator. For instance, when running <code>manage-bde -protectors -get c:</code>
+          <pre>
+          <code>
+          Volume C: [OS]
+          All Key Protectors
+
+              TPM And PIN:
+                ID: {7288B918-7BAD-*sanitized*}
+                PCR Validation Profile:
+                  7, 11
+                  (Uses Secure Boot for integrity validation)
+
+              Numerical Password:
+                ID: {7F94E17A-9291-*sanitized*}
+                Password:
+                  610214-390621-*sanitized*
+                Backup type:
+                  AAD backup
+          </code>
+          </pre>`,
+      category: "win-disk",
+      tags: ["windows", "system", "disk"],
+    },
+    {
+      item: `manage-bde -protectors c: -adbackup -id [NUMERICAL_PASSWORD_ID]`,
+      description: `Windows command-line tool command used to back up Bitlocker Recovery key in AD. Must be run as administrator. If successful, you will get this
+      output message <code>Recovery information was successfully backed up to Active Directory</code>`,
+      category: "win-disk",
+      tags: ["windows", "system", "disk"],
+    },
+    {
       item: `certutil -encode "inputimage.png" "outputbase64.txt"`,
       description: `Convert an image to base64. You can then copy the base64 string and add it to <code>src</code> <code>img</code> attribute to hardcode the 
       image in your html file, for instance <code>&lt;img src="data:image/[type];base64,[Base64-string]" alt="Description"&gt;</code>`,
