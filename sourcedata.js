@@ -95,7 +95,10 @@ function parseGoogleBookmarks() {
 // Function to copy element to clipboard
 function copySingleItemToClipBoard(elementToCopy) {
   $(elementToCopy).on("click", function () {
-    let ptrContent = $(this).text().trim();
+    let ptrContent = $(this)
+      .text()
+      .trim()
+      .replace(/[ \t]+/g, " ");
     navigator.clipboard
       .writeText(ptrContent)
       .then(() => {
@@ -2167,6 +2170,14 @@ const troubleshooting = {
       description: "Clears RAM on a MacBook",
       category: "mac-jamf",
       tags: ["MacOS", "jamf", "bash"],
+    },
+    {
+      item: `devices
+    | where device.hardware.manufacturer = "Hewlett-Packard"
+    | list device.name, device.entity, device.hardware.model, device.hardware.type, device.operating_system.name, device.hardware.manufacturer, device.hardware.chassis_serial_number, device.hardware.model, device.hardware.product_line`,
+      description: `Retrieves all HP devices information`,
+      category: `nexthink-nql`,
+      tags: ["Nexthink", "nql"],
     },
     {
       item: `web.events during past 7d<br/>
