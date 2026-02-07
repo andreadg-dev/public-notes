@@ -705,6 +705,7 @@ const markdownNotes = {
     "errors_misc",
     "errors_SSL_certificate_problem",
     "howto_remote_desktop_into_ubuntu",
+    "howto_delete_git_repo_commit_history",
     "notes_aws_certified_developer",
   ],
 };
