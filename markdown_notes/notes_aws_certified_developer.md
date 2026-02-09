@@ -1,6 +1,6 @@
-# AWS Certified Developer - Associate (DVA-C02) #
+# AWS CERTIFIED DEVELOPER - ASSOCIATE (DVA-C02) #
 
-- [AWS Certified Developer - Associate (DVA-C02)](#aws-certified-developer---associate-dva-c02)
+- [AWS CERTIFIED DEVELOPER - ASSOCIATE (DVA-C02)](#aws-certified-developer---associate-dva-c02)
   - [Introduction](#introduction)
   - [Identity and Access Management (IAM - Global Serice)](#identity-and-access-management-iam---global-serice)
   - [Amazon EC2 - Elastic Compute Cloud](#amazon-ec2---elastic-compute-cloud)

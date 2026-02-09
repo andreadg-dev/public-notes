@@ -1,6 +1,6 @@
-# JAVASCRIPT NOTES #
+# MY JAVASCRIPT NOTES #
 
-- [JAVASCRIPT NOTES](#javascript-notes)
+- [MY JAVASCRIPT NOTES](#my-javascript-notes)
   - [**Loop methods: Example 1**](#loop-methods-example-1)
   - [**High Order Functions: caluclator()**](#high-order-functions-caluclator)
   - [**JavaScript and DOM CheatSheet**](#javascript-and-dom-cheatsheet)

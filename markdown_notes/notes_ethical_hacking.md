@@ -1,6 +1,6 @@
-# ETHICAL HACKING NOTES #
+# MY ETHICAL HACKING NOTES #
 
-- [ETHICAL HACKING NOTES](#ethical-hacking-notes)
+- [MY ETHICAL HACKING NOTES](#my-ethical-hacking-notes)
   - [**How to change a MAC address**](#how-to-change-a-mac-address)
   - [**Wireless Modes (MANAGED \& MONITOR)**](#wireless-modes-managed--monitor)
   - [**USEFUL LINKS**](#useful-links)

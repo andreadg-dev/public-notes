@@ -1,6 +1,6 @@
-# NODE.JS NOTES #
+# MY NODE.JS NOTES #
 
-- [NODE.JS NOTES](#nodejs-notes)
+- [MY NODE.JS NOTES](#my-nodejs-notes)
   - [**Bash Basics**](#bash-basics)
   - [Node.js](#nodejs)
   - [**Node Package Manager**](#node-package-manager)

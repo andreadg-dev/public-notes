@@ -18,6 +18,9 @@ git branch -D main
 # Rename the temporary branch to main:
 git branch -m main
 
-# Finally, force update to our repository:
+# Force update to our repository:
 git push -f origin main
+
+#To push the current branch and set the remote as upstream, use
+git push --set-upstream origin main
 ```

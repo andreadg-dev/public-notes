@@ -1,6 +1,6 @@
-# JQUERY NOTES #
+# MY JQUERY NOTES #
 
-- [JQUERY NOTES](#jquery-notes)
+- [MY JQUERY NOTES](#my-jquery-notes)
   - [**JavaScript vs jQuery**](#javascript-vs-jquery)
     - [**Getting properties/attributes**](#getting-propertiesattributes)
     - [**Setting/Updating properties/attributes and calling methods**](#settingupdating-propertiesattributes-and-calling-methods)

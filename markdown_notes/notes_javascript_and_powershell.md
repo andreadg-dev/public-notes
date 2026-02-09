@@ -1,6 +1,6 @@
-# JAVASCRIPT & POWERSHELL #
+# MY JAVASCRIPT & POWERSHELL NOTES #
 
-- [JAVASCRIPT \& POWERSHELL](#javascript--powershell)
+- [MY JAVASCRIPT \& POWERSHELL NOTES](#my-javascript--powershell-notes)
   - [**Declare and modify a variable/array**](#declare-and-modify-a-variablearray)
   - [**Write output with first letter capitalised**](#write-output-with-first-letter-capitalised)
   - [**Examples of function with a single parameter: getMilk**](#examples-of-function-with-a-single-parameter-getmilk)

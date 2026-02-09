@@ -338,7 +338,7 @@ function appendCardsToRoot(objArray, index) {
 //Children function that appends const type 'cards' to 'root' element
 function appendToolsToRoot(objArray, index) {
   const finalTools = objArray[index].tools.map((item) => {
-    return `<div class="tools" id="${item.title}-tool"><h2>${item.title}</h2>${item.component}</div>`;
+    return `<details class="tools" id="${item.title}-tool"><summary>${item.title}</summary>${item.component}</details>`;
   });
 
   $("#root").append(
@@ -387,12 +387,34 @@ function appendSectionListToRoot(object) {
   $("#root").append(`${spaceDiv}<h1>aws</h1>${awssections.join("")}`);
 }
 
+function consistentSlugify(str) {
+  return (
+    str
+      .toLowerCase()
+      .trim()
+      // remove everything except letters, numbers, space, - and _
+      .replace(/[^a-z0-9\s_-]/g, "")
+      // replace whitespace ONLY with -
+      .replace(/\s+/g, "-")
+  );
+}
+
 async function appendMdNotesToRoot() {
   const sortedMdPages = [...markdownNotes.pages].sort((a, b) =>
     a.replaceAll("_", " ").localeCompare(b.replaceAll("_", " "), undefined, {
       sensitivity: "base",
     }),
   );
+
+  const md = window
+    .markdownit({
+      html: true,
+      linkify: true,
+      typographer: true,
+    })
+    .use(window.markdownItAnchor, {
+      slugify: consistentSlugify,
+    });
 
   const mdPagesParsedToHtml = await Promise.all(
     sortedMdPages.map(async (mdPage, index) => {
@@ -401,11 +423,18 @@ async function appendMdNotesToRoot() {
 
       const mdPageContent = await res.text();
 
-      const md = window.markdownit();
       const parsedMd = md.render(mdPageContent);
       const cleanParsedMd = DOMPurify.sanitize(parsedMd);
 
-      return `<details><summary>KB${String(index).padStart(5, "0")} - <span style="text-transform: capitalize;">${mdPage.replaceAll("_", " ").toLowerCase()}</span></summary>${cleanParsedMd}</details>`;
+      const mdClass = mdPage.includes("notes_")
+        ? "md_notes"
+        : mdPage.includes("errors_")
+          ? "md_errors"
+          : mdPage.includes("howto_")
+            ? "md_howto"
+            : "md_undefined";
+
+      return `<details class="${mdClass}"><summary>KB${String(index).padStart(5, "0")} - <span style="text-transform: capitalize;">${mdPage.replaceAll("_", " ").toLowerCase().replace("howto", "how to")}</span></summary>${cleanParsedMd}</details>`;
     }),
   );
 
@@ -611,7 +640,7 @@ function updateDynamicInputFields() {
 }
 
 const spaceDiv = `<div class="mt-6"></div>`;
-const customHorizontalLine = `<div style="height: 1px; background-color: #ff7a00; margin: 10px 0 20px 0;">&nbsp;</div>`;
+const customHorizontalLine = `<div style="height: 1px; background-color: #00ffef; margin: 10px 0 20px 0;">&nbsp;</div>`;
 
 const searchCard = (totalItemsCount, copyAllCommands = false) => {
   let borderRoundSolidWhite = `border:1px solid white;border-radius: 1rem;`;

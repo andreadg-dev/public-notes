@@ -1,6 +1,6 @@
-# REACT NOTES #
+# MY REACT NOTES #
 
-## **Local Config**
+## Local Config ##
 
 **Step 1**. Make sure you have the latest version of Node installed. If not head over to https://nodejs.org/en/download to download the LTS (Long Term Support) version of Node.
 

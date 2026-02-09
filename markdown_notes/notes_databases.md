@@ -1,6 +1,6 @@
-# DATABASE NOTES #
+# MY DATABASE NOTES #
 
-- [DATABASE NOTES](#database-notes)
+- [MY DATABASE NOTES](#my-database-notes)
   - [How to create a table](#how-to-create-a-table)
   - [How to add values to a table](#how-to-add-values-to-a-table)
   - [How to get/filter data from a table](#how-to-getfilter-data-from-a-table)
