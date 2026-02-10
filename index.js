@@ -5,6 +5,13 @@ function toggleNextElement(togglerElement) {
   });
 }
 
+function toggleCell(button) {
+  const cellContent = button.closest(".cell-content");
+  const isExpanded = cellContent.classList.toggle("expanded");
+
+  button.textContent = isExpanded ? "-" : "+";
+}
+
 function copyAllCommands(parentElement, elementToCopy) {
   let arrayToCopyClipboard = [];
   $("#copyAllBtn").on("click", function () {
@@ -112,8 +119,8 @@ function copySingleItemToClipBoard(elementToCopy) {
 }
 
 // Add event listeners to highlight/unhighlight the table rows
-function highlightElement() {
-  $("td").on("click", function () {
+function highlightElement(element) {
+  $(element).on("click", function () {
     $(this).addClass("highlight"); // Add class to show the alert
     // Set timeout to remove the class after 2 seconds
     setTimeout(() => {
@@ -201,18 +208,25 @@ function appendListToRoot(objArray, index) {
   let table = [`<table class="table">`];
   let headers = ["<thead><tr>"];
   let objectKeys = Object.keys(objArray[index].snippets[0]);
-  objectKeys.map((header) => {
+  objectKeys.slice(0, 2).map((header) => {
     headers.push(`<th>${header}</th>`);
   });
   headers.push("</tr></thead>");
   let tbody = ["<tbody>"];
 
   pageSnippets = objArray[index].snippets.map((snippet) => {
-    return `<tr><td class="troubleshoot-snippet">${
-      snippet[objectKeys[0]]
-    }</td><td>${snippet[objectKeys[1]]}</td>
-    <td>${snippet[objectKeys[2]]}</td>
-    <td>${snippet[objectKeys[3]]}</td></tr>`;
+    return `<tr>
+              <td class="troubleshoot-snippet">${snippet[objectKeys[0]]}</td>
+              <td>
+                <div class="cell-content">
+                  <div class="snippet-description">${snippet[objectKeys[1]]}</div>
+                  <div class="snippet-category"><span>CATEGORY:</span>${snippet[objectKeys[2]].split("_")[0].trim()}</div>
+                  <div class="snippet-subcategory"><span>SUBCATEGORY:</span>${snippet[objectKeys[2]].split("_")[1].trim()}</div>
+                  <div class="snippet-tags"><span>TAGS:</span>${snippet[objectKeys[3]]}</div>
+                  <div class="expand-button" onclick="toggleCell(this)">+</div>
+                </div>
+              </td>
+            </tr>`;
   });
   tbody.push(pageSnippets.join(""));
   tbody.push("</tbody>");
@@ -230,8 +244,10 @@ function appendListToRoot(objArray, index) {
   updateCounts("tbody tr");
   filterItems("tbody tr");
   copyAllCommands("tr", "td:nth-child(1)");
-  copySingleItemToClipBoard("td");
-  highlightElement();
+  copySingleItemToClipBoard(".troubleshoot-snippet");
+  copySingleItemToClipBoard(".snippet-description");
+  highlightElement(".snippet-description");
+  highlightElement(".troubleshoot-snippet");
 }
 
 //Children function that appends const type 'list-items' to 'root' element -nextjs page

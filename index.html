@@ -310,6 +310,8 @@
         /*         width: max-content;
         max-width: max-content; */
         margin: auto;
+        table-layout: fixed;
+        margin-bottom: 4rem;
       }
 
       #root thead {
@@ -324,28 +326,63 @@
 
       #root th,
       #root td {
-        white-space: nowrap;
+        /* white-space: nowrap; */
         max-width: 25rem;
         cursor: pointer;
+      }
+
+      #root .cell-content {
+        position: relative;
+        overflow: hidden;
+        white-space: normal;
+
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+
+        transition: max-height 0.3s ease;
+      }
+
+      #root .cell-content.expanded {
+        display: block; /* kills line-clamp */
+        max-height: none;
+        overflow: visible;
+        -webkit-line-clamp: none;
+        line-clamp: none;
+      }
+
+      #root .snippet-description {
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        max-width: 95%;
       }
 
       /* Apply horizontal scroll only to the last column's td elements */
       #root td:nth-child(2),
       #root td:nth-child(4) {
-        text-overflow: ellipsis;
-        overflow-x: hidden; /* Hide the horizontal scrollbar by default */
-        overflow-y: hidden; /* Hide the vertical scrollbar by default */
-        max-width: 25rem;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        /*text-overflow: ellipsis;
+        overflow-x: hidden; 
+        overflow-y: hidden;
+        max-width: 25rem;*/
+      }
+
+      #root tbody tr:nth-child(even) {
+        background-color: #151920;
       }
 
       /* Show horizontal scrollbar on hover */
-      #root td:nth-child(2):hover,
+      /*      #root td:nth-child(2):hover,
       #root td:nth-child(4):hover {
         text-overflow: clip;
-        overflow-x: auto; /* Show horizontal scrollbar on hover */
-        overflow-y: hidden; /* Hide the vertical scrollbar */
+        overflow-x: auto;
+        overflow-y: hidden; 
         text-wrap: wrap;
-      }
+      } */
 
       #root td:nth-child(1) {
         font-family: monospace;
@@ -370,6 +407,39 @@
 
       #root td:nth-child(2)::-webkit-scrollbar-thumb:hover {
         background-color: #00000066; /* Change the color of the scrollbar thumb on hover */
+      }
+
+      #root td:hover {
+        background-color: #28284d !important;
+      }
+
+      #root tr:has(> td:hover) {
+        background-color: #28284d80 !important;
+      }
+
+      #root tr div span {
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      #root .snippet-description {
+        margin-bottom: 2rem;
+      }
+
+      .expand-button {
+        position: absolute;
+        top: -0.8rem;
+        right: -0.1rem;
+        color: #38afa8;
+        font-weight: bold;
+        font-size: 1.5rem;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .expand-button:hover {
+        color: #2d8f89;
+        transform: scale(1.1);
       }
 
       /*Search card styling*/
@@ -572,12 +642,14 @@
 
         searchInput !== "all"
           ? $("tbody tr").filter(function () {
+              console.log($(this).find(".snippet-category").text());
+
               $(this).toggle(
                 $(this)
-                  .html()
-                  .split("<td>")[2]
+                  .find(".snippet-category")
+                  .text()
                   .toLowerCase()
-                  .indexOf(searchInput) > -1,
+                  .includes(searchInput),
               );
             })
           : $("tbody tr").show();
