@@ -174,6 +174,8 @@ function appendListToRoot(objArray, index) {
     a.item.localeCompare(b.item, undefined, { sensitivity: "base" })
   ); */
 
+  const radioInputs = createTablesRadioInputs(objArray[index].snippets);
+
   // ensure tags arrays are sorted alphabetically (case-insensitive) before rendering
   objArray[index].snippets.forEach((s) => {
     if (Array.isArray(s.tags)) {
@@ -208,9 +210,9 @@ function appendListToRoot(objArray, index) {
   pageSnippets = objArray[index].snippets.map((snippet) => {
     return `<tr><td class="troubleshoot-snippet">${
       snippet[objectKeys[0]]
-    }</td><td>${snippet[objectKeys[1]]}</td><td>${
-      snippet[objectKeys[2]]
-    }</td><td>${snippet[objectKeys[3]]}</td></tr>`;
+    }</td><td>${snippet[objectKeys[1]]}</td>
+    <td>${snippet[objectKeys[2]]}</td>
+    <td>${snippet[objectKeys[3]]}</td></tr>`;
   });
   tbody.push(pageSnippets.join(""));
   tbody.push("</tbody>");
@@ -221,7 +223,7 @@ function appendListToRoot(objArray, index) {
   let finalTable = `<h1 class="pageTitle"><code>${objArray[index].title}</code></h1>
   <div class="custom-body">
   ${copiedToClipboardAlert}
-  ${searchCard(objArray[index].snippets.length, true)}${table.join("")}</div>`;
+  ${searchCard(objArray[index].snippets.length, true, radioInputs)}${table.join("")}</div>`;
 
   $("#root").append(finalTable);
 
@@ -521,12 +523,6 @@ function displaySectionOnClick(objArray) {
     hljs.highlightAll();
     createDynamicInputFields();
     updateDynamicInputFields();
-
-    if (document.querySelector(".placeholder-input")) {
-      $("#filterCard,#placeholderComponent").wrapAll(
-        `<div id="filer_dynamicvalues_wrapper"></div>`,
-      );
-    }
   });
 }
 
@@ -584,6 +580,40 @@ function onlyUnique(value, index, array) {
   return array.indexOf(value) === index;
 }
 
+function createTablesRadioInputs(snippetArray) {
+  //Generating tables radio inputs component
+  const radioComponent = `<div>
+                          <p class="filter_card_headers">CATEGORY FILTER</p>
+                          <fieldset class="tablesRadioInput_fieldset">
+                            <div>
+                              <input type="radio" id="all" name="table" value="all" checked />
+                              <label for="all">All</label>
+                            </div>
+
+                            {{otherRadioInputs}}
+
+                          </fieldset>
+                        </div>`;
+
+  const groupedByCategory = snippetArray.reduce((acc, item) => {
+    const category = item.category.split("_")[0];
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(item);
+    return acc;
+  }, {});
+
+  const radioInputs = Object.keys(groupedByCategory).map((category) => {
+    return `<div>
+              <input type="radio" id="${category}" name="table" value="${category}" />
+              <label for="${category}">${category}</label>
+            </div>`;
+  });
+
+  return radioComponent.replace("{{otherRadioInputs}}", radioInputs.join(""));
+}
+
 function createDynamicInputFields() {
   let placeholderValues = [];
   $(".placeholder").each(function () {
@@ -607,17 +637,18 @@ function createDynamicInputFields() {
 
     const placeholderInputElement = `<div class="placeholder-input">
               <label for="ph-${placeholderClass}">${placeholderLabel}: </label>
-              <input class="ph-inputfield" type="text" name="ph-${placeholderClass}" id="${placeholderClass}" value="${value}"/>
+              <input class="ph-inputfield" type="text" name="ph-${placeholderClass}" id="${placeholderClass}" placeholder="Type a ${placeholderLabel}..."/>
             </div>`;
 
     placeholderInputElements.push(placeholderInputElement);
   });
 
   if (placeholderInputElements.length > 0) {
-    $("#filterCard").after(
-      `<div id="placeholderComponent"><h2>Dynamic values</h2><hr>${placeholderInputElements.join(
+    $("#filterCard .card-body").append(
+      `<hr/><div id="placeholderComponent"><p class="filter_card_headers">DYNAMIC VALUES</p>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap">${placeholderInputElements.join(
         "",
-      )}</div>`,
+      )}</div></div>`,
     );
   }
 }
@@ -642,19 +673,25 @@ function updateDynamicInputFields() {
 const spaceDiv = `<div class="mt-6"></div>`;
 const customHorizontalLine = `<div style="height: 1px; background-color: #00ffef; margin: 10px 0 20px 0;">&nbsp;</div>`;
 
-const searchCard = (totalItemsCount, copyAllCommands = false) => {
-  let borderRoundSolidWhite = `border:1px solid white;border-radius: 1rem;`;
-  let searchCard = `<div class="card text-white bg-dark mb-3" id="filterCard" style="${borderRoundSolidWhite}">
-      <div class="card-body">
-        <p style="justify-content:space-between;display:flex"><span>Search:</span><span style="font-weight:bold;">results: <span id="filteredItemsCount">{{filteredItemsCount}}</span>/<span id="totalItemsCount">${totalItemsCount}</span></span></p>
-        <input type="text" id="filter" class="form-control" placeholder="Type a keyword..."/>
-      </div>
-    </div>
+const searchCard = (
+  totalItemsCount,
+  copyAllCommands = false,
+  tablesRadioInput,
+) => {
+  let searchCard = `<div id="filterCard">
+                      <div class="card-body">
+                        <div>
+                          <p style="justify-content:space-between;display:flex"><span class="filter_card_headers">SEARCH</span><span style="font-weight:bold;">results: <span id="filteredItemsCount">{{filteredItemsCount}}</span>/<span id="totalItemsCount">${totalItemsCount}</span></span></p>
+                          <input type="text" id="filter" class="form-control" placeholder="Type a keyword..."/>
+                        </div>
+                        ${tablesRadioInput && `<hr/>${tablesRadioInput}`}
+                      </div>
+                    </div>
 
     ${
       copyAllCommands
         ? `<div class="buttonDiv">
-        <button class="btn btn-dark btn-lg" id="copyAllBtn" style="${borderRoundSolidWhite}">
+        <button class="btn btn-dark btn-lg" id="copyAllBtn">
           Copy all commands!
         </button>
     </div>`

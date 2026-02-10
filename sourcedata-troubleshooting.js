@@ -1435,3 +1435,12 @@ packages.installed_packages`,
     },
   ],
 };
+
+const troubleshooting_snippets = troubleshooting.snippets.map((item) => {
+  return {
+    item: item.item,
+    description: item.description,
+    category: `troubleshooting_${item.category}`,
+    tags: item.tags,
+  };
+});

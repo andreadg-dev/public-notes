@@ -324,11 +324,13 @@ const nextjs = {
   ],
 };
 
-const adaptedNextJs = nextjs.items.map((item) => {
-  return {
-    item: item.title,
-    description: `${item.description} <br/> <a href="${item.link}" target="_blank">${item.link}</a>`,
-    category: "dev-nextjs",
-    tags: ["dev", "nextjs"],
-  };
-});
+const adaptedNextJs = nextjs.items
+  .filter((item) => item.title.trim().length > 0)
+  .map((item) => {
+    return {
+      item: item.title,
+      description: `${item.description} <br/> <a href="${item.link}" target="_blank">${item.link}</a>`,
+      category: "dev_nextjs",
+      tags: ["dev", "nextjs"],
+    };
+  });
