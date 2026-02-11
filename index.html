@@ -499,7 +499,7 @@
       }
 
       .tablesRadioInput_fieldset {
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
         gap: 0 1rem;
         display: grid;
       }
@@ -610,13 +610,12 @@
     <script src="sourcedata-troubleshooting.js"></script>
     <script src="sourcedata-nextjs.js"></script>
     <script src="sourcedata-links.js"></script>
+    <script src="sourcedata-nexthink.js"></script>
     <script src="sourcedata-tablesdata.js"></script>
     <script src="index.js"></script>
     <script>
       window.onload = (event) => {
         setCopyright();
-
-        //console.log(tablesData.snippets.length);
 
         const sourceData = [markdownNotes, tablesData, tools];
         appendSectionToNavbar(sourceData);
@@ -637,24 +636,49 @@
         setTimeout(updateHeadingBasedOnDevice, 50);
       }); */
 
-      $(document).on("click", ".tablesRadioInput_fieldset input", function () {
-        let searchInput = $(this).val().toLowerCase();
+      $(document).on("click", "#category_filter_component input", function () {
+        let categoryInput = $(this).val().toLowerCase();
 
-        searchInput !== "all"
-          ? $("tbody tr").filter(function () {
-              console.log($(this).find(".snippet-category").text());
-
-              $(this).toggle(
-                $(this)
-                  .find(".snippet-category")
-                  .text()
-                  .toLowerCase()
-                  .includes(searchInput),
-              );
-            })
-          : $("tbody tr").show();
+        if (categoryInput !== "all") {
+          $("tbody tr").filter(function () {
+            $(this).toggle(
+              $(this)
+                .find(".snippet-category")
+                .text()
+                .toLowerCase()
+                .includes(categoryInput),
+            );
+          });
+          $("#subcategory_filter_component").remove();
+          $("#category_filter_component").after(
+            createSubcategoryRadioInputs(tablesData.snippets, categoryInput),
+          );
+        } else {
+          $("#subcategory_filter_component").remove();
+          $("tbody tr").show();
+        }
         updateCounts("tbody tr");
       });
+
+      $(document).on(
+        "click",
+        "#subcategory_filter_component input",
+        function () {
+          let subcategoryInput = $(this).val().toLowerCase();
+
+          $("tbody tr").filter(function () {
+            $(this).toggle(
+              $(this)
+                .find(".snippet-subcategory")
+                .text()
+                .toLowerCase()
+                .includes(subcategoryInput),
+            );
+          });
+
+          updateCounts("tbody tr");
+        },
+      );
 
       $(document).on("click", "#encodeHTMLButton", function () {
         const userInput = $("#inputBox").val();

@@ -356,11 +356,11 @@ function appendCardsToRoot(objArray, index) {
 //Children function that appends const type 'cards' to 'root' element
 function appendToolsToRoot(objArray, index) {
   const finalTools = objArray[index].tools.map((item) => {
-    return `<details class="tools" id="${item.title}-tool"><summary>${item.title}</summary>${item.component}</details>`;
+    return `<details class="tools" id="${item.title}-tool"><summary>${item.title}</summary>${item.component}</details>${customHorizontalLine}`;
   });
 
   $("#root").append(
-    `<h1 class="pageTitle"><code>tools</code></h1><div class="markdown-body">${finalTools}</div>`,
+    `<h1 class="pageTitle"><code>tools</code></h1><div class="markdown-body">${finalTools.join("")}</div>`,
   );
 }
 
@@ -598,11 +598,11 @@ function onlyUnique(value, index, array) {
 
 function createTablesRadioInputs(snippetArray) {
   //Generating tables radio inputs component
-  const radioComponent = `<div>
+  const radioComponent = `<div id="category_filter_component">
                           <p class="filter_card_headers">CATEGORY FILTER</p>
                           <fieldset class="tablesRadioInput_fieldset">
                             <div>
-                              <input type="radio" id="all" name="table" value="all" checked />
+                              <input type="radio" id="all" name="category" value="all" checked />
                               <label for="all">All</label>
                             </div>
 
@@ -622,7 +622,41 @@ function createTablesRadioInputs(snippetArray) {
 
   const radioInputs = Object.keys(groupedByCategory).map((category) => {
     return `<div>
-              <input type="radio" id="${category}" name="table" value="${category}" />
+              <input type="radio" id="${category}" name="category" value="${category}" />
+              <label for="${category}">${category}</label>
+            </div>`;
+  });
+
+  return radioComponent.replace("{{otherRadioInputs}}", radioInputs.join(""));
+}
+
+function createSubcategoryRadioInputs(snippetArray, category) {
+  //Generating tables radio inputs component
+  const radioComponent = `<div id="subcategory_filter_component"><hr/>
+                          <p class="filter_card_headers">SUBCATEGORY FILTER</p>
+                          <fieldset class="tablesRadioInput_fieldset">
+
+                            {{otherRadioInputs}}
+
+                          </fieldset>
+                        </div>`;
+
+  const filteredSnippetArray = snippetArray.filter((snippet) => {
+    return snippet.category.includes(category);
+  });
+
+  const groupedByCategory = filteredSnippetArray.reduce((acc, item) => {
+    const category = item.category.split("_")[1];
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(item);
+    return acc;
+  }, {});
+
+  const radioInputs = Object.keys(groupedByCategory).map((category) => {
+    return `<div>
+              <input type="radio" id="${category}" name="subcategory" value="${category}" />
               <label for="${category}">${category}</label>
             </div>`;
   });

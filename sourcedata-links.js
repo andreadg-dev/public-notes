@@ -756,6 +756,6 @@ const devlinks_links = devLinks.links
       item: item.item,
       description: item.description,
       category: `useful-links_${item.category}`,
-      tags: ["linkst", item.category, ...item.tags],
+      tags: ["links", item.category, ...item.tags],
     };
   });

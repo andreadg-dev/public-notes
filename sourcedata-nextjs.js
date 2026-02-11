@@ -334,3 +334,15 @@ const adaptedNextJs = nextjs.items
       tags: ["dev", "nextjs"],
     };
   });
+
+const devSnippets = [
+  {
+    item: `python3 -m http.server 8000<br/>http-server -p 8000 -c-1`,
+    description: `How to start a web server in localhost on port 8000 using either python or node-http-server. When running your server, 
+      if you see 304 in the terminal, and your changes are not being applied, do a Ctrl+Alt+R to force a cache refresh in the browser.
+      When using <code>http-server -p 8080 -c-1</code> the -c-1 flag sets the cache-control max-age to -1, forcing the browser to fetch 
+      fresh content every time. You must install npm and node-http-server before being able to use this command.`,
+    category: `dev_web`,
+    tags: ["webdev"],
+  },
+];
