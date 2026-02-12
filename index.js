@@ -804,28 +804,6 @@ const navBarWithDropDowns = `<nav class="navbar navbar-expand-lg navbar-dark bg-
                     </nav>
                     `; */
 
-const markdownNotes = {
-  title: "markdown notes",
-  type: "markdown-pages",
-  navcategory: "menu",
-  pages: [
-    "notes_typescript",
-    "notes_react",
-    "notes_nodejs",
-    "notes_jquery",
-    "notes_javascript",
-    "notes_javascript_and_powershell",
-    "notes_ethical_hacking",
-    "notes_databases",
-    "notes_cmd",
-    "errors_misc",
-    "errors_SSL_certificate_problem",
-    "howto_remote_desktop_into_ubuntu",
-    "howto_delete_git_repo_commit_history",
-    "notes_aws_certified_developer",
-  ],
-};
-
 const languageHljs = [
   "bash",
   "c",
