@@ -579,6 +579,37 @@
         background-color: #080808;
         color: #439ccb;
       }
+
+      /*MD pages styling*/
+      #root pre:has(code) {
+        border: 1px solid rgb(168, 174, 188);
+        border-radius: 4px;
+        background-color: #1e1e1e;
+      }
+
+      #root pre code {
+        display: grid;
+        grid-template-columns: 1fr; /* 2 columns */
+        column-gap: 12px;
+      }
+
+      #root pre code .snippet-line {
+        display: grid;
+        grid-template-columns: auto 1fr; /* Line counter and code content */
+        column-gap: 12px;
+      }
+
+      #root .snippet-line-counter {
+        color: rgb(125, 129, 134);
+      }
+
+      #root .snippet-line:hover .snippet-code-line {
+        background-color: rgb(168, 174, 188, 0.2);
+      }
+
+      #root .snippet-line:hover .snippet-line-counter {
+        color: white !important;
+      }
     </style>
   </head>
   <body>

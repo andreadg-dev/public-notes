@@ -460,6 +460,7 @@ async function appendMdNotesToRoot() {
     `<h1 class="pageTitle"><code>markdown notes</code></h1><div class="markdown-body">${mdPagesParsedToHtml.join(customHorizontalLine)}</div>${spaceDiv}`,
   );
   hljs.highlightAll();
+  addSnippetLineCounter();
 }
 
 //Parent function to append item to 'root' element depending on the type
@@ -718,6 +719,29 @@ function updateDynamicInputFields() {
 
     console.log("Updated:", name, "→", value);
   });
+}
+
+function addSnippetLineCounter() {
+  $("pre code")
+    .not(".processed")
+    .each(function () {
+      const code = $(this);
+      code.addClass("processed");
+
+      const lines = code.html().split("\n");
+
+      const formatted = lines
+        .map(
+          (line, index) => `
+        <span class=snippet-line>
+          <span class="snippet-line-counter">${index + 1}</span>
+          <span class="snippet-code-line">${line}</span>
+        </span>`,
+        )
+        .join("\n");
+
+      code.html(formatted);
+    });
 }
 
 const spaceDiv = `<div class="mt-6"></div>`;
