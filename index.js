@@ -417,8 +417,8 @@ function consistentSlugify(str) {
   );
 }
 
-async function appendMdNotesToRoot() {
-  const sortedMdPages = [...markdownNotes.pages].sort((a, b) =>
+async function appendMdNotesToRoot(objArray, index) {
+  const sortedMdPages = [...objArray[index].pages].sort((a, b) =>
     a.replaceAll("_", " ").localeCompare(b.replaceAll("_", " "), undefined, {
       sensitivity: "base",
     }),
@@ -480,7 +480,7 @@ function appendToRoot(objArray, index) {
     appendSectionListToRoot(objArray[index]);
 
   objArray[index].type === "markdown-pages" &&
-    appendMdNotesToRoot(objArray[index]);
+    appendMdNotesToRoot(objArray, index);
 }
 
 /* function appendSectionToNavbar(objArray) {

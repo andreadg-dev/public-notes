@@ -2,22 +2,22 @@
 
 - [MY JAVASCRIPT NOTES](#my-javascript-notes)
   - [**Loop methods: Example 1**](#loop-methods-example-1)
-  - [**High Order Functions: caluclator()**](#high-order-functions-caluclator)
-  - [**JavaScript and DOM CheatSheet**](#javascript-and-dom-cheatsheet)
-  - [**addEventListener()**](#addeventlistener)
-  - [**new Audio() \& .play() methods to play a sound**](#new-audio--play-methods-to-play-a-sound)
-  - [**Pass a variable between quotes**](#pass-a-variable-between-quotes)
-  - [**Quick tips**](#quick-tips)
-  - [**The importance of Minifying your code**](#the-importance-of-minifying-your-code)
-  - [**The Separation of Concerns**](#the-separation-of-concerns)
-  - [**Destructuring in JavaScript**](#destructuring-in-javascript)
+  - [High Order Functions: caluclator()](#high-order-functions-caluclator)
+  - [JavaScript and DOM CheatSheet](#javascript-and-dom-cheatsheet)
+  - [addEventListener()](#addeventlistener)
+  - [new Audio() \& .play() methods to play a sound](#new-audio--play-methods-to-play-a-sound)
+  - [Pass a variable between quotes](#pass-a-variable-between-quotes)
+  - [Quick tips](#quick-tips)
+  - [The importance of Minifying your code](#the-importance-of-minifying-your-code)
+  - [The Separation of Concerns](#the-separation-of-concerns)
+  - [Destructuring in JavaScript](#destructuring-in-javascript)
 
 
 
 
 ## **Loop methods: Example 1**
 
-<span style="display:block;"> **For** </span>
+**For** 
 
 ```js
 let numberOfDrums = document.querySelectorAll(".drum").length;
@@ -30,7 +30,7 @@ function handleClick() {
 }
 ```
 
-<span style="display:block;"> **Foreach** </span>
+ **Foreach** 
 
 ```js
 document.querySelectorAll(".drum").forEach((drum) => {
@@ -42,7 +42,7 @@ function handleClick() {
 }
 ```
 
-<span style="display:block;"> **Comments** </span> 
+ **Comments**  
 
 In the example above all the button elements with class .drum are queried and are passed into loop methods to add the alert "I got clicked" when clicked on. When adding a function to a method, like in this case, you can either pass a known delcared function without round brackets, for instance `selectedelement.addEventListener("click", handleClick);` or pass an anonimous function, for instance `selectedelement.addEventListener("click", function (){ //function_code_block});`
 
@@ -51,7 +51,7 @@ In the example above all the button elements with class .drum are queried and ar
 
 
 
-## **High Order Functions: caluclator()**
+## High Order Functions: caluclator() ##
 
 ```js
 function add(num1,num2){
@@ -74,7 +74,7 @@ function calculator(num1,num2,operator){
     return operator(num1,num2)
 }
 ```
-<span style="display:block;"> **Comments** </span> 
+ **Comments**  
 In the example above, in the calculator function we are able to pass as input, the numbers needed for the calculations and then we can call the function we want that will take the place of `operator`, for instance:
 
 ```js
@@ -86,22 +86,22 @@ calculator(2,3,divide); //output is 0.6666666666666666
 
 
 
-## **JavaScript and DOM CheatSheet**
+## JavaScript and DOM CheatSheet ## 
 
-<span style="display:block;"> **Getting properties/attributes** </span>
+ **Getting properties/attributes** 
 
 When using querySelector, we refer to the selectors as we do in css. Classes are preeced by a dot, ids are preeced by a hash symbol and html are written as they are:
 
-<span style="display:block;"> **html** </span>
+ **html** 
 
 ```html
 <p class="class"><a href="https://www.google.com/">Google</a></p>
 <p class="class"><a href="https://www.youtube.com/">Youtube</a></p>
 <p id="id"><a href="https://www.wikipedia.org/">Wikipedia</a></p>
 ```
-<br>
 
-<span style="display:block;"> **javascript - querySelector()** </span>
+
+ **javascript - querySelector()** 
 
 ```js
 document.querySelector(".class"); 
@@ -136,10 +136,10 @@ document.querySelector("a").attributes;
 document.querySelector("a").getAttribute("href");
 //returns the value of the attribute of the fist element found in the page with that corresponding element selector, in this case: 'https://www.google.com'
 ```
-<br>
 
 
-<span style="display:block;"> **javascript - getElement(s)By...** </span>
+
+ **javascript - getElement(s)By...** 
 
 ```js
 //getElementsByTagName()
@@ -173,9 +173,9 @@ document.getElementById("id").innerHTML;
 ```
 All `getElementsBy..` retrieve an array of values. In order to get or set values for one of the item in the array, you have specify which one by declaring its index number between square brackets. The exception is `getElementById`, since there is always only one ID in a web page.
 
-<br>
 
-<span style="display:block;"> **javascript - querySelectorAll()** </span>
+
+ **javascript - querySelectorAll()** 
 
 ```js
 document.querySelectorAll("p");
@@ -196,9 +196,9 @@ document.querySelectorAll("a").forEach((aTagElements) =>{console.log(aTagElement
 In the example above, the `forEach()` method allows us to call a function on every singly item in the array.
 
 
-<br>
 
-<span style="display:block;"> **javascript - first/lastElementChild** </span>
+
+ **javascript - first/lastElementChild** 
 
 ```js
 document.firstElementChild;
@@ -216,9 +216,9 @@ document.firstElementChild.lastElementChild;
 
 You can keep adding `.firstElementChild` and `.lastElementChild` to target a specific element following the logic of the DOM tree. Obviously, a much better, faster and more efficient way is to target the element directly by using the `.querySelector()` or the `.getElementBy...` methods
 
-<br>
 
-<span style="display:block;"> **Setting/Updating properties/attributes and calling methods** </span>
+
+ **Setting/Updating properties/attributes and calling methods** 
 
 ```js
 //Setting/updating a property/attribute or calling methods when using methods that retrieve single items
@@ -272,7 +272,7 @@ As a rule of thumb (look for <strong>Separation of Concerns</strong>), it is con
 
 
 
-## **addEventListener()**
+## addEventListener() ##
 
 With this method, we can pass and then query the event information of the event that was triggered, for instance, when pressing a key on a keyboard, when clicking or double clicking an element on the page:
 
@@ -288,7 +288,7 @@ document.addEventListener("click", function(event){console.log(event)});
 
 ```
 
-## **new Audio() & .play() methods to play a sound**
+## new Audio() & .play() methods to play a sound ##
 
 In the example below, we use a keydown together with the function `makeSound()` to play a sound when pressing any of the following letters: w, a, s, d, j, k, l. In this case the EventListener is added to the whole document but it can also be added to a sigle element on the page, for instance a button:
 
@@ -347,7 +347,7 @@ function makeSound(key) {
 
 
 
-## **Pass a variable between quotes**
+## Pass a variable between quotes ##
 
 ```js
   let buttonSound = new Audio(`sounds/${chosenColour}.mp3`);
@@ -365,7 +365,7 @@ Let's imagine that you have coloured buttons on a page and everytime that you cl
 
 
 
-## **Quick tips**
+## Quick tips ##
 
 - To access the debugger in Google Chrome, type `debugger;` in the console, hold `shift` and hit `enter`, call the function you need to debug and hit `enter` again.
 - Javascript is case-sensitive and uses camel-casing!!
@@ -378,7 +378,7 @@ Let's imagine that you have coloured buttons on a page and everytime that you cl
 
 
 
-## **The importance of Minifying your code**
+## The importance of Minifying your code ##
 
 Minify your js and css files on `https://www.minifier.org/`. Minifier removes whitespace, strips comments, combines files, and optimizes/shortens a few common programming patterns. Minification is the process of minimizing code and markup in your web pages and script files. It’s one of the main methods used to reduce load times and bandwidth usage on websites. Minification dramatically improves site speed and accessibility, directly translating into a better user experience. It’s also beneficial to users accessing your website through a limited data plan and who would like to save on their bandwidth usage while surfing the web. When creating HTML, CSS and JavaScript (JS) files, developers tend to use spacing, comments and well-named variables to make code and markup readable for themselves. It also helps others who might later work on the assets. While this is a plus in the development phase, it becomes a negative when it comes to serving your pages. Web servers and browsers can parse file content without comments and well-structured code, both of which create additional network traffic without providing any functional benefit.
 
@@ -386,7 +386,7 @@ Minify your js and css files on `https://www.minifier.org/`. Minifier removes wh
 
 
 
-## **The Separation of Concerns**
+## The Separation of Concerns ##
 Even if you can include styling in your JavaScript code, it's bad practice. Instead of doing that, create a class in css with your styling and then use JavaScript to add that class to the corresponding element when performing a certain action.
 
 
@@ -394,7 +394,7 @@ Even if you can include styling in your JavaScript code, it's bad practice. Inst
 
 
 
-## **Destructuring in JavaScript**
+## Destructuring in JavaScript ##
 Even if you can include styling in your JavaScript code, it's bad practice. Instead of doing that, create a class in css with your styling and then use JavaScript to add that class to the corresponding element when performing a certain action.
 
 ```js
@@ -431,7 +431,7 @@ console.log(`Our const cars is an ${typeof(cars)} contaning ${cars.length} ${typ
 ```
 
 **Console Output**
-```
+```text
 Our const cars is an object contaning 2 objects. We first destructure this object array assigning random var names chosen by us 'honda' and 'tesla' using square brackets that will contain the first and the second items of the array respectively {"model":"Honda Civic","coloursByPopularity":["black","silver"],"speedStats":{"topSpeed":140,"zeroToSixty":8.5}} and {"model":"Tesla Model 3","coloursByPopularity":["red","white"],"speedStats":{"topSpeed":150,"zeroToSixty":3.2}}. Then we access the object property by using the same property name found in the object and not a random one, in this case 'coloursByPopularity' and since this property contains an array, we can choose random var names to assign the items inside, 'hondaTopColour' will be assigned to black and 'hondaSecondColour' to silver and at the same time 'teslaTopColour' will be assigned to red and  'teslaSecondColour' to white. Eventually we access the object 'speedStats' inside of each 'cars' object, we call the first and the second properties respectively and change their name using the colon sign and therefore assigning 140 to 'hondaTopSpeed', 8.5 to 'hondaZeroToSixty' and 150 to 'teslaTopSpeed', 3.2 to 'teslaZeroToSixty' 
 ```
 

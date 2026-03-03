@@ -1,8 +1,8 @@
-# [Ubuntu] Nextjs project - Unsupported engine: required: { node: '>=20.9.0' } #
+# [Linux] Nextjs project - Unsupported engine: required: { node: '>=20.9.0' } #
 
 I got this error when launching `npm install` to install all my next.js project dependencies:
 
-```sh
+```text
 npm WARN EBADENGINE Unsupported engine {
 npm WARN EBADENGINE   package: 'next@16.1.3',
 npm WARN EBADENGINE   required: { node: '>=20.9.0' },
@@ -17,7 +17,6 @@ npm ERR! network In most cases you are behind a proxy or have bad network settin
 npm ERR! network 
 npm ERR! network If you are behind a proxy, please make sure that the
 npm ERR! network 'proxy' config is set properly.  See: 'npm help config'
-
 npm ERR! A complete log of this run can be found in:
 ```
 

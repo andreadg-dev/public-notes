@@ -1,31 +1,31 @@
 # MY NODE.JS NOTES #
 
 - [MY NODE.JS NOTES](#my-nodejs-notes)
-  - [**Bash Basics**](#bash-basics)
+  - [Bash Basics](#bash-basics)
   - [Node.js](#nodejs)
-  - [**Node Package Manager**](#node-package-manager)
-  - [**Express.js: Creating our first server**](#expressjs-creating-our-first-server)
-  - [**Handling requests: GET request**](#handling-requests-get-request)
-  - [**Handling requests: POST request**](#handling-requests-post-request)
-  - [**API Basics**](#api-basics)
-    - [**JSON Serialization**](#json-serialization)
-    - [**Example: making GET requests**](#example-making-get-requests)
-    - [**Example: making GET/POST requests**](#example-making-getpost-requests)
-  - [**How to serve static files on a server**](#how-to-serve-static-files-on-a-server)
-  - [**Git**](#git)
-  - [**CommonJS VS ES6 syntax: `require()`, `import from`, `function(){}`, `() =>`**](#commonjs-vs-es6-syntax-require-import-from-function--)
-  - [**EJS: Embedded Javascript Templating**](#ejs-embedded-javascript-templating)
-    - [**EJS Tags**](#ejs-tags)
-    - [**EJS Tags: Practical example**](#ejs-tags-practical-example)
-  - [**Useful Chrome add-ons**](#useful-chrome-add-ons)
-  - [**Useful Libraries**](#useful-libraries)
+  - [Node Package Manager](#node-package-manager)
+  - [Express.js: Creating our first server](#expressjs-creating-our-first-server)
+  - [Handling requests: GET request](#handling-requests-get-request)
+  - [Handling requests: POST request](#handling-requests-post-request)
+  - [API Basics](#api-basics)
+    - [JSON Serialization](#json-serialization)
+    - [Example: making GET requests](#example-making-get-requests)
+    - [Example: making GET/POST requests](#example-making-getpost-requests)
+  - [How to serve static files on a server](#how-to-serve-static-files-on-a-server)
+  - [Git](#git)
+  - [CommonJS VS ES6 syntax: `require()`, `import from`, `function(){}`, `() =>`](#commonjs-vs-es6-syntax-require-import-from-function--)
+  - [EJS: Embedded Javascript Templating](#ejs-embedded-javascript-templating)
+    - [EJS Tags](#ejs-tags)
+    - [EJS Tags: Practical example](#ejs-tags-practical-example)
+  - [Useful Chrome add-ons](#useful-chrome-add-ons)
+  - [Useful Libraries](#useful-libraries)
 
 
 
 
-## **Bash Basics**
+## Bash Basics ##
 
-<span style="display:block;"> **Commands** </span>
+ **Commands** 
 
 - `echo $SHELL`
 - `pwd` = print working directory
@@ -51,9 +51,9 @@
 - `atom .` = opens current directory into Atom 
 - `explorer .` = opens current directory in File Explorer (Windows)
 
-<br>
 
-<span style="display:block;"> **Keyboard shortcuts** </span>
+
+ **Keyboard shortcuts** 
 - CTRL + A = goes to the beginning of the typed string
 - CTRL + E = goes to the end of the typed string
 - CTRL + U = clears current typed string
@@ -68,7 +68,7 @@
 
 Node.js is an open source server environment that allows to use JavaScript outside of a web browser and therefore it is able to perform backend operations and interact with and manipulate your database or local files on your server. Node.js is portable since it can run on various platforms and uses JavaScript as language. It runs single threaded, non-blocking, asynchronous programming, which is very memory efficient. 
 
-<span style="display:block;"> **Bash commands** </span>
+ **Bash commands** 
 
 - `node testFile.js` = runs the `testFile.js` file in the terminal
 - `nodemon testFile.js` = runs the `testFile.js` file in the terminal using nodemon (see below)
@@ -76,9 +76,9 @@ Node.js is an open source server environment that allows to use JavaScript outsi
 - `.exit` = exits the REPL
 - CTRL + C = exits the REPL
 
-<br>
 
-<span style="display:block;"> **The FileSystem module** </span>
+
+ **The FileSystem module** 
 
 The FileSystem module is a built-in node.js module that allows JavaScript to interact with local file on the server.
 
@@ -91,12 +91,16 @@ fs.copyFileSync("file1.txt", "file2.txt");
 ```
 
 
-## **Node Package Manager**
+## Node Package Manager ##
 The Node Package Manager (npm) It's a library and registry for JavaScript software packages. npm also has command-line tools to help you install the different packages and manage their dependencies. npm is installed together with node.js. In the example below, you can see how to initialize the npm inside your project folder and create a package.json file that will contain all project details and its dependencies:
 
 ```sh
 cd /project/folder #go to the corresponding project folder
 npm init #initialize npm. To speed things up, you could also use 'npm init -y'. The '-y' says yes to all the initialization questions
+```
+
+Follow instructions on terminal:
+```text
 package name: (introtonodejs) #type a package name or hit Enter to accept the sugguestion between brackets
 version: (1.0.0) #type a version name or hit Enter to accept the sugguestion between brackets
 description: This is an introduction to node.js #type a description
@@ -123,15 +127,14 @@ About to write to C:\WebDev\introToNodeJs\package.json:
 
 Is this OK? (yes) #hit enter if the aforementioned summary is connect. This will create the project package.json file
 ```
+
 To look for and install a package/library that does not come preinstalled by default with node.js, visit https://www.npmjs.com/, look for the corresponding item, and then type `npm install package_name`. When installing new packages, these will be included automatically in the `dependencies` section of the project package.json file and the necessary package files (code files, their dependencies etc) will be downloaded and saved in your project `node_modules` subfolder (automatically created). Once installed, the module has to be required (like in the FileSystem example above) and only then we can tap into the module built-in functions/methods and properties, for instance:
 
 ```sh
-#Bash
 npm install superheroes #installs the module called "superheroes" via the git bash terminal
 ```
 
 ```js
-//Javascript
 const superheroes = require("superheroes");
 superheroes.random();
 ```
@@ -141,7 +144,7 @@ This module has only the `.random()` functions and it generates random superhero
 
 
 
-## **Express.js: Creating our first server**
+## Express.js: Creating our first server ##
 Express.js is a small framework that works on top of Node.js web server functionality to simplify its APIs and add helpful new features. 
 
 When creating a brand new project, we create a new folder, a js start point file and the corresponding `package.json` file by going through the steps mentioned above after typing `npm init` in the CLI.
@@ -168,7 +171,7 @@ We then run the js file from the terminal (cmd, powershell, bash etc) by typing 
 
 
 
-## **Handling requests: GET request**
+## Handling requests: GET request ##
 
 Install the nodemon library, like so: `npm install -g nodemon`. You might have to do that via an elevated terminal. nodemon is a tool that helps develop Node.js based applications by automatically restarting the node application when file/source code changes in the directory are detected. nodemon does not require any additional changes to your code or method of development. nodemon is a replacement wrapper for node. To use `nodemon`, replace the word `node` on the command line when executing your script.
 
@@ -198,11 +201,11 @@ We then run the js file from the terminal (cmd, powershell, bash etc) by typing 
 
 
 
-## **Handling requests: POST request**
+## Handling requests: POST request ##
 
 We install the `body-parser` library to be able to process `post` form requests using the following command: `npm install body-parser`. Once installed, `body-parser` has to be required, as usual, and then enabled using the express' `use()` method. See example below:
 
-<span style="display:block;"> **HTML** </span>
+ **HTML** 
 
 ```html
 <!--For this example, we only need an extract the body of the page-->
@@ -217,7 +220,7 @@ We install the `body-parser` library to be able to process `post` form requests 
     ...
 ```
 
-<span style="display:block;"> **JavaScript** </span>
+ **JavaScript** 
 
 ```js
 const express = require("express"); //we require the express library
@@ -246,7 +249,7 @@ app.listen(3000, function () {
   console.log("Server started on port 3000");
 });
 ```
-<span style="display:block;"> **Comments** </span> 
+ **Comments**  
 - The html form `action` attribute defines where the data gets sent. Its value must be a valid relative or absolute URL. If this attribute isn't provided, the data will be sent to the URL of the page containing the form — the current page.
 - There can only be one `res.send()` per `app.get()`/`app.post()` in the same javascript file. On the other hand, we can send as many `res.write()` as we want and then add `res.send()` at the end.
 
@@ -256,14 +259,14 @@ app.listen(3000, function () {
 
 
 
-## **API Basics**
+## API Basics ##
 
 Two simple examples of APIs:
 - https://kanye.rest/
 - https://sv443.net/jokeapi/v2/
 - https://bored-api.appbrewery.com/
 
-<br>
+
 
 Basic concepts:
 - **Base URL**
@@ -295,10 +298,10 @@ When sending a request, either via console, script, postman or browser, we get b
 
 In Google Chrome, there is an extension available that allows you to "prettify" the JSON response: https://chrome.google.com/webstore/detail/json-viewer-pro/eifflpmocdbdmepbjaopkkhbfmdgijcc/related (JSON Viewer PRO). This is an example of a JSON formatted response, we receive when using OpenWeatherMap api, which provides weather information based on the queries location:
 
-<strong>Request</strong>
+**Request**
 https://api.openweathermap.org/data/2.5/weather?q=brussels&appid=[your_appid]&units=metric
 
-<strong>Response in JSON</strong>
+**Response in JSON**
 ```json
 {
     "coord": {
@@ -345,7 +348,7 @@ https://api.openweathermap.org/data/2.5/weather?q=brussels&appid=[your_appid]&un
 }
 ```
 
-### **JSON Serialization** ###
+### JSON Serialization ###
 JSON stands for JavaScript Object Notation and it is called like that because it is based on how objects are structured in JavaScript. JSON serialization is the process of converting a JavaScript object into a JSON string by using the `JSON.stringify()` method. It serializes JavaScript objects so that they can be easily transmitted over a network or stored in a file. When instead we want to convert a JSON string into a JS Object, we can use the `JSON.parse()` method instead:
 
 **JS Object => JSON string**
@@ -371,13 +374,13 @@ let serialisedObject = JSON.stringify(newObject);
 
 console.log(serialisedObject);
 ```
-<br>
+
 
 The output will be:
 ```json 
 {"firstName":"John","lastName":"Doe","city":"Brussels","age":25,"education":[{"degree":"BA in Modern Languages","university":"University of Glasgow"},{"degree":"MSc in Chinese Studies","university":"University of Manchester"}]}
 ```
-<br>
+
 
 **JSON string => JS Object**
 ```js
@@ -386,7 +389,7 @@ let JSONstring =
 let JSObject = JSON.parse(JSONstring);
 console.log(JSObject);
 ```
-<br>
+
 
 The output will be:
 ```js
@@ -410,10 +413,10 @@ The output will be:
 The `JSON.parse()` method is also used to parse hexadecimal code into a JS Object.
 
 
-### **Example: making GET requests**
+### Example: making GET requests ##
 In the example below, we are using the built-in `https` library to make a get request to `api.openweathermap.org` to retrieve weather hexadecimal data about Brussels, parse them into JSON, JSON string, and YAML:
 
-<span style="display:block;"> **JavaScript** </span>
+ **JavaScript** 
 
 ```js
 //npm install json-to-pretty-yaml
@@ -464,13 +467,12 @@ app.get("/", function (req, res) {
 
 ```
 
-<span style="display:block;"> **Output** </span>
+ **Output** 
 
-```bash
-##This is the response status code:##
-200
+This is the response status code: `200`
 
-##This is data parsed to JSON thanks to JSON.parse(). It is originally hexadecimal code:##
+This is data parsed to JSON thanks to JSON.parse(). It is originally hexadecimal code:
+```js
 {
   coord: { lon: 4.3488, lat: 50.8504 },
   weather: [ { id: 800, main: 'Clear', description: 'clear sky', icon: '01d' } ],
@@ -499,11 +501,15 @@ app.get("/", function (req, res) {
   name: 'Brussels',
   cod: 200
 }
+```
 
-##This is JSON parsed into a single string thanks to JSON.stringify():##
+This is JSON parsed into a single string thanks to `JSON.stringify()`:
+```json
 {"coord":{"lon":4.3488,"lat":50.8504},"weather":[{"id":800,"main":"Clear","description":"clear sky","icon":"01d"}],"base":"stations","main":{"temp":14.6,"feels_like":14.26,"temp_min":13.78,"temp_max":15.46,"pressure":1011,"humidity":82},"visibility":10000,"wind":{"speed":5.66,"deg":240},"clouds":{"all":0},"dt":1688362200,"sys":{"type":1,"id":1227,"country":"BE","sunrise":1688355254,"sunset":1688414337},"timezone":7200,"id":2800866,"name":"Brussels","cod":200}
+```
 
-##This is JSON parsed into a YAML:##
+This is JSON parsed into a YAML:
+```yaml
 coord:
   lon: 4.3488
   lat: 50.8504
@@ -540,7 +546,7 @@ cod: 200
 ```
 
 
-### **Example: making GET/POST requests**
+### Example: making GET/POST requests ###
 
 ```js
 //npm install json-to-pretty-yaml
@@ -622,7 +628,7 @@ app.post("/", function (req, res) {
 ```
 
 
-<span style="display:block;"> **Comments** </span>
+ **Comments** 
 - To better understand status code we get back when making API requests, please see: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 
 
@@ -630,7 +636,7 @@ app.post("/", function (req, res) {
 
 
 
-## **How to serve static files on a server**
+## How to serve static files on a server ##
 
 We can achieve this by using the express `static()` method, for instance:
 ```js
@@ -660,9 +666,9 @@ More info: https://expressjs.com/en/starter/static-files.html
 
 
 
-## **Git**
+## Git ## 
 
-<span style="display:block;"> **Commands** </span>
+ **Commands** 
 
 - `git init` = creates a git local repository and start file changes
 - `git status` = checks what is inside the working directory or staging area
@@ -693,7 +699,7 @@ In case of the error `fatal: unable to access 'https://github.com/andreadg-dev/n
 
 
 
-<span style="display:block; padding-top: 1rem"> **.gitignore** </span>
+**.gitignore** 
 The purpose of gitignore files is to ensure that certain files not tracked by Git remain untracked. To stop tracking a file that is currently tracked, use git rm --cached to remove the file from the index. The filename can then be added to the .gitignore file to stop the file from being reintroduced in later commits. For instance, files you would want to ignore are files containing API keys or passwords or node_modules since hosting site usually automatically install and load libraries as instructed in the package.json file.
 Useful gitignore templates can be found here: https://github.com/github/gitignore (for instance Node.gitignore).
 
@@ -704,7 +710,7 @@ Learn git branching: https://learngitbranching.js.org/
 
 
 
-## **CommonJS VS ES6 syntax: `require()`, `import from`, `function(){}`, `() =>`**
+## CommonJS VS ES6 syntax: `require()`, `import from`, `function(){}`, `() =>` ##
 
 **CommonJS syntax (Node.js pre-ES6):**
 ```javascript
@@ -723,7 +729,7 @@ app.listen(port, function() {
 ```
 In this syntax, you use `require` to import modules, which is the traditional way of importing in Node.js before ES6 modules were supported. It is still widely used in Node.js applications, especially in those with older codebases. 
 
-<br>
+
 
 **ES6 syntax (using ECMAScript modules):**
 ```javascript
@@ -749,7 +755,7 @@ Moreover, as you can see from the examples above, ES6 introduced arrow functions
 
 
 
-## **EJS: Embedded Javascript Templating**
+## EJS: Embedded Javascript Templating ##
 
 EJS or Embedded Javascript Templating is a templating engine used by Node.js. Template engine that helps to render dynamic HTML content pages by combining static HTML files with data or dynamically generated content from the backend/server side.
 
@@ -780,7 +786,7 @@ app.get("/", (req, res) => {
 app.listen(port, console.log(`Server running on port ${port}`));
 
 ```
-<br>
+
 
 **HTML/EJS** (file title and extension: `dynamicHTMLpage.ejs`)
 ```html
@@ -800,7 +806,7 @@ app.listen(port, console.log(`Server running on port ${port}`));
 The .js file, beside importing ejs and setting as the view engine, has to contain a render function in the `app.get/post` code block, for instance: `res.render("dynamicHTMLpage.ejs", { dynamicContent })`. You should first mention the name of the page the content should be rendered to and then the content. When using ejs, our HTML dynamic page must have a `.ejs` extension instead of `.html` so that the EJS syntax can be correctly interpreted, as in this case: `<%= dynamicContent %>`. The name of page and the content variable or value should match the target `.ejs` file. Moreover, by default, EJS expect the `.ejs` to be stored in a `views` project subfolder. It is possible to change the default folder that is supposed to contains these template pages, for instance: `app.set("views", __dirname);`. This line of code would set the default views directory to the current directory.
 
 
-### **EJS Tags**
+### EJS Tags ##
 
 - `<%= variable %>` = this tag will interpret the content as JavaScript and will display an output (variable's output)
 - `<% console.log("Hello World!") %>` = this tag will interpret the content as executable JavaScript and execute it
@@ -809,7 +815,7 @@ The .js file, beside importing ejs and setting as the view engine, has to contai
 - `<%# This is a comment %>` = this tag will interpret its content as only a comment and not code
 - `<%- include("header.ejs")%>` = insert other ejs files in the current one using the ejs function `include()`. Really useful tag to reuse parts in several pages that do not change, like headers, footers, copyright, contact info etc... 
 
-### **EJS Tags: Practical example**
+### EJS Tags: Practical example ##
 
 **JavaScript**
 ```js
@@ -825,7 +831,7 @@ app.get("/", (req, res) => {
     title: "EJS Tags",
     seconds: new Date().getSeconds(),
     items: ["apple", "banana", "cherry"],
-    htmlContent: "<strong>This is some strong text</strong>",
+    htmlContent: "** This is some strong text **",
   };
   res.render("index.ejs", data);
 });
@@ -835,11 +841,11 @@ app.listen(port, () => {
 });
 
 ```
-<br>
+
 
 **HTML/EJS**
 
-```html
+```ejs
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -867,7 +873,7 @@ app.listen(port, () => {
 </html>
 
 ```
-<span style="display:block;"> **Comments** </span>
+ **Comments** 
 - When using the EJS tags to include JavaScript code (`<% %>`), these pair of tags must be used on each line of the javascript code block.
 - When using `<%- include("file.ejs") %>`, the file we want to include must also be in the VIEWS folder, unless you set the default folder as another one.
 - When passing the whole object `res.render("index.ejs", data);` to the ejs file, you can then directly refer to its properties, for instance `title`, `seconds`, etc. If you instead write the line with curly braces `res.render("index.ejs",{ data });`, you will have to access the object properties using the dot syntax, `data.title`, `data.seconds`, etc
@@ -877,11 +883,11 @@ app.listen(port, () => {
 
 
 
-## **Useful Chrome add-ons**
+## Useful Chrome add-ons ##
 - **JSON Viewer Pro**: prettifies JSON formatted data and allows to copy path to keys and values - https://chrome.google.com/webstore/detail/json-viewer-pro/eifflpmocdbdmepbjaopkkhbfmdgijcc
 
 
-## **Useful Libraries**
+## Useful Libraries ##
 - `npm install express`: web server framework for node.js - https://www.npmjs.com/package/express
 - `npm install nodemon`: automatically restarts the node application when file changes in the directory are detected - https://www.npmjs.com/package/nodemon
 - `npm install axios`: makes http requests from node.js - https://www.npmjs.com/package/axios 

@@ -43,7 +43,7 @@ run this: `npm config set registry https://registry.npmjs.org/`
 
 ## **Unable to get local issuer certificate** ##
 In case you run into the error below:
-```bash
+```text
 Error: unable to get local issuer certificate
     at TLSSocket.onConnectSecure (node:_tls_wrap:1535:34)
     at TLSSocket.emit (node:events:513:28)
@@ -173,7 +173,7 @@ In summary, the "public" directory is specifically designed for serving static f
 - Install GitHub CLI
 - Execute in a terminal: `gh auth login`
 - What happens next, for instance:
-```
+```text
   - ? What account do you want to log into? GitHub.com
   - ? What is your preferred protocol for Git operations? HTTPS
   - ? Authenticate Git with your GitHub credentials? Yes

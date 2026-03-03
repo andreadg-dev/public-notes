@@ -7,7 +7,7 @@
 - Open your WSL terminal
 - Type `curl https://google.com` > Output error:
 
-```
+```text
 curl: (60) SSL certificate problem: unable to get local issuer certificate
 More details here: https://curl.se/docs/sslcerts.html
 curl failed to verify the legitimacy of the server and therefore could not
@@ -30,7 +30,7 @@ how to fix it, please visit the web page mentioned above.
 - Open your WSL terminal
 - Type a wget command to download any package, for instance `wget https://github.com/mattermost/mattermost-helm/releases/download/mattermost-team-edition-6.6.52/mattermost-team-edition-6.6.52.tgz` > Output error:
 
-```
+```text
 --2024-04-23 12:51:39--  https://github.com/mattermost/mattermost-helm/releases/download/mattermost-team-edition-6.6.52/mattermost-team-edition-6.6.52.tgz
 Resolving github.com (github.com)... 140.82.121.4
 Connecting to github.com (github.com)|140.82.121.4|:443... connected.

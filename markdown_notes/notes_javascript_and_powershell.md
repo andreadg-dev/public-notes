@@ -22,7 +22,7 @@
 
 ## **Declare and modify a variable/array**
 
-<span style="display:block;"> **PowerShell** </span>
+**PowerShell** 
 
 ```ps1
 #String variable
@@ -34,7 +34,7 @@ $buttonColors = ("green", "red", "yellow", "blue")
 $buttonColors = ("green", "red", "yellow", "purple")
 ```
 
-<span style="display:block;"> **JavaScript** </span>
+**JavaScript** 
 
 ```js
 //String variable
@@ -46,9 +46,8 @@ let buttonColors = ["green", "red", "yellow", "blue"];
 buttonColors = ["green", "red", "yellow", "purple"];
 ```
 
-<span style="display:block;"> **Comments** </span> 
-
-- Every line in **JavaScript** ends with <strong>;</strong> 
+**Comments** 
+- Every line in **JavaScript** ends with **;**
 - Variables can be declared with either `var`, `let` or `const`. I will use `let` in all my notes.
 
 
@@ -58,7 +57,7 @@ buttonColors = ["green", "red", "yellow", "purple"];
 
 ## **Write output with first letter capitalised** 
 
-<span style="display:block;"> **PowerShell** </span>
+**PowerShell**
 
 ```ps1
 $name = Read-Host "Type your name here"
@@ -68,8 +67,7 @@ $restofCharacters = ($name.Substring(1, $len)).ToLower()
 Write-Output "Your name is $firstCharacter$restofCharacters" 
 ```
 
-<span style="display:block;"> **JavaScript** </span>
-
+**JavaScript** 
 ```js
 let yourName = window.prompt("Type your name here:");
 let firstCharacter = (yourName.slice(0,1)).toUpperCase();
@@ -77,7 +75,7 @@ let restOfCharacters = (yourName.slice(1,yourName.length).toLowerCase());
 alert("Your name is " + firstCharacter + restOfCharacters);
 ```
 
-<span style="display:block;"> **Comments** </span> 
+**Comments** 
 `Read-Host` prompts user for input directly in the Shell, whereas the **JavaScript** `prompt()` or `window.prompt()` methods prompt the user to type an input in a browser prompt window
 
 
@@ -86,10 +84,9 @@ alert("Your name is " + firstCharacter + restOfCharacters);
 
 ## **Examples of function with a single parameter: getMilk**
 
-<span style="display:block;"> **PowerShell** </span>
+**PowerShell** 
 
 ```ps1
-
 function Get-Milk {
     #cost of a bottle of milk is 1.5$
     [CmdletBinding()]
@@ -116,7 +113,7 @@ function Get-Milk($money) {
 Get-Milk(11)
 ```
 
-<span style="display:block;"> **JavaScript** </span>
+**JavaScript** 
 
 ```js
 function getMilk(money) {
@@ -127,7 +124,7 @@ function getMilk(money) {
   
   getMilk(11);
 ```
-<span style="display:block;"> **Comments** </span> 
+**Comments** 
 Output: `With 11 dollars, you can buy 7 bottles of milk` 
 In both PowerShell and JavaScript, we have to use the `[math]::Floor()` and `Math.floor()` functions to round up the result to an integer, a whole number and not a float (for instance 7,33333).
 
@@ -140,7 +137,7 @@ In both PowerShell and JavaScript, we have to use the `[math]::Floor()` and `Mat
 
 ## **Examples of function with a single parameter: getTimeLeft**
 
-<span style="display:block;"> **PowerShell** </span>
+**PowerShell** 
 
 ```ps1
 function Get-TimeLeft {
@@ -178,10 +175,9 @@ function Get-TimeLeft($Age) {
 }
 
 Get-TimeLeft(34)
-
 ```
 
-<span style="display:block;"> **JavaScript** </span>
+**JavaScript** 
 
 ```js
 function getTimeLeft(age){
@@ -198,11 +194,9 @@ console.log("You have " + days + " days, " + weeks + " weeks and " + months + " 
 }
 
 getTimeLeft(34);
-
 ```
 
-<span style="display:block;"> **Comments** </span> 
-
+**Comments** 
 Output: `You have 20440 days, 2912 weeks and 672 months left`
 
 
@@ -212,7 +206,7 @@ Output: `You have 20440 days, 2912 weeks and 672 months left`
 
 ## **Example of function with multiple parameters: getBmi**
 
-<span style="display:block;"> **PowerShell** </span>
+**PowerShell** 
 
 ```ps1
 function Get-Bmi {
@@ -240,7 +234,7 @@ function Get-Bmi([float]$Weight, [float]$Height){
 Get-Bmi -Weight 78 -Height 1.74
 ```
 
-<span style="display:block;"> **JavaScript** </span>
+**JavaScript** 
 
 ```js
 function getBmi(weight, height) {
@@ -262,7 +256,7 @@ function getBmi(weight, height) {
 getBmi(78, 1.74);
 ```
 
-<span style="display:block;"> **Comments** </span> 
+**Comments** 
 
 Output: `Your BMI is 26`
 
@@ -280,7 +274,7 @@ Output: `Your BMI is 26`
 
 ## **Math Functions: Math.Round()**
 
-<span style="display:block;"> **PowerShell** </span>
+**PowerShell** 
 
 ```ps1
 $float76 = 7.6
@@ -293,7 +287,7 @@ Write-Output "Float 7.6 becomes $float76"
 Write-Output "Float 7.4 becomes $float74"
 ```
 
-<span style="display:block;"> **JavaScript** </span>
+**JavaScript** 
 
 ```js
 let float76 = 7.6;
@@ -306,7 +300,7 @@ console.log("Float 7.6 becomes " + float76);
 console.log("Float 7.4 becomes " + float74);
 ```
 
-<span style="display:block;"> **Comments** </span> 
+**Comments** 
 
 Output: `Float 7.6 becomes 8` and `Float 7.4 becomes 7`
 
@@ -317,7 +311,7 @@ Output: `Float 7.6 becomes 8` and `Float 7.4 becomes 7`
 
 ## **Math Functions: Math.Floor()**
 
-<span style="display:block;"> **PowerShell** </span>
+**PowerShell** 
 
 ```ps1
 $float76 = 7.6
@@ -330,7 +324,7 @@ Write-Output "Float 7.6 becomes $float76"
 Write-Output "Float 7.4 becomes $float74"
 ```
 
-<span style="display:block;"> **JavaScript** </span>
+**JavaScript** 
 
 ```js
 let float76 = 7.6;
@@ -343,7 +337,7 @@ console.log("Float 7.6 becomes " + float76);
 console.log("Float 7.4 becomes " + float74);
 ```
 
-<span style="display:block;"> **Comments** </span> 
+**Comments** 
 
 Output: `Float 7.6 becomes 7` and `Float 7.4 becomes 7`
 
@@ -358,7 +352,7 @@ Output: `Float 7.6 becomes 7` and `Float 7.4 becomes 7`
 
 ## **Math Functions: Math.random()**
 
-<span style="display:block;"> **PowerShell** </span>
+**PowerShell** 
 
 ```ps1
 function Get-RandomDiceNumber{
@@ -375,7 +369,7 @@ Get-RandomDiceNumber
 Get-RandomPercentage
 ```
 
-<span style="display:block;"> **JavaScript** </span>
+**JavaScript** 
 
 ```js
 function getRandomPercentage(){
@@ -400,7 +394,7 @@ function getRandomDiceNumber(){
 getRandomDiceNumber();
 ```
 
-<span style="display:block;"> **Comments** </span> 
+**Comments** 
 PowerShell already has a set up CmdLet for this therefore we do not have to write the function from scratch as we did with JavaScript
 
 
@@ -410,12 +404,12 @@ PowerShell already has a set up CmdLet for this therefore we do not have to writ
 
 ## **Equal Operators**
 
-<span style="display:block;"> **PowerShell** </span>
+**PowerShell** 
 
 ```ps1
 ```
 
-<span style="display:block;"> **JavaScript** </span>
+**JavaScript** 
 
 ```js
 let a = 1;
@@ -457,7 +451,7 @@ if(a != b){
 
 ```
 
-<span style="display:block;"> **Comments** </span> 
+**Comments** 
 
 
 
@@ -466,12 +460,12 @@ if(a != b){
 
 ## **Example of function with parameter: getLeapYear**
 
-<span style="display:block;"> **PowerShell** </span>
+**PowerShell** 
 
 ```ps1
 ```
 
-<span style="display:block;"> **JavaScript** </span>
+**JavaScript** 
 
 ```js
 function getLeapYear(year) {
@@ -493,7 +487,7 @@ function getLeapYear(year) {
 getLeapYear(240);
 ```
 
-<span style="display:block;"> **Comments** </span> 
+**Comments** 
 Output: `Leap year.`
 
 
@@ -504,7 +498,7 @@ Output: `Leap year.`
 
 ## **Objects & Constructor Functions: HelpdeskAgent**
 
-<span style="display:block;"> **PowerShell** </span>
+**PowerShell** 
 
 ```ps1
 Class HelpdeskAgent {
@@ -572,7 +566,7 @@ $helpdeskAgent1.alertCaller.GetType().Name
 ```
 <br>
 
-<span style="display:block;"> **JavaScript** </span>
+**JavaScript** 
 
 ```js
 function HelpdeskAgent (fullName, languages, hasWorkPermit, age, yearsOfExperience){
@@ -634,7 +628,7 @@ typeof(helpdeskAgent1.alertCaller)
 
 ```
 
-<span style="display:block;"> **Comments** </span> 
+**Comments** 
 - A constructor function in JavaScript always starts with an uppercase letter to distinguish them from normal functions.
 
 
@@ -643,16 +637,16 @@ typeof(helpdeskAgent1.alertCaller)
 
 ## **NewSec**
 
-<span style="display:block;"> **PowerShell** </span>
+**PowerShell** 
 
 ```ps1
 ```
 
-<span style="display:block;"> **JavaScript** </span>
+**JavaScript** 
 ```js
 ```
 
-<span style="display:block;"> **Comments** </span> 
+**Comments** 
 
 
 

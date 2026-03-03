@@ -14,7 +14,7 @@
 
 **Step 5**. The first time, you won't have Vite installed. Type `y` to proceed. Then you'll be asked to select a framework. Use your down arrow to select `React`.
 
-```
+```text
 Need to install the following packages:
 create-vite@5.3.0
 Ok to proceed? (y) y
@@ -39,7 +39,7 @@ Ok to proceed? (y) y
 
 **Step 6**. You'll be asked to select a variant, select `Javascript`.
 
-```
+```text
 ? Select a variant: » - Use arrow-keys. Return to submit.
     TypeScript
     TypeScript + SWC
@@ -50,7 +50,7 @@ Ok to proceed? (y) y
 
 Then wait for the installation to finish, this will take a few minutes.
 
-```
+```text
 Scaffolding project in C:\temp\web-dev\my-react-app...
 
 Done. Now run:
