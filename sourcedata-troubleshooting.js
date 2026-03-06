@@ -1225,9 +1225,41 @@ const troubleshooting = {
   ],
 };
 
+function getLanguageLabel(item) {
+  if (typeof item === "string") {
+    text = item.toLowerCase();
+  }
+
+  if ((typeof item === "object") & (item.length > 0)) {
+    text = item.map((item) => {
+      return item.toLowerCase();
+    });
+  }
+
+  if (text.includes("text") || text.includes("plaintext")) return "Plain Text";
+  if (text.includes("-js") || text.includes("javascript")) return "JavaScript";
+  if (text.includes("-sh") || text.includes("bash")) return "Bash";
+  if (text.includes("cmd") || text.includes("dos")) return "DOS";
+  if (text.includes("sql")) return "SQL";
+  if (text.includes("html")) return "HTML/XML";
+  if (text.includes("xml")) return "HTML/XML";
+  if (text.includes("ps1") || text.includes("powershell")) return "PowerShell";
+  if (text.includes("json")) return "JSON";
+  if (text.includes("ejs")) return "EJS";
+  if (text.includes("nql") || text.includes("nexthink")) return "Nexthink NQL";
+  if (
+    text.includes("-ts") ||
+    text.includes("typescript") ||
+    text.includes("-tsx")
+  )
+    return "TypeScript";
+
+  return "Unidentified";
+}
+
 const troubleshooting_snippets = troubleshooting.snippets.map((item) => {
   return {
-    item: item.item,
+    item: `\`\`\`${getLanguageLabel(item.tags)}${item.item}\`\`\``,
     description: item.description,
     category: `troubleshooting_${item.category}`,
     tags: item.tags,

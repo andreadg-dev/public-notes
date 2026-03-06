@@ -8,6 +8,7 @@ const nextjs = {
       description: `pnpm as your package manager, as it's faster and more efficient than npm or yarn`,
       link: "https://nextjs.org/learn/dashboard-app/getting-started",
       logo: "nextjs",
+      tags: ["bash"],
     },
     {
       title: `npx create-next-app@latest ./  --ts`,
@@ -15,6 +16,7 @@ const nextjs = {
       with typescript in the current folder. You can choose the following options during the set up: <img width="600px" src=".\\images\\newnextapp-settings.jpg">`,
       link: "https://nextjs.org/learn/dashboard-app/getting-started",
       logo: "nextjs",
+      tags: ["bash"],
     },
     {
       title: `npm install @mui/material @emotion/react @emotion/styled @mui/material-nextjs @mui/icons-material`,
@@ -22,12 +24,14 @@ const nextjs = {
       see <a href="https://mui.com/material-ui/integrations/nextjs/#configuration">https://mui.com/material-ui/integrations/nextjs/#configuration</a> for the full configuration`,
       link: "https://mui.com/material-ui/integrations/nextjs/",
       logo: "nextjs",
+      tags: ["bash"],
     },
     {
       title: `npm run dev<br/>pnpm dev`,
       description: `These are two ways to start your Next.js development server on port 3000`,
       link: "https://nextjs.org/learn/dashboard-app/getting-started",
       logo: "nextjs",
+      tags: ["bash"],
     },
     {
       title: `npm run build<br/>npm run start`,
@@ -39,6 +43,7 @@ const nextjs = {
       <code>.next</code> folder.`,
       link: "",
       logo: "nextjs",
+      tags: ["bash"],
     },
     {
       title: `@tailwind base;<br/>
@@ -48,6 +53,7 @@ const nextjs = {
       you to quickly write utility classes directly in your React code.`,
       link: "https://tailwindcss.com/docs/styling-with-utility-classes",
       logo: "nextjs",
+      tags: ["css"],
     },
     {
       title: `CSS Modules`,
@@ -57,6 +63,7 @@ const nextjs = {
       border-bottom: 30px solid black;border-left: 20px solid transparent;}</code>`,
       link: "https://nextjs.org/learn/dashboard-app/css-styling",
       logo: "nextjs",
+      tags: ["text"],
     },
     {
       title: `clsx`,
@@ -74,6 +81,7 @@ const nextjs = {
       &gt;</code></pre>`,
       link: "https://www.npmjs.com/package/clsx",
       logo: "nextjs",
+      tags: ["text"],
     },
     {
       title: `next/font/google`,
@@ -82,9 +90,10 @@ const nextjs = {
       for instance <code>&lt;body className={&grave;\${inter.className} antialiased&grave;}&gt;{children}&lt;/body&gt;</code>`,
       link: "https://nextjs.org/learn/dashboard-app/optimizing-fonts-images",
       logo: "nextjs",
+      tags: ["text"],
     },
     {
-      title: `&lt;Image&gt;`,
+      title: `<Image>`,
       description: `You can import this component with <code>import Image from 'next/image';</code>.
       Next.js can serve static assets, like images, under the top-level <code>/public</code> folder. This component
       comes with automatic image optimization: preventing layout shift automatically when images are loading, resizing images to avoid 
@@ -104,9 +113,10 @@ const nextjs = {
       `,
       link: "https://nextjs.org/learn/dashboard-app/optimizing-fonts-images",
       logo: "nextjs",
+      tags: ["tsx"],
     },
     {
-      title: `&lt;Link /&gt;<br/>usePathname()`,
+      title: `<Link />\nusePathname()`,
       description: `You can import this component with <code>import Link from 'next/link';</code>. Next.js improves navigation 
       by automatically splitting your app's code by route segments instead of loading everything at once like a traditional 
       React SPA. This makes pages faster, isolates errors to individual pages, and reduces the amount of code the browser needs 
@@ -149,6 +159,7 @@ const nextjs = {
       </code></pre>`,
       link: "https://nextjs.org/learn/dashboard-app/navigating-between-pages",
       logo: "nextjs",
+      tags: ["tsx"],
     },
     {
       title: `page.tsx (ts,js,jsx)`,
@@ -162,6 +173,7 @@ const nextjs = {
       files can be safely colocated inside route segments in the app directory without accidentally being routable.`,
       link: "https://nextjs.org/learn/dashboard-app/creating-layouts-and-pages",
       logo: "nextjs",
+      tags: [],
     },
     {
       title: `layout.tsx (ts,js,jsx)`,
@@ -188,6 +200,7 @@ const nextjs = {
       </code></pre>`,
       link: "https://nextjs.org/learn/dashboard-app/creating-layouts-and-pages",
       logo: "nextjs",
+      tags: [],
     },
     {
       title: `notFound()<br/>not-found.tsx`,
@@ -218,6 +231,7 @@ const nextjs = {
       `,
       link: "https://nextjs.org/docs/app/api-reference/functions/not-found",
       logo: "nextjs",
+      tags: [],
     },
     {
       title: `loading.tsx (ts,js,jsx)`,
@@ -233,6 +247,7 @@ const nextjs = {
       `,
       link: "https://nextjs.org/docs/app/api-reference/file-conventions/loading",
       logo: "nextjs",
+      tags: [],
     },
     {
       title: `Route groups`,
@@ -243,6 +258,7 @@ const nextjs = {
       /dashboard/(overview)/page.tsx becomes /dashboard.`,
       link: "https://nextjs.org/learn/dashboard-app/streaming",
       logo: "nextjs",
+      tags: [],
     },
     {
       title: "'use client'",
@@ -261,6 +277,7 @@ const nextjs = {
       within them — the flow of rendering must always start from the server.`,
       link: "https://nextjs.org/learn/dashboard-app/adding-search-and-pagination",
       logo: "nextjs",
+      tags: [],
     },
     {
       title: "useSearchParams<br/>usePathname<br/>useRouter",
@@ -271,6 +288,7 @@ const nextjs = {
       Therefore the URL '.../dashboard/invoices' will include the search parameters and become '.../dashboard/invoices?query=lee'`,
       link: "https://nextjs.org/learn/dashboard-app/adding-search-and-pagination",
       logo: "nextjs",
+      tags: [],
     },
     {
       title: `pnpm i use-debounce`,
@@ -281,6 +299,7 @@ const nextjs = {
       it around the function that needs to be delayed <code>import { useDebouncedCallback } from 'use-debounce';</code>`,
       link: "https://nextjs.org/learn/dashboard-app/adding-search-and-pagination#best-practice-debouncing",
       logo: "nextjs",
+      tags: [],
     },
     {
       title: `api<br />route.ts`,
@@ -298,6 +317,7 @@ const nextjs = {
       `,
       link: "https://nextjs.org/blog/building-apis-with-nextjs",
       logo: "nextjs",
+      tags: [],
     },
     {
       title: `Metadata`,
@@ -314,12 +334,14 @@ const nextjs = {
       </code></pre>`,
       link: "https://nextjs.org/docs/app/getting-started/metadata-and-og-images",
       logo: "nextjs",
+      tags: [],
     },
     {
       title: ``,
       description: ``,
       link: "",
       logo: "nextjs",
+      tags: [],
     },
   ],
 };
@@ -331,7 +353,7 @@ const adaptedNextJs = nextjs.items
       item: item.title,
       description: `${item.description} <br/> <a href="${item.link}" target="_blank">${item.link}</a>`,
       category: "dev_nextjs",
-      tags: ["dev", "nextjs"],
+      tags: ["dev", "nextjs", ...item.tags],
     };
   });
 
@@ -343,6 +365,6 @@ const devSnippets = [
       When using <code>http-server -p 8080 -c-1</code> the -c-1 flag sets the cache-control max-age to -1, forcing the browser to fetch 
       fresh content every time. You must install npm and node-http-server before being able to use this command.`,
     category: `dev_web`,
-    tags: ["webdev"],
+    tags: ["webdev", "bash"],
   },
 ];

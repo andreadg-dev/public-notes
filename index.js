@@ -175,81 +175,6 @@ function appendSectionsToRoot(objArray, index) {
   $("#root").append(pageBody);
 }
 
-//Children function that appends const type 'list' to 'root' element - troubleshooting page
-function appendListToRoot(objArray, index) {
-  /*   objArray[index].snippets.sort((a, b) =>
-    a.item.localeCompare(b.item, undefined, { sensitivity: "base" })
-  ); */
-
-  const radioInputs = createTablesRadioInputs(objArray[index].snippets);
-
-  // ensure tags arrays are sorted alphabetically (case-insensitive) before rendering
-  objArray[index].snippets.forEach((s) => {
-    if (Array.isArray(s.tags)) {
-      s.tags.sort((a, b) =>
-        a
-          .toString()
-          .localeCompare(b.toString(), undefined, { sensitivity: "base" }),
-      );
-    }
-  });
-
-  // sort by category, then by item (case-insensitive, handles missing values)
-  objArray[index].snippets.sort((a, b) => {
-    const catA = (a.category || "").toString();
-    const catB = (b.category || "").toString();
-    const catCmp = catA.localeCompare(catB, undefined, { sensitivity: "base" });
-    if (catCmp !== 0) return catCmp;
-    const itemA = (a.item || "").toString();
-    const itemB = (b.item || "").toString();
-    return itemA.localeCompare(itemB, undefined, { sensitivity: "base" });
-  });
-
-  let table = [`<table class="table">`];
-  let headers = ["<thead><tr>"];
-  let objectKeys = Object.keys(objArray[index].snippets[0]);
-  objectKeys.slice(0, 2).map((header) => {
-    headers.push(`<th>${header}</th>`);
-  });
-  headers.push("</tr></thead>");
-  let tbody = ["<tbody>"];
-
-  pageSnippets = objArray[index].snippets.map((snippet) => {
-    return `<tr>
-              <td class="troubleshoot-snippet">${snippet[objectKeys[0]]}</td>
-              <td>
-                <div class="cell-content">
-                  <div class="snippet-description">${snippet[objectKeys[1]]}</div>
-                  <div class="snippet-category"><span>CATEGORY:</span>${snippet[objectKeys[2]].split("_")[0].trim()}</div>
-                  <div class="snippet-subcategory"><span>SUBCATEGORY:</span>${snippet[objectKeys[2]].split("_")[1].trim()}</div>
-                  <div class="snippet-tags"><span>TAGS:</span>${snippet[objectKeys[3]]}</div>
-                  <div class="expand-button" onclick="toggleCell(this)">+</div>
-                </div>
-              </td>
-            </tr>`;
-  });
-  tbody.push(pageSnippets.join(""));
-  tbody.push("</tbody>");
-
-  table.push(headers.join(""));
-  table.push(tbody.join(""));
-  table.push("</table>");
-  let finalTable = `<h1 class="pageTitle"><code>${objArray[index].title}</code></h1>
-  <div class="custom-body">
-  ${copiedToClipboardAlert}
-  ${searchCard(objArray[index].snippets.length, true, radioInputs)}${table.join("")}</div>`;
-
-  $("#root").append(finalTable);
-
-  updateCounts("tbody tr");
-  filterItems("tbody tr");
-  copyAllCommands("tr", "td:nth-child(1)");
-  copySingleItemToClipBoard(".troubleshoot-snippet");
-  copySingleItemToClipBoard(".snippet-description");
-  highlightElement(".snippet-description");
-  highlightElement(".troubleshoot-snippet");
-}
-
 //Children function that appends const type 'list-items' to 'root' element -nextjs page
 function appendListItemsToRoot(objArray, index) {
   let table = [`<table class="table">`];
@@ -353,17 +278,6 @@ function appendCardsToRoot(objArray, index) {
   filterItems(".col");
 }
 
-//Children function that appends const type 'cards' to 'root' element
-function appendToolsToRoot(objArray, index) {
-  const finalTools = objArray[index].tools.map((item) => {
-    return `<details class="tools" id="${item.title}-tool"><summary>${item.title}</summary>${item.component}</details>${customHorizontalLine}`;
-  });
-
-  $("#root").append(
-    `<h1 class="pageTitle"><code>tools</code></h1><div class="markdown-body">${finalTools.join("")}</div>`,
-  );
-}
-
 function appendSectionListToRoot(object) {
   let awssections = [];
   Object.keys(object).map((awscert) => {
@@ -417,22 +331,116 @@ function consistentSlugify(str) {
   );
 }
 
+const md = window
+  .markdownit({
+    html: true,
+    linkify: true,
+    typographer: true,
+  })
+  .use(window.markdownItAnchor, {
+    slugify: consistentSlugify,
+  });
+
+//Table section
+function appendListToRoot(objArray, index) {
+  /*   objArray[index].snippets.sort((a, b) =>
+    a.item.localeCompare(b.item, undefined, { sensitivity: "base" })
+  ); */
+
+  const radioInputs = createTablesRadioInputs(objArray[index].snippets);
+
+  // ensure tags arrays are sorted alphabetically (case-insensitive) before rendering
+  objArray[index].snippets.forEach((s) => {
+    if (Array.isArray(s.tags)) {
+      s.tags.sort((a, b) =>
+        a
+          .toString()
+          .localeCompare(b.toString(), undefined, { sensitivity: "base" }),
+      );
+    }
+  });
+
+  // sort by category, then by item (case-insensitive, handles missing values)
+  objArray[index].snippets.sort((a, b) => {
+    const catA = (a.category || "").toString();
+    const catB = (b.category || "").toString();
+    const catCmp = catA.localeCompare(catB, undefined, { sensitivity: "base" });
+    if (catCmp !== 0) return catCmp;
+    const itemA = (a.item || "").toString();
+    const itemB = (b.item || "").toString();
+    return itemA.localeCompare(itemB, undefined, { sensitivity: "base" });
+  });
+
+  let table = [`<table class="table">`];
+  let headers = ["<thead><tr>"];
+  let objectKeys = Object.keys(objArray[index].snippets[0]);
+  objectKeys.slice(0, 2).map((header) => {
+    headers.push(`<th>${header}</th>`);
+  });
+  headers.push("</tr></thead>");
+  let tbody = ["<tbody>"];
+
+  pageSnippets = objArray[index].snippets.map((snippet) => {
+    const mdSnippet = snippet[objectKeys[0]];
+    const parsedSnippet = md.render(mdSnippet);
+    const cleanParsedSnippet = DOMPurify.sanitize(parsedSnippet);
+
+    return `<tr>
+              <td class="troubleshoot-snippet">${cleanParsedSnippet}</td>
+              <td>
+                <div class="cell-content">
+                  <div class="snippet-description">${snippet[objectKeys[1]]}</div>
+                  <div class="snippet-category"><span>CATEGORY:</span>${snippet[objectKeys[2]].split("_")[0].trim()}</div>
+                  <div class="snippet-subcategory"><span>SUBCATEGORY:</span>${snippet[objectKeys[2]].split("_")[1].trim()}</div>
+                  <div class="snippet-tags"><span>TAGS:</span>${snippet[objectKeys[3]]}</div>
+                  <div class="expand-button" onclick="toggleCell(this)">+</div>
+                </div>
+              </td>
+            </tr>`;
+  });
+  tbody.push(pageSnippets.join(""));
+  tbody.push("</tbody>");
+
+  table.push(headers.join(""));
+  table.push(tbody.join(""));
+  table.push("</table>");
+  let finalTable = `<h1 class="pageTitle"><code>${objArray[index].title}</code></h1>
+  <div class="custom-body">
+  ${copiedToClipboardAlert}
+  ${searchCard(objArray[index].snippets.length, true, radioInputs)}${table.join("")}</div>`;
+
+  $("#root").append(finalTable);
+
+  updateCounts("tbody tr");
+  filterItems("tbody tr");
+  copyAllCommands("tr", "td:nth-child(1)");
+  copySingleItemToClipBoard(".troubleshoot-snippet");
+  copySingleItemToClipBoard(".snippet-description");
+  highlightElement(".snippet-description");
+  highlightElement(".troubleshoot-snippet");
+  highlightNQL();
+  //hljs.highlightAll();
+  //addSnippetLineCounter();
+}
+
+//Tools section
+function appendToolsToRoot(objArray, index) {
+  const finalTools = objArray[index].tools.map((item) => {
+    return `<details class="tools" id="${item.title}-tool"><summary>${item.title}</summary>${item.component}</details>${customHorizontalLine}`;
+  });
+
+  $("#root").append(
+    `<h1 class="pageTitle"><code>tools</code></h1><div class="markdown-body">${finalTools.join("")}</div>`,
+  );
+}
+
+//Markdown notes section
 async function appendMdNotesToRoot(objArray, index) {
   const sortedMdPages = [...objArray[index].pages].sort((a, b) =>
     a.replaceAll("_", " ").localeCompare(b.replaceAll("_", " "), undefined, {
       sensitivity: "base",
     }),
   );
-
-  const md = window
-    .markdownit({
-      html: true,
-      linkify: true,
-      typographer: true,
-    })
-    .use(window.markdownItAnchor, {
-      slugify: consistentSlugify,
-    });
 
   const mdPagesParsedToHtml = await Promise.all(
     sortedMdPages.map(async (mdPage, index) => {
@@ -465,22 +473,22 @@ async function appendMdNotesToRoot(objArray, index) {
 
 //Parent function to append item to 'root' element depending on the type
 function appendToRoot(objArray, index) {
+  /*   
   objArray[index].type === "sections" && appendSectionsToRoot(objArray, index);
+  
+  objArray[index].type === "cards" && appendCardsToRoot(objArray, index);
+
+  objArray[index].type === "list-items" && appendListItemsToRoot(objArray, index);
+
+  objArray[index].type === "section-list" && appendSectionListToRoot(objArray[index]); 
+  */
 
   objArray[index].type === "list" && appendListToRoot(objArray, index);
 
-  objArray[index].type === "cards" && appendCardsToRoot(objArray, index);
-
-  objArray[index].type === "list-items" &&
-    appendListItemsToRoot(objArray, index);
-
-  objArray[index].type === "tools" && appendToolsToRoot(objArray, index);
-
-  objArray[index].type === "section-list" &&
-    appendSectionListToRoot(objArray[index]);
-
   objArray[index].type === "markdown-pages" &&
     appendMdNotesToRoot(objArray, index);
+
+  objArray[index].type === "tools" && appendToolsToRoot(objArray, index);
 }
 
 /* function appendSectionToNavbar(objArray) {
@@ -538,6 +546,7 @@ function displaySectionOnClick(objArray) {
     appendToRoot(objArray, Number($(this).attr("id").replace("navitem", "")));
 
     hljs.highlightAll();
+    addSnippetLineCounter();
     createDynamicInputFields();
     updateDynamicInputFields();
   });
@@ -721,11 +730,45 @@ function updateDynamicInputFields() {
   });
 }
 
+function getLanguageLabel(item) {
+  if (typeof item === "string") {
+    text = item.toLowerCase();
+  }
+
+  if ((typeof item === "object") & (item.length > 0)) {
+    text = item.map((item) => {
+      return item.toLowerCase();
+    });
+  }
+
+  if (text.includes("text") || text.includes("plaintext")) return "Plain Text";
+  if (text.includes("-js") || text.includes("javascript")) return "JavaScript";
+  if (text.includes("-sh") || text.includes("bash")) return "Bash";
+  if (text.includes("cmd") || text.includes("dos")) return "DOS";
+  if (text.includes("sql")) return "SQL";
+  if (text.includes("html")) return "HTML/XML";
+  if (text.includes("xml")) return "HTML/XML";
+  if (text.includes("ps1") || text.includes("powershell")) return "PowerShell";
+  if (text.includes("json")) return "JSON";
+  if (text.includes("ejs")) return "EJS";
+  if (text.includes("nql") || text.includes("nexthink")) return "Nexthink NQL";
+  if (
+    text.includes("-ts") ||
+    text.includes("typescript") ||
+    text.includes("-tsx")
+  )
+    return "TypeScript";
+
+  return "Unidentified";
+}
+
 function addSnippetLineCounter() {
-  $("pre code")
+  $("pre")
     .not(".processed")
     .each(function () {
-      const code = $(this);
+      $(this).addClass("code-body");
+
+      const code = $(this).find("code");
       code.addClass("processed");
 
       const lines = code.html().split("\n");
@@ -741,11 +784,152 @@ function addSnippetLineCounter() {
         .join("\n");
 
       code.html(formatted);
+
+      // wrap this header + this code body together
+      const codeBody = $(this);
+      codeBody.before(
+        snippetCodeHeader.replace(
+          "{{programming-language}}",
+          getLanguageLabel(code.attr("class")),
+        ),
+      );
+      const codeHeader = codeBody.prev();
+      $(codeHeader).add(codeBody).wrapAll('<div class="code-wrapper"></div>');
     });
+}
+
+function highlightNQL() {
+  const keywords = [
+    "include",
+    "with",
+    "compute",
+    "where",
+    "list",
+    "limit",
+    "sort",
+    "asc",
+    "desc",
+    "in",
+    "during",
+    "past",
+    "from",
+    "to",
+    "and",
+    "or",
+    "ago",
+  ];
+
+  const keywordRegex = new RegExp("\\b(" + keywords.join("|") + ")\\b", "gi");
+
+  $(".language-nql").each(function () {
+    let html = $(this).text();
+
+    // STRINGS (single and double quotes)
+    html = html.replace(/(["'])(?:(?=(\\?))\2.)*?\1/g, function (match) {
+      return '<span class="mtk5">' + match + "</span>";
+    });
+
+    //PIPE SYMBOLS (add indentation)
+    html = html.replace(/(\n\s*)\|/g, function (match, prefix) {
+      return prefix + '<span class="mtkPipe">|</span>';
+    });
+
+    // DATES (2026-03-06 or datetime)
+    html = html.replace(
+      /\b\d{4}-\d{2}-\d{2}(?:\s\d{2}:\d{2}:\d{2})?\b/g,
+      function (match) {
+        return '<span class="mtk6">' + match + "</span>";
+      },
+    );
+
+    // NUMBERS + TIME (15min, 1h, 1d)
+    html = html.replace(/\b\d+(?:min|h|d)\b/gi, function (match) {
+      return '<span class="mtk6">' + match + "</span>";
+    });
+
+    // NUMBERS
+    html = html.replace(/\b\d+(\.\d+)?\b/g, function (match) {
+      return '<span class="mtk6">' + match + "</span>";
+    });
+
+    // METHODS (.method())
+    html = html.replace(/\.([a-zA-Z_]\w*)(?=\(\))/g, function (match, method) {
+      return '.<span class="mtk19">' + method + "</span>";
+    });
+
+    // DOTS COMMAS COLONS
+    html = html.replace(/[\.,:]/g, function (match) {
+      return '<span class="mtk11">' + match + "</span>";
+    });
+
+    // KEYWORDS
+    html = html.replace(keywordRegex, function (match) {
+      return '<span class="mtk8">' + match + "</span>";
+    });
+
+    $(this).html(html);
+  });
 }
 
 const spaceDiv = `<div class="mt-6"></div>`;
 const customHorizontalLine = `<div style="height: 1px; background-color: #00ffef; margin: 10px 0 20px 0;">&nbsp;</div>`;
+
+const snippetCodeHeader = `<div class="code-header">
+      <div class="code-header-left">
+        <svg
+          class="code-header-code-svg"
+          fill="currentColor"
+          aria-hidden="true"
+          width="1em"
+          height="1em"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M6 3a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3H6ZM4 6c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6Zm4.85 1.85a.5.5 0 1 0-.7-.7l-2.5 2.5a.5.5 0 0 0 0 .7l2.5 2.5a.5.5 0 0 0 .7-.7L6.71 10l2.14-2.15Zm3-.7a.5.5 0 0 0-.7.7L13.29 10l-2.14 2.15a.5.5 0 0 0 .7.7l2.5-2.5a.5.5 0 0 0 0-.7l-2.5-2.5Z"
+            fill="currentColor"
+          ></path>
+        </svg>
+        <div class="code-header-language">{{programming-language}}</div>
+      </div>
+
+      <div class="code-header-right">
+        <div aria-label="Copy" title="Copy" class="snippet-copy-button">
+          <span
+            ><svg
+              class="copy-button-svg"
+              fill="currentColor"
+              aria-hidden="true"
+              width="1em"
+              height="1em"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M8 2a2 2 0 0 0-2 2v10c0 1.1.9 2 2 2h6a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8ZM7 4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V4ZM4 6a2 2 0 0 1 1-1.73V14.5A2.5 2.5 0 0 0 7.5 17h6.23A2 2 0 0 1 12 18H7.5A3.5 3.5 0 0 1 4 14.5V6Z"
+                fill="currentColor"
+              ></path>
+            </svg>
+          </span>
+        </div>
+        <div class="snippet-check-icon hidden">
+          <span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="1em"
+              height="1em"
+              fill="currentColor"
+              class="bi bi-check"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"
+              />
+            </svg>
+          </span>
+        </div>
+      </div>
+    </div>`;
 
 const searchCard = (
   totalItemsCount,
