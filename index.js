@@ -371,7 +371,7 @@ function appendListToRoot(objArray, index) {
     return itemA.localeCompare(itemB, undefined, { sensitivity: "base" });
   });
 
-  let table = [`<table class="table">`];
+  let table = [`<table class="table responsive-table">`];
   let headers = ["<thead><tr>"];
   let objectKeys = Object.keys(objArray[index].snippets[0]);
   objectKeys.slice(0, 2).map((header) => {
@@ -394,8 +394,8 @@ function appendListToRoot(objArray, index) {
     );
 
     return `<tr>
-              <td class="troubleshoot-snippet">${cleanParsedSnippet}</td>
-              <td>
+              <td data-label="item" class="troubleshoot-snippet">${cleanParsedSnippet}</td>
+              <td data-label="description">
                 <div class="cell-content">
                   <div class="snippet-description">${cleanParsedSnippetDescription}</div>
                   <div class="snippet-category"><span class="bold">CATEGORY:</span>${snippet[objectKeys[2]].split("_")[0].trim()}</div>
