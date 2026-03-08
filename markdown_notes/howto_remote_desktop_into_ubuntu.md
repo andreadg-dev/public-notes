@@ -53,6 +53,13 @@ sudo reboot
 ```
 You can check if XRDP is running by executing `systemctl status xrdp`.
 
+FYI, To clean up the old firewall rules:
+
+```bash
+sudo ufw status numbered
+sudo ufw delete <rule number>
+```
+
 ### Tips ###
 - When in the remote session, you can change the styling and position of both top and bottom panels, by right-clicking on it > `Panel Preferences`. For instance,
 for set the taskbar vertically anchored on the left: `Display` tab > Mode: Vertical > Lock panel: ❌ (temporarily uncheck) > drag the panel to the left edge of the screen > Length: 100% > check Lock panel ✅ > Automatically hide the panel: ❌ OFF > Reserve space on screen edges: ✅ ON

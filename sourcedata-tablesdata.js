@@ -7,6 +7,6 @@ const tablesData = {
     ...troubleshooting_snippets,
     ...devlinks_links,
     ...nexthink_snippets,
-    ...devSnippets,
+    ...devSnippetsAdapted,
   ],
 };

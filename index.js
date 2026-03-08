@@ -381,18 +381,26 @@ function appendListToRoot(objArray, index) {
   let tbody = ["<tbody>"];
 
   pageSnippets = objArray[index].snippets.map((snippet) => {
+    //Rendering snippet using md
     const mdSnippet = snippet[objectKeys[0]];
     const parsedSnippet = md.render(mdSnippet);
     const cleanParsedSnippet = DOMPurify.sanitize(parsedSnippet);
+
+    //Rendering snippet description using md
+    const mdSnippetDescription = snippet[objectKeys[1]];
+    const parsedSnippetDescription = md.render(mdSnippetDescription);
+    const cleanParsedSnippetDescription = DOMPurify.sanitize(
+      parsedSnippetDescription,
+    );
 
     return `<tr>
               <td class="troubleshoot-snippet">${cleanParsedSnippet}</td>
               <td>
                 <div class="cell-content">
-                  <div class="snippet-description">${snippet[objectKeys[1]]}</div>
-                  <div class="snippet-category"><span>CATEGORY:</span>${snippet[objectKeys[2]].split("_")[0].trim()}</div>
-                  <div class="snippet-subcategory"><span>SUBCATEGORY:</span>${snippet[objectKeys[2]].split("_")[1].trim()}</div>
-                  <div class="snippet-tags"><span>TAGS:</span>${snippet[objectKeys[3]]}</div>
+                  <div class="snippet-description">${cleanParsedSnippetDescription}</div>
+                  <div class="snippet-category"><span class="bold">CATEGORY:</span>${snippet[objectKeys[2]].split("_")[0].trim()}</div>
+                  <div class="snippet-subcategory"><span class="bold">SUBCATEGORY:</span>${snippet[objectKeys[2]].split("_")[1].trim()}</div>
+                  <div class="snippet-tags"><span class="bold">TAGS:</span>${snippet[objectKeys[3]]}</div>
                   <div class="expand-button" onclick="toggleCell(this)">+</div>
                 </div>
               </td>
@@ -752,6 +760,7 @@ function getLanguageLabel(item) {
   if (text.includes("json")) return "JSON";
   if (text.includes("ejs")) return "EJS";
   if (text.includes("nql") || text.includes("nexthink")) return "Nexthink NQL";
+  if (text.includes("css")) return "CSS";
   if (
     text.includes("-ts") ||
     text.includes("typescript") ||
@@ -766,35 +775,86 @@ function addSnippetLineCounter() {
   $("pre")
     .not(".processed")
     .each(function () {
-      $(this).addClass("code-body");
+      const pre = $(this);
+      pre.addClass("code-body processed");
 
-      const code = $(this).find("code");
-      code.addClass("processed");
+      const code = pre.find("code").first();
+      if (!code.length) return;
 
-      const lines = code.html().split("\n");
+      // ---- 1) determine label from classes (works with "language-ts", etc.)
+      const languageLabel = getLanguageLabel(code.attr("class"));
 
-      const formatted = lines
-        .map(
-          (line, index) => `
-        <span class=snippet-line>
-          <span class="snippet-line-counter">${index + 1}</span>
-          <span class="snippet-code-line">${line}</span>
-        </span>`,
-        )
+      // ---- 2) get raw source text before hljs
+      const rawText = code.text().replace(/\n$/, "");
+
+      // ---- 3) run hljs on the RAW TEXT and capture highlighted HTML
+      // Use highlightAuto only if no language class is present.
+      // If you DO have language-xxx, prefer highlight(code, {language}).
+      const classTokens = (code.attr("class") || "").toLowerCase().split(/\s+/);
+      const langToken = classTokens.find((t) => t.startsWith("language-"));
+      const lang = langToken ? langToken.replace("language-", "") : null;
+
+      let highlightedHtml;
+      if (window.hljs) {
+        if (lang && hljs.getLanguage(lang)) {
+          highlightedHtml = hljs.highlight(rawText, { language: lang }).value;
+        } else {
+          highlightedHtml = hljs.highlightAuto(rawText).value;
+        }
+      } else {
+        // fallback: no highlighting library loaded
+        highlightedHtml = rawText
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      // ---- 4) split highlighted HTML into lines without breaking tag structure
+      // We convert "\n" into <br>, then iterate nodes separated by <br>.
+      const container = document.createElement("div");
+      container.innerHTML = highlightedHtml.replace(/\n/g, "<br>");
+
+      const lineFragments = [];
+      let current = [];
+
+      container.childNodes.forEach((node) => {
+        if (node.nodeName === "BR") {
+          lineFragments.push(current);
+          current = [];
+        } else {
+          current.push(node);
+        }
+      });
+      lineFragments.push(current);
+
+      // ---- 5) build final wrapped HTML preserving hljs spans inside each line
+      const finalLinesHtml = lineFragments
+        .map((nodes, i) => {
+          const lineDiv = document.createElement("div");
+          nodes.forEach((n) => lineDiv.appendChild(n.cloneNode(true)));
+
+          const lineInner = lineDiv.innerHTML || "&nbsp;";
+
+          return `
+            <span class="snippet-line">
+              <span class="snippet-line-counter">${i + 1}</span>
+              <span class="snippet-code-line">${lineInner}</span>
+            </span>`;
+        })
         .join("\n");
 
-      code.html(formatted);
+      // ---- 6) apply to DOM (DO NOT call hljs.highlightElement after this)
+      code.html(finalLinesHtml);
+      code.addClass("hljs processed");
 
-      // wrap this header + this code body together
-      const codeBody = $(this);
-      codeBody.before(
-        snippetCodeHeader.replace(
-          "{{programming-language}}",
-          getLanguageLabel(code.attr("class")),
-        ),
+      // ---- 7) header + wrapper
+      pre.before(
+        snippetCodeHeader.replace("{{programming-language}}", languageLabel),
       );
-      const codeHeader = codeBody.prev();
-      $(codeHeader).add(codeBody).wrapAll('<div class="code-wrapper"></div>');
+      const codeHeader = pre.prev();
+      $(codeHeader).add(pre).wrapAll('<div class="code-wrapper"></div>');
     });
 }
 

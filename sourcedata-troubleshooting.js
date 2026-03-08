@@ -323,19 +323,19 @@ const troubleshooting = {
       item: "dsregcmd /status",
       description: `Windows command-line tool used to check Azure AD / Entra ID device registration status, including: Azure AD Join, Hybrid Join, Intune MDM enrollment, SSO / PRT status, Tenant information`,
       category: "win-system",
-      tags: ["windows", "system", "autopilot", "intune"],
+      tags: ["windows", "system", "autopilot", "intune", "cmd"],
     },
     {
       item: "shutdown /r /f /t 0",
       description: `Windows command-line tool that forces a Windows computer to immediately restart by restarting the computer (/r), forcing all applications to close without warning (/f), and setting the timeout to zero seconds (/t 0). This command will cause you to lose any unsaved data in open programs, so use it with caution.`,
       category: "win-system",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: `[Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes("Ññèéáà"))`,
       description: `Converts a string containing accented characters into ASCII. The output in this case would be <code>Nneeaa</code>`,
       category: "win-system",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: `[System.Globalization.RegionInfo]::new("DE")`,
@@ -357,7 +357,7 @@ const troubleshooting = {
       </code></pre>
       `,
       category: "win-system",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: "eventvwr.msc",
@@ -1220,12 +1220,61 @@ const troubleshooting = {
       The first command allows to export to xml the current DCU configuration on the device. The second command set the updates to be installed
       manually and the third one set the updates to automatic.`,
       category: `dell`,
-      tags: ["dell", "cli", "config"],
+      tags: ["dell", "cli", "config", "cmd"],
+    },
+    {
+      item: "manage-bde -unlock c: -recoverypassword [bitlocker_recovery_key]",
+      description:
+        "Unlocks the C: drive encrypted with BitLocker using the recovery password.",
+      category: "win-security",
+      tags: ["windows", "bitlocker", "security", "cli", "cmd"],
+    },
+    {
+      item: "netsh wlan show interfaces",
+      description:
+        "Shows details about the current Wi-Fi connection (SSID, signal, radio type, etc.). Useful for checking signal strength and link speed.",
+      category: "win-network",
+      tags: ["windows", "network", "wifi", "netsh", "cmd"],
+    },
+    {
+      item: "netsh wlan show networks",
+      description:
+        "Lists nearby Wi-Fi networks (SSIDs) detected by the wireless adapter. Useful for finding the best available network.",
+      category: "win-network",
+      tags: ["windows", "network", "wifi", "netsh", "cmd"],
+    },
+    {
+      item: "netsh wlan show profiles",
+      description:
+        "Lists saved Wi-Fi profiles on the machine. Useful for identifying previously connected networks (and, with additional commands, retrieving saved keys).",
+      category: "win-network",
+      tags: ["windows", "network", "wifi", "netsh", "cmd"],
+    },
+    {
+      item: "netsh lan show interfaces",
+      description:
+        "Shows wired (LAN) interface details, such as interface name, state, and MAC address.",
+      category: "win-network",
+      tags: ["windows", "network", "lan", "netsh", "cmd"],
+    },
+    {
+      item: "Get-NetConnectionProfile",
+      description:
+        "Shows the current network connection profile (e.g., DomainAuthenticated/Private/Public), network name, and interface association.",
+      category: "win-network",
+      tags: ["windows", "powershell", "network", "pwsh"],
+    },
+    {
+      item: "Get-NetIPConfiguration",
+      description:
+        "Displays IP configuration for network adapters (IP address, gateway, DNS servers, etc.). Similar to ipconfig, but in PowerShell object form.",
+      category: "win-network",
+      tags: ["windows", "powershell", "network", "ip", "pwsh"],
     },
   ],
 };
 
-function getLanguageLabel(item) {
+function getLanguageTag(item) {
   if (typeof item === "string") {
     text = item.toLowerCase();
   }
@@ -1236,30 +1285,34 @@ function getLanguageLabel(item) {
     });
   }
 
-  if (text.includes("text") || text.includes("plaintext")) return "Plain Text";
-  if (text.includes("-js") || text.includes("javascript")) return "JavaScript";
-  if (text.includes("-sh") || text.includes("bash")) return "Bash";
-  if (text.includes("cmd") || text.includes("dos")) return "DOS";
-  if (text.includes("sql")) return "SQL";
-  if (text.includes("html")) return "HTML/XML";
-  if (text.includes("xml")) return "HTML/XML";
-  if (text.includes("ps1") || text.includes("powershell")) return "PowerShell";
-  if (text.includes("json")) return "JSON";
-  if (text.includes("ejs")) return "EJS";
-  if (text.includes("nql") || text.includes("nexthink")) return "Nexthink NQL";
+  if (text.includes("text") || text.includes("plaintext")) return "plaintext";
+  if (text.includes("-js") || text.includes("javascript")) return "javascript";
+  if (text.includes("-sh") || text.includes("bash")) return "bash";
+  if (text.includes("cmd") || text.includes("dos")) return "cmd";
+  if (text.includes("sql")) return "sql";
+  if (text.includes("html")) return "html";
+  if (text.includes("xml")) return "xml";
+  if (text.includes("ps1") || text.includes("powershell")) return "powershell";
+  if (text.includes("json")) return "json";
+  if (text.includes("ejs")) return "ejs";
+  if (text.includes("nql") || text.includes("nexthink")) return "nql";
   if (
     text.includes("-ts") ||
     text.includes("typescript") ||
     text.includes("-tsx")
   )
-    return "TypeScript";
+    return "typescript";
 
-  return "Unidentified";
+  return "unidentified";
 }
 
 const troubleshooting_snippets = troubleshooting.snippets.map((item) => {
   return {
-    item: `\`\`\`${getLanguageLabel(item.tags)}${item.item}\`\`\``,
+    item:
+      getLanguageTag(item.tags).includes("unidentified") ||
+      getLanguageTag(item.tags).includes("plaintext")
+        ? item.item
+        : `\`\`\`${getLanguageTag(item.tags)}\n${item.item}\n\`\`\``,
     description: item.description,
     category: `troubleshooting_${item.category}`,
     tags: item.tags,
