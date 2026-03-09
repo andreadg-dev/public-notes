@@ -412,9 +412,9 @@ function appendListToRoot(objArray, index) {
               <td data-label="description">
                 <div class="cell-content">
                   <div class="snippet-description">${cleanParsedSnippetDescription}</div>
-                  <div class="snippet-category"><span class="bold">CATEGORY:</span>${snippet[objectKeys[2]].split("_")[0].trim()}</div>
-                  <div class="snippet-subcategory"><span class="bold">SUBCATEGORY:</span>${snippet[objectKeys[2]].split("_")[1].trim()}</div>
-                  <div class="snippet-tags"><span class="bold">TAGS:</span>${snippet[objectKeys[3]]}</div>
+                  <div class="snippet-category"><span class="bold mr-10">CATEGORY:</span>${snippet[objectKeys[2]].split("_")[0].trim()}</div>
+                  <div class="snippet-subcategory"><span class="bold mr-10">SUBCATEGORY:</span>${snippet[objectKeys[2]].split("_")[1].trim()}</div>
+                  <div class="snippet-tags"><span class="bold mr-10">TAGS:</span>${snippet[objectKeys[3]]}</div>
                   <div class="expand-button" onclick="toggleCell(this)">+</div>
                 </div>
               </td>

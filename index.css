@@ -116,6 +116,10 @@
         font-weight: bold;
       }
 
+      .mr-10{
+        margin-right: 10px;
+      }
+
       #root .snippet pre code {
         padding-bottom: 2rem;
       }
@@ -428,10 +432,6 @@
 
       #root tr:has(> td:hover) {
         background-color: #28284d80 !important;
-      }
-
-      #root tr div span {
-        margin-right: 10px;
       }
 
       #root .snippet-description {
