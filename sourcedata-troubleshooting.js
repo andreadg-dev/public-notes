@@ -58,20 +58,20 @@ const troubleshooting = {
       tags: ["windows", "network", "cmd"],
     },
     {
-      item: `diskpart<br/>list disk<br/>select disk 0<br/>list volume<br/>select volume 1<br/>assign letter=z<br/>exit`,
+      item: `diskpart\nlist disk\nselect disk 0\nlist volume\nselect volume 1\nassign letter=z\nexit`,
       description: `Assign the letter Z to the volume 1 of the main disk (disk 0). This could be useful in case
         of a boot issue and if there are problem with a drive.`,
       category: "win-disk",
       tags: ["windows", "diskpart", "cmd", "drives"],
     },
     {
-      item: `diskpart<br/>list disk<br/>select disk 0<br/>clean<br/>create partition primary<br/>format fs=ntfs quick<br/>assign letter=C<br/>exit`,
+      item: `diskpart\nlist disk\nselect disk 0\nclean\ncreate partition primary\nformat fs=ntfs quick\nassign letter=C\nexit`,
       description: `Create a primary partition and assigning the letter C to it.`,
       category: "win-disk",
       tags: ["windows", "diskpart", "cmd", "drives"],
     },
     {
-      item: `diskpart<br/>list disk<br/>select disk 0<br/>list partition<br/>exit`,
+      item: `diskpart\nlist disk\nselect disk 0\nlist partition\nexit`,
       description: `Lists all the partitions of the main disk (disk 0)`,
       category: "win-disk",
       tags: ["windows", "diskpart", "cmd", "drives"],
@@ -299,7 +299,7 @@ const troubleshooting = {
       description:
         "Opens CONTROL PANEL\\HARDWARE AND SOUND\\DEVICES AND PRINTERS",
       category: "win-cpl",
-      tags: ["windows", "control_panel", "run"],
+      tags: ["windows", "control_panel", "run", "cmd"],
     },
     {
       item: "lusrmgr.msc",
@@ -340,22 +340,21 @@ const troubleshooting = {
     {
       item: `[System.Globalization.RegionInfo]::new("DE")`,
       description: `Retrieves a country basic info, for instance:
-      <pre><code>
-      Name                         : DE
-      EnglishName                  : Germany
-      DisplayName                  : Germany
-      NativeName                   : Deutschland
-      TwoLetterISORegionName       : DE
-      ThreeLetterISORegionName     : DEU
-      ThreeLetterWindowsRegionName : DEU
-      IsMetric                     : True
-      GeoId                        : 94
-      CurrencyEnglishName          : Euro
-      CurrencyNativeName           : Euro
-      CurrencySymbol               : €
-      ISOCurrencySymbol            : EUR
-      </code></pre>
-      `,
+\`\`\`text
+Name                         : DE
+EnglishName                  : Germany
+DisplayName                  : Germany
+NativeName                   : Deutschland
+TwoLetterISORegionName       : DE
+ThreeLetterISORegionName     : DEU
+ThreeLetterWindowsRegionName : DEU
+IsMetric                     : True
+GeoId                        : 94
+CurrencyEnglishName          : Euro
+CurrencyNativeName           : Euro
+CurrencySymbol               : €
+ISOCurrencySymbol            : EUR
+\`\`\``,
       category: "win-system",
       tags: ["windows", "system", "powershell"],
     },
@@ -467,62 +466,62 @@ const troubleshooting = {
       item: "start ms-settings:",
       description: "Opens SYSTEM SETTINGS",
       category: "win-settings",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: "start ms-settings:workplace",
       description: "Opens SYSTEM SETTINGS > ACCOUNTS > ACCESS WORK OR SCHOOL",
       category: "win-settings",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: "start ms-settings:emailandaccounts",
       description: "Opens SYSTEM SETTINGS > ACCOUNTS > EMAIL & ACCOUNTS",
       category: "win-settings",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: "start ms-settings:signinoptions",
       description: "Opens SYSTEM SETTINGS > ACCOUNTS > SING-IN OPTIONS",
       category: "win-settings",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: "start ms-settings:appsfeatures-app",
       description: "Opens SYSTEM SETTINGS > APPS > INSTALLED APPS",
       category: "win-settings",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: "start ms-settings:defaultapps",
       description: "Opens SYSTEM SETTINGS > APPS > DEFAULT APPS",
       category: "win-settings",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: "start ms-settings:startupapps",
       description: "Opens SYSTEM SETTINGS > APPS > STARTUP",
       category: "win-settings",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: "start ms-settings:network-advancedsettings",
       description:
         "Opens SYSTEM SETTINGS > NETWORK & INTERNET > ADVANCED NETWORK SETTINGS",
       category: "win-settings",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: "start ms-settings:sound-devices",
       description: "Opens SYSTEM SETTINGS > SYSTEM > SOUND > ALL SOUND DEVICES",
       category: "win-settings",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: "start ms-settings:sound",
       description: "Opens SYSTEM SETTINGS > SYSTEM > SOUND",
       category: "win-settings",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: `Get-AppXPackage -AllUsers | ForEach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\\AppXManifest.xml"}`,
@@ -532,72 +531,68 @@ const troubleshooting = {
     },
     {
       item: `manage-bde -status`,
-      description: `Windows command-line tool command used to check the status of BitLocker Drive Encryption on a system. Must be run as administrator. For each drive, it reports things like:
-                      <ul>
-                      <li>Conversion Status: Fully Encrypted, Fully Decrypted, Encryption in Progress / Decryption in Progress</li>
-                      <li>Percentage Encrypted</li>
-                      <li>Encryption Method: (e.g., XTS-AES 128-bit, XTS-AES 256-bit)</li>
-                      <li>Protection Status: Protection On (BitLocker is enforcing encryption)/Protection Off (encryption exists but is not enforced)</li>
-                      <li>Lock Status (for data drives): Locked / Unlocked</li>
-                      <li>Key Protectors: (TPM, PIN, recovery password, startup key, etc.)</li>
-                      </ul>
-                      Output Example:
-                      <pre>
-                      <code>
-          Size:                 474,74 GB
-          BitLocker Version:    2.0
-          Conversion Status:    Used Space Only Encrypted
-          Percentage Encrypted: 100,0%
-          Encryption Method:    XTS-AES 256
-          Protection Status:    Protection On
-          Lock Status:          Unlocked
-          Identification Field: Unknown
-          Key Protectors:
-              TPM And PIN
-              Numerical Password
-                      </code>
-                      </pre>`,
+      description: `Windows command-line tool command used to check the status of BitLocker Drive Encryption on a system. Must be run as administrator. For each drive, it reports things like:                 
+- Conversion Status: Fully Encrypted, Fully Decrypted, Encryption in Progress / Decryption in Progress
+- Percentage Encrypted
+- Encryption Method: (e.g., XTS-AES 128-bit, XTS-AES 256-bit)
+- Protection Status: Protection On (BitLocker is enforcing encryption)/Protection Off (encryption exists but is not enforced)
+- Lock Status (for data drives): Locked / Unlocked
+- Key Protectors: (TPM, PIN, recovery password, startup key, etc.)
+
+Output Example:
+
+\`\`\`text
+Size:                 474,74 GB
+BitLocker Version:    2.0
+Conversion Status:    Used Space Only Encrypted
+Percentage Encrypted: 100,0%
+Encryption Method:    XTS-AES 256
+Protection Status:    Protection On
+Lock Status:          Unlocked
+Identification Field: Unknown
+Key Protectors:
+    TPM And PIN
+    Numerical Password
+\`\`\``,
       category: "win-disk",
-      tags: ["windows", "system", "disk"],
+      tags: ["windows", "system", "disk", "cmd"],
     },
     {
       item: `manage-bde -protectors -get [VOLUME_LETTER]`,
       description: `Windows command-line tool command used to retrieve the a volume Bitlocker ID and Key. Must be run as administrator. For instance, when running <code>manage-bde -protectors -get c:</code>
-          <pre>
-          <code>
-          Volume C: [OS]
-          All Key Protectors
+\`\`\`text
+Volume C: [OS]
+All Key Protectors
 
-              TPM And PIN:
-                ID: {7288B918-7BAD-*sanitized*}
-                PCR Validation Profile:
-                  7, 11
-                  (Uses Secure Boot for integrity validation)
+  TPM And PIN:
+    ID: {7288B918-7BAD-*sanitized*}
+    PCR Validation Profile:
+      7, 11
+      (Uses Secure Boot for integrity validation)
 
-              Numerical Password:
-                ID: {7F94E17A-9291-*sanitized*}
-                Password:
-                  610214-390621-*sanitized*
-                Backup type:
-                  AAD backup
-          </code>
-          </pre>`,
+  Numerical Password:
+    ID: {7F94E17A-9291-*sanitized*}
+    Password:
+      610214-390621-*sanitized*
+    Backup type:
+      AAD backup
+\`\`\``,
       category: "win-disk",
-      tags: ["windows", "system", "disk"],
+      tags: ["windows", "system", "disk", "cmd"],
     },
     {
       item: `manage-bde -protectors c: -adbackup -id [NUMERICAL_PASSWORD_ID]`,
       description: `Windows command-line tool command used to back up Bitlocker Recovery key in AD. Must be run as administrator. If successful, you will get this
       output message <code>Recovery information was successfully backed up to Active Directory</code>`,
       category: "win-disk",
-      tags: ["windows", "system", "disk"],
+      tags: ["windows", "system", "disk", "cmd"],
     },
     {
       item: `certutil -encode "inputimage.png" "outputbase64.txt"`,
       description: `Convert an image to base64. You can then copy the base64 string and add it to <code>src</code> <code>img</code> attribute to hardcode the 
       image in your html file, for instance <code>&lt;img src="data:image/[type];base64,[Base64-string]" alt="Description"&gt;</code>`,
       category: "win-system",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: `dcu-cli.exe`,
@@ -612,21 +607,21 @@ const troubleshooting = {
     {
       item: `[System.IO.File]::WriteAllBytes("C:\\path\\output_image.png",[System.Convert]::FromBase64String("BASE64IMAGESTRING"))`,
       description: `Decode an image base64 string back to an image file (png, jpeg etc). It should also work with PDF files. Most file types have distinct “magic numbers” in their binary headers, which, when Base64-encoded, show up as recognizable prefixes. These prefixes let you identify the file type without fully decoding it.
-                    <div style="margin-top:1rem"><strong>Common File Types & Base64 Prefixes</strong></div><ul><li>JPEG / JPG &gt; base64 prefix: <code>/9j/</code></li><li>PNG &gt; base64 prefix: <code>iVBORw0KGgo</code></li><li>GIF &gt; base64 prefix: <code>R0lGOD</code></li><li>PDF &gt; base64 prefix: <code>JVBERi0</code></li><li>ZIP / DOCX / XLSX / PPTX &gt; base64 prefix: <code>UEsDB</code></li><li>MP3 &gt; base64 prefix: <code>//uQ</code> or <code>SUQz</code></li><li>MP4 / MOV &gt; base64 prefix: <code>AAAAFGZ0</code></li><li>BMP &gt; base64 prefix: <code>Qk</code></li><li>TIFF / TIF &gt; base64 prefix: <code>SUkq</code></li><li>WebP &gt; base64 prefix: <code>UklGR</code></li><li>RAR &gt; base64 prefix: <code>UmFy</code></li><li>7z &gt; base64 prefix: <code>77u/</code></li><li>ICO / CUR &gt; base64 prefix: <code>AAABAA</code></li><li>FLAC &gt; base64 prefix: <code>fLaC</code></li><li>OGG / OGV / OGA &gt; base64 prefix: <code>T2dn</code></li></ul>`,
+                    <div style="margin-top:1rem"><strong>Common File Types & Base64 Prefixes</strong></div>- JPEG / JPG &gt; base64 prefix: <code>/9j/</code>- PNG &gt; base64 prefix: <code>iVBORw0KGgo</code>- GIF &gt; base64 prefix: <code>R0lGOD</code>- PDF &gt; base64 prefix: <code>JVBERi0</code>- ZIP / DOCX / XLSX / PPTX &gt; base64 prefix: <code>UEsDB</code>- MP3 &gt; base64 prefix: <code>//uQ</code> or <code>SUQz</code>- MP4 / MOV &gt; base64 prefix: <code>AAAAFGZ0</code>- BMP &gt; base64 prefix: <code>Qk</code>- TIFF / TIF &gt; base64 prefix: <code>SUkq</code>- WebP &gt; base64 prefix: <code>UklGR</code>- RAR &gt; base64 prefix: <code>UmFy</code>- 7z &gt; base64 prefix: <code>77u/</code>- ICO / CUR &gt; base64 prefix: <code>AAABAA</code>- FLAC &gt; base64 prefix: <code>fLaC</code>- OGG / OGV / OGA &gt; base64 prefix: <code>T2dn</code>`,
       category: "win-system",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: `[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String("BASE64STRING"))`,
       description: `Decode a base64 string. Useful, for instance, when decoding an API Basic Auth string`,
       category: "win-system",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: `[System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("USERNAME:PASSWORD"))`,
       description: `Encode to base64. Useful, for instance, when encoding an API Basic Auth string`,
       category: "win-system",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "powershell"],
     },
     {
       item: `function prompt { "PS> " }`,
@@ -821,64 +816,64 @@ const troubleshooting = {
       description:
         'Opens a new Command Prompt window and runs the specified command between double-quotes ("[command]"). The /k switch keeps the Command Prompt window open after the command has executed, allowing you to see the output',
       category: "win-system",
-      tags: ["windows", "system", "run"],
+      tags: ["windows", "system", "run", "cmd"],
     },
     {
       item: 'powershell -NoExit -Command "write \\"Hostname: ${env:COMPUTERNAME}\\"; gsv Windefend, Sense | select Name, DisplayName, Status | fl"',
       description:
         "Retrieves hostname, Windows Defender Advanced Threat Protection Service and Microsoft Defender Antivirus Service service info and it can be run from RUN",
       category: "win-system",
-      tags: ["windows", "system", "run"],
+      tags: ["windows", "system", "run", "cmd"],
     },
     {
       item: 'powershell -NoExit -Command "[command]"',
       description:
         'Starts a new PowerShell process and keeps the window open after executing the command between double-quotes ("[command]") and it can be run from RUN',
       category: "win-system",
-      tags: ["windows", "system", "run"],
+      tags: ["windows", "system", "run", "cmd"],
     },
     {
       item: 'cmd /k "sc query Windefend && sc query Sense"',
       description:
         "Retrieves Windows Defender Advanced Threat Protection Service and Microsoft Defender Antivirus Service service info and it can be run from RUN",
       category: "win-system",
-      tags: ["windows", "system", "run"],
+      tags: ["windows", "system", "run", "cmd"],
     },
     {
       item: 'taskkill /IM "winword.exe" /F',
       description: "Kills all MS Words processes",
       category: "win-app",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: 'taskkill /IM "teams.exe" /F',
       description: "Kills all MS Teams Classic processes",
       category: "win-app",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: 'taskkill /IM "ms-teams.exe" /F',
       description: "Kills all MS New Teams processes",
       category: "win-app",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: 'taskkill /IM "outlook.exe" /F',
       description: "Kills all MS Outlook processes",
       category: "win-app",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: 'taskkill /IM "powerpnt.exe" /F',
       description: "Kills all MS PowerPoint processes",
       category: "win-app",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: 'taskkill /IM "excel.exe" /F',
       description: "Kills all MS Excel processes",
       category: "win-app",
-      tags: ["windows", "system"],
+      tags: ["windows", "system", "cmd"],
     },
     {
       item: "New-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\FileSystem' -Name 'LongPathsEnabled' -Value 1 -PropertyType DWORD -Force",
@@ -1150,7 +1145,7 @@ const troubleshooting = {
       description:
         "Command to quickly open the Applications folder. This folder contains all the installed applications on your system, including both traditional desktop programs and universal Windows apps",
       category: "win-app",
-      tags: ["windows", "path"],
+      tags: ["windows", "path", "cmd"],
     },
     {
       item: "/opt/cisco/anyconnect/profile",
@@ -1213,8 +1208,8 @@ const troubleshooting = {
       tags: ["windows", "powershell", "script"],
     },
     {
-      item: `.\\dcu-cli.exe /configure -exportSettings=C:\\Temp\\DCU_Settings.xml<br/>
-.\\dcu-cli.exe /configure -scheduleManual<br/>
+      item: `.\\dcu-cli.exe /configure -exportSettings=C:\\Temp\\DCU_Settings.xml\n
+.\\dcu-cli.exe /configure -scheduleManual\n
 .\\dcu-cli.exe /configure -scheduleAuto`,
       description: `These commands use the Dell Command Update CLI. The dcu-cli.exe can usually be found in 'C:\\Program Files\\Dell\\CommandUpdate'.
       The first command allows to export to xml the current DCU configuration on the device. The second command set the updates to be installed

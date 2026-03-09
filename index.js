@@ -1,3 +1,17 @@
+function hljsHighlightAllExceptNql(root = document) {
+  if (!window.hljs) return;
+
+  root.querySelectorAll("pre code").forEach((codeEl) => {
+    // skip NQL blocks so your highlightNQL() owns them
+    if (codeEl.classList.contains("language-nql")) return;
+
+    // optional: support manual opt-out too
+    if (codeEl.classList.contains("nohighlight")) return;
+
+    hljs.highlightElement(codeEl);
+  });
+}
+
 function toggleNextElement(togglerElement) {
   //$(".aws-section-toggle").next().toggle()
   $(document).on("click", togglerElement, function () {
@@ -475,8 +489,10 @@ async function appendMdNotesToRoot(objArray, index) {
   $("#root").append(
     `<h1 class="pageTitle"><code>markdown notes</code></h1><div class="markdown-body">${mdPagesParsedToHtml.join(customHorizontalLine)}</div>${spaceDiv}`,
   );
-  hljs.highlightAll();
+
+  hljsHighlightAllExceptNql();
   addSnippetLineCounter();
+  highlightNQL();
 }
 
 //Parent function to append item to 'root' element depending on the type
@@ -553,8 +569,9 @@ function displaySectionOnClick(objArray) {
     $("#root").empty();
     appendToRoot(objArray, Number($(this).attr("id").replace("navitem", "")));
 
-    hljs.highlightAll();
+    hljsHighlightAllExceptNql();
     addSnippetLineCounter();
+    highlightNQL();
     createDynamicInputFields();
     updateDynamicInputFields();
   });
@@ -794,15 +811,17 @@ function addSnippetLineCounter() {
       const langToken = classTokens.find((t) => t.startsWith("language-"));
       const lang = langToken ? langToken.replace("language-", "") : null;
 
+      const skipHljs = lang === "nql";
+
       let highlightedHtml;
-      if (window.hljs) {
+      if (!skipHljs && window.hljs) {
         if (lang && hljs.getLanguage(lang)) {
           highlightedHtml = hljs.highlight(rawText, { language: lang }).value;
         } else {
           highlightedHtml = hljs.highlightAuto(rawText).value;
         }
       } else {
-        // fallback: no highlighting library loaded
+        // plain escaped text when skipping hljs (NQL) or when hljs missing
         highlightedHtml = rawText
           .replaceAll("&", "&amp;")
           .replaceAll("<", "&lt;")
@@ -881,7 +900,7 @@ function highlightNQL() {
 
   const keywordRegex = new RegExp("\\b(" + keywords.join("|") + ")\\b", "gi");
 
-  $(".language-nql").each(function () {
+  $("code.language-nql .snippet-code-line").each(function () {
     let html = $(this).text();
 
     // STRINGS (single and double quotes)
