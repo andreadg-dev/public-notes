@@ -376,6 +376,8 @@
         max-width: 95%;
       }
 
+      #root .troubleshoot-snippet pre code {padding: 1rem}
+
       /* Apply horizontal scroll only to the last column's td elements */
       #root td:nth-child(2),
       #root td:nth-child(4) {

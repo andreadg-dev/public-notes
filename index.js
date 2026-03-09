@@ -896,6 +896,8 @@ function highlightNQL() {
     "and",
     "or",
     "ago",
+    "summarize",
+    "by",
   ];
 
   const keywordRegex = new RegExp("\\b(" + keywords.join("|") + ")\\b", "gi");
