@@ -180,8 +180,15 @@ const troubleshooting = {
       tags: ["windows", "lusrmgr", "powershell"],
     },
     {
-      item: "Add-LocalGroupMember -Group 'docker-users' -Member '$((Get-WMIObject -class Win32_ComputerSystem | select username).username)'",
+      item: `Add-LocalGroupMember -Group 'docker-users' -Member "$((Get-WMIObject -class Win32_ComputerSystem | select username).username)"`,
       description: "Adds current logged-on user to the docker-users group",
+      category: "win-lusrmgr",
+      tags: ["windows", "lusrmgr", "powershell"],
+    },
+    {
+      item: `Add-LocalGroupMember -Group 'Hyper-V Administrators' -Member "$((Get-WMIObject -class Win32_ComputerSystem | select username).username)"`,
+      description:
+        "Adds current logged-on user to the Hyper-V Administrators group to allow the user to create, modify, delete and connect to local VM machines.",
       category: "win-lusrmgr",
       tags: ["windows", "lusrmgr", "powershell"],
     },
@@ -333,7 +340,7 @@ const troubleshooting = {
     },
     {
       item: `[Text.Encoding]::ASCII.GetString([Text.Encoding]::GetEncoding("Cyrillic").GetBytes("Ññèéáà"))`,
-      description: `Converts a string containing accented characters into ASCII. The output in this case would be <code>Nneeaa</code>`,
+      description: `Converts a string containing accented characters into ASCII. The output in this case would be \`Nneeaa\``,
       category: "win-system",
       tags: ["windows", "system", "powershell"],
     },
@@ -559,7 +566,7 @@ Key Protectors:
     },
     {
       item: `manage-bde -protectors -get [VOLUME_LETTER]`,
-      description: `Windows command-line tool command used to retrieve the a volume Bitlocker ID and Key. Must be run as administrator. For instance, when running <code>manage-bde -protectors -get c:</code>
+      description: `Windows command-line tool command used to retrieve the a volume Bitlocker ID and Key. Must be run as administrator. For instance, when running \`manage-bde -protectors -get c:\`
 \`\`\`text
 Volume C: [OS]
 All Key Protectors
@@ -583,21 +590,21 @@ All Key Protectors
     {
       item: `manage-bde -protectors c: -adbackup -id [NUMERICAL_PASSWORD_ID]`,
       description: `Windows command-line tool command used to back up Bitlocker Recovery key in AD. Must be run as administrator. If successful, you will get this
-      output message <code>Recovery information was successfully backed up to Active Directory</code>`,
+      output message \`Recovery information was successfully backed up to Active Directory\``,
       category: "win-disk",
       tags: ["windows", "system", "disk", "cmd"],
     },
     {
       item: `certutil -encode "inputimage.png" "outputbase64.txt"`,
-      description: `Convert an image to base64. You can then copy the base64 string and add it to <code>src</code> <code>img</code> attribute to hardcode the 
-      image in your html file, for instance <code>&lt;img src="data:image/[type];base64,[Base64-string]" alt="Description"&gt;</code>`,
+      description: `Convert an image to base64. You can then copy the base64 string and add it to \`src\` \`img\` attribute to hardcode the 
+      image in your html file, for instance \`&lt;img src="data:image/[type];base64,[Base64-string]" alt="Description"&gt;\``,
       category: "win-system",
       tags: ["windows", "system", "cmd"],
     },
     {
       item: `dcu-cli.exe`,
       description: `CLI functionality to managed Dell driver updates by using <strong>Dell Command Update</strong>. Usually it gets installed here
-      <code>C:\\Program Files\\Dell\\CommandUpdate</code>. For all CLI commands, see
+      \`C:\\Program Files\\Dell\\CommandUpdate\`. For all CLI commands, see
       <a href="https://www.dell.com/support/manuals/fr-be/command-update/dcu_rg/dell-command-update-cli-commands?guid=guid-92619086-5f7c-4a05-bce2-0d560c15e8ed&lang=en-us">
       https://www.dell.com/support/manuals/fr-be/command-update/dcu_rg/dell-command-update-cli-commands?guid=guid-92619086-5f7c-4a05-bce2-0d560c15e8ed&lang=en-us</a>.
        You can download <strong>Dell Command Update</strong>: <a href="https://dl.dell.com/FOLDER13922605M/1/Dell-Command-Update-Application_5CR1Y_WIN64_5.6.0_A00.EXE">https://dl.dell.com/FOLDER13922605M/1/Dell-Command-Update-Application_5CR1Y_WIN64_5.6.0_A00.EXE</a>`,
@@ -607,7 +614,7 @@ All Key Protectors
     {
       item: `[System.IO.File]::WriteAllBytes("C:\\path\\output_image.png",[System.Convert]::FromBase64String("BASE64IMAGESTRING"))`,
       description: `Decode an image base64 string back to an image file (png, jpeg etc). It should also work with PDF files. Most file types have distinct “magic numbers” in their binary headers, which, when Base64-encoded, show up as recognizable prefixes. These prefixes let you identify the file type without fully decoding it.
-                    <div style="margin-top:1rem"><strong>Common File Types & Base64 Prefixes</strong></div>- JPEG / JPG &gt; base64 prefix: <code>/9j/</code>- PNG &gt; base64 prefix: <code>iVBORw0KGgo</code>- GIF &gt; base64 prefix: <code>R0lGOD</code>- PDF &gt; base64 prefix: <code>JVBERi0</code>- ZIP / DOCX / XLSX / PPTX &gt; base64 prefix: <code>UEsDB</code>- MP3 &gt; base64 prefix: <code>//uQ</code> or <code>SUQz</code>- MP4 / MOV &gt; base64 prefix: <code>AAAAFGZ0</code>- BMP &gt; base64 prefix: <code>Qk</code>- TIFF / TIF &gt; base64 prefix: <code>SUkq</code>- WebP &gt; base64 prefix: <code>UklGR</code>- RAR &gt; base64 prefix: <code>UmFy</code>- 7z &gt; base64 prefix: <code>77u/</code>- ICO / CUR &gt; base64 prefix: <code>AAABAA</code>- FLAC &gt; base64 prefix: <code>fLaC</code>- OGG / OGV / OGA &gt; base64 prefix: <code>T2dn</code>`,
+                    <div style="margin-top:1rem"><strong>Common File Types & Base64 Prefixes</strong></div>- JPEG / JPG &gt; base64 prefix: \`/9j/\`- PNG &gt; base64 prefix: \`iVBORw0KGgo\`- GIF &gt; base64 prefix: \`R0lGOD\`- PDF &gt; base64 prefix: \`JVBERi0\`- ZIP / DOCX / XLSX / PPTX &gt; base64 prefix: \`UEsDB\`- MP3 &gt; base64 prefix: \`//uQ\` or \`SUQz\`- MP4 / MOV &gt; base64 prefix: \`AAAAFGZ0\`- BMP &gt; base64 prefix: \`Qk\`- TIFF / TIF &gt; base64 prefix: \`SUkq\`- WebP &gt; base64 prefix: \`UklGR\`- RAR &gt; base64 prefix: \`UmFy\`- 7z &gt; base64 prefix: \`77u/\`- ICO / CUR &gt; base64 prefix: \`AAABAA\`- FLAC &gt; base64 prefix: \`fLaC\`- OGG / OGV / OGA &gt; base64 prefix: \`T2dn\``,
       category: "win-system",
       tags: ["windows", "system", "powershell"],
     },
@@ -627,8 +634,8 @@ All Key Protectors
       item: `function prompt { "PS> " }`,
       description: `To remove the directory path from your PowerShell (PS) terminal line, you can customize the prompt function. This can be done temporarily 
       for your current session or permanently by modifying your profile. This method is temporary change (Current Session) to hide the path immediately in your 
-      active window. For the permanent method, you need to open your ps profile file <code>notepad $PROFILE</code> (if not created, it will prompt to create one),
-      then open it copy/paste this <code>function prompt {"$((Get-Location).Path.Split('\')[-1]):  "}</code> and then call the function with <code>. $PROFILE</code>`,
+      active window. For the permanent method, you need to open your ps profile file \`notepad $PROFILE\` (if not created, it will prompt to create one),
+      then open it copy/paste this \`function prompt {"$((Get-Location).Path.Split('\')[-1]):  "}\` and then call the function with \`. $PROFILE\``,
       category: "win-system",
       tags: ["windows", "system", "powershell"],
     },
