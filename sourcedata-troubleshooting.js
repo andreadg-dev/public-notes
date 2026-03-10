@@ -193,6 +193,19 @@ const troubleshooting = {
       tags: ["windows", "lusrmgr", "powershell"],
     },
     {
+      item: `Add-LocalGroupMember -Group "Hyper-V Administrators" -Member "S-1-5-11"`,
+      description:
+        "Adds all authenticated users to the Hyper-V Administrators group to allow the user to create, modify, delete and connect to local VM machines. Use with care in case other people log in to the same machine.",
+      category: "win-lusrmgr",
+      tags: ["windows", "lusrmgr", "powershell"],
+    },
+    {
+      item: `$objGroup = New-Object System.Security.Principal.NTAccount("Authenticated Users")\n$objGroup.Translate([System.Security.Principal.SecurityIdentifier]).Value`,
+      description: "Retrieves 'Authenticated Users' SID value",
+      category: "win-lusrmgr",
+      tags: ["windows", "lusrmgr", "powershell"],
+    },
+    {
       item: "Remove-LocalGroup -Name 'docker-users'",
       description: "Deletes the local group called docker-users",
       category: "win-lusrmgr",
