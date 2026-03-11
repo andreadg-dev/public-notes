@@ -3,6 +3,7 @@ const markdownNotes = {
   type: "markdown-pages",
   navcategory: "menu",
   pages: [
+    "notes_azure_key_vault",
     "notes_typescript",
     "notes_react",
     "notes_nodejs",
