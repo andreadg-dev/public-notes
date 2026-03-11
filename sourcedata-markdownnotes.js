@@ -19,5 +19,6 @@ const markdownNotes = {
     "howto_delete_git_repo_commit_history",
     "notes_aws_certified_developer",
     "errors_Nextjs_requires_a_later_node_version",
+    "notes_useful_operators_js",
   ],
 };
