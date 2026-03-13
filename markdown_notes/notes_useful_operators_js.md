@@ -23,7 +23,7 @@ Common pattern (guard):
 user && user.logout(); // calls logout only if user is truthy
 ```
 
-## ` ? : ` ternary / conditional operator ##
+## ` ? : ` - ternary / conditional operator ##
 What it does: evaluates condition. If truthy, returns iftrue, else returns iffalse. Always picks one of two expressions.
 
 When used:

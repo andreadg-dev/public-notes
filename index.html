@@ -166,14 +166,20 @@
           $(this).next(".snippet-check-icon").toggleClass("hidden");
         }, 2000);
 
-        const textToCopy = $(this)
+        let snippetCodeLines = [];
+
+        $(this)
           .closest(".code-wrapper")
-          .find(".code-body code .snippet-code-line")
-          .text();
+          .find(".snippet-code-line")
+          .each((index, codeLine) => {
+            snippetCodeLines.push($(codeLine).text().trimEnd());
+          });
+
+        let textToCopy = snippetCodeLines.join("\r\n");
 
         //console.log(textToCopy);
-        console.log("isSecureContext:", window.isSecureContext);
-        console.log("clipboard:", navigator.clipboard);
+        //console.log("isSecureContext:", window.isSecureContext);
+        //console.log("clipboard:", navigator.clipboard);
 
         navigator.clipboard
           .writeText(textToCopy)
