@@ -266,6 +266,31 @@
         height: 65px;
       }
 
+      #navbar .dropdown-toggle::after{
+        display: none;
+      }
+
+      /* Ensure the lines can animate */
+      .nb-burger-icon svg line {
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        transform-origin: center;
+      }
+
+      /* Middle line: Fade out */
+      .nb-burger-icon.active svg line:nth-child(1) {
+        opacity: 0;
+      }
+
+      /* Top line: Rotate 45 degrees and move to center */
+      .nb-burger-icon.active svg line:nth-child(2) {
+        transform: translateY(6px) rotate(45deg);
+      }
+
+      /* Bottom line: Rotate -45 degrees and move to center */
+      .nb-burger-icon.active svg line:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+      }
+
       #navbarBrand {
         display: flex;
       }
@@ -277,6 +302,8 @@
         font-size: 1.8rem;
         font-family: var(-main-font-family);
       }
+
+
 
       #navbarAppName code {
         color: white;

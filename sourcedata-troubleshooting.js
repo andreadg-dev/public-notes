@@ -627,7 +627,23 @@ All Key Protectors
     {
       item: `[System.IO.File]::WriteAllBytes("C:\\path\\output_image.png",[System.Convert]::FromBase64String("BASE64IMAGESTRING"))`,
       description: `Decode an image base64 string back to an image file (png, jpeg etc). It should also work with PDF files. Most file types have distinct “magic numbers” in their binary headers, which, when Base64-encoded, show up as recognizable prefixes. These prefixes let you identify the file type without fully decoding it.
-                    <div style="margin-top:1rem"><strong>Common File Types & Base64 Prefixes</strong></div>- JPEG / JPG &gt; base64 prefix: \`/9j/\`- PNG &gt; base64 prefix: \`iVBORw0KGgo\`- GIF &gt; base64 prefix: \`R0lGOD\`- PDF &gt; base64 prefix: \`JVBERi0\`- ZIP / DOCX / XLSX / PPTX &gt; base64 prefix: \`UEsDB\`- MP3 &gt; base64 prefix: \`//uQ\` or \`SUQz\`- MP4 / MOV &gt; base64 prefix: \`AAAAFGZ0\`- BMP &gt; base64 prefix: \`Qk\`- TIFF / TIF &gt; base64 prefix: \`SUkq\`- WebP &gt; base64 prefix: \`UklGR\`- RAR &gt; base64 prefix: \`UmFy\`- 7z &gt; base64 prefix: \`77u/\`- ICO / CUR &gt; base64 prefix: \`AAABAA\`- FLAC &gt; base64 prefix: \`fLaC\`- OGG / OGV / OGA &gt; base64 prefix: \`T2dn\``,
+
+**Common File Types & Base64 Prefixes:**
+- JPEG / JPG &gt; base64 prefix: \`/9j/\`
+- PNG &gt; base64 prefix: \`iVBORw0KGgo\`
+- GIF &gt; base64 prefix: \`R0lGOD\`
+- PDF &gt; base64 prefix: \`JVBERi0\`
+- ZIP / DOCX / XLSX / PPTX &gt; base64 prefix: \`UEsDB\`
+- MP3 &gt; base64 prefix: \`//uQ\` or \`SUQz\` 
+- MP4 / MOV &gt; base64 prefix: \`AAAAFGZ0\` 
+- BMP &gt; base64 prefix: \`Qk\`
+- TIFF / TIF &gt; base64 prefix: \`SUkq\`
+- WebP &gt; base64 prefix: \`UklGR\`
+- RAR &gt; base64 prefix: \`UmFy\`
+- 7z &gt; base64 prefix: \`77u/\`
+- ICO / CUR &gt; base64 prefix: \`AAABAA\`
+- FLAC &gt; base64 prefix: \`fLaC\`
+- OGG / OGV / OGA &gt; base64 prefix: \`T2dn\``,
       category: "win-system",
       tags: ["windows", "system", "powershell"],
     },

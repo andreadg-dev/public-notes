@@ -116,6 +116,14 @@ function parseGoogleBookmarks() {
 // Function to copy element to clipboard
 function copySingleItemToClipBoard(elementToCopy) {
   $(elementToCopy).on("click", function () {
+    const clicked = $(this);
+    if (
+      clicked.hasClass("code-wrapper") ||
+      clicked.find(".code-wrapper").length > 0
+    ) {
+      return;
+    }
+
     let ptrContent = $(this)
       .text()
       .trim()
@@ -135,6 +143,14 @@ function copySingleItemToClipBoard(elementToCopy) {
 // Add event listeners to highlight/unhighlight the table rows
 function highlightElement(element) {
   $(element).on("click", function () {
+    const clicked = $(this);
+    if (
+      clicked.hasClass("code-wrapper") ||
+      clicked.find(".code-wrapper").length > 0
+    ) {
+      return;
+    }
+
     $(this).addClass("highlight"); // Add class to show the alert
     // Set timeout to remove the class after 2 seconds
     setTimeout(() => {
@@ -242,7 +258,7 @@ function appendListItemsToRoot(objArray, index) {
   filterItems("tbody tr");
   copyAllCommands("tr", "td:nth-child(1)");
   copySingleItemToClipBoard("td");
-  highlightElement();
+  //highlightElement();
 }
 
 //Children function that appends const type 'cards' to 'root' element
@@ -1064,7 +1080,13 @@ const navBarWithDropDowns = `<nav class="navbar navbar-expand-lg navbar-dark bg-
   </div>
 	<div class="dropdown dropstart">
 	  <div class="dropdown-toggle" type="button" id="dropdownMenuButtonOther" data-bs-toggle="dropdown" aria-expanded="false">
-		X
+      <div class="nb-burger-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </div>
 	  </div>
 	  <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButtonOther" id="dropdownmenuOther">
 		{{navMenuItems}}

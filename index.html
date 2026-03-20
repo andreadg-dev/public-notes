@@ -186,6 +186,18 @@
           .then(() => console.log("Copied:", textToCopy))
           .catch((err) => console.error("Clipboard error:", err));
       });
+
+      // Change burger icon to X icon when clicking on it
+      $(document).on("click", ".nb-burger-icon", function () {
+        $(this).toggleClass("active");
+      });
+
+      $(document).on("click", ".dropdown-item", function () {
+        $(this)
+          .closest(".dropdown")
+          .find(".nb-burger-icon")
+          .removeClass("active");
+      });
     </script>
   </body>
 </html>
