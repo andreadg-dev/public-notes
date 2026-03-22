@@ -20,5 +20,6 @@ const markdownNotes = {
     "notes_aws_certified_developer",
     "errors_Nextjs_requires_a_later_node_version",
     "notes_useful_operators_js",
+    "notes_nextjs",
   ],
 };
