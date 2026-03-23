@@ -90,22 +90,46 @@ const nextjs = {
       tags: ["text"],
     },
     {
-      title: `<Image>`,
+      title: `<Image
+  src="/hero-desktop.png"
+  width={1000}
+  height={760}
+  className="hidden md:block"
+  alt="Screenshots of the dashboard project showing desktop version"
+/>
+  
+//or, for a remote image
+
+<Image 
+  src={session.data?.user?.image || ''}
+  alt="avatar picture" 
+  width={60} 
+  height={60}
+/>
+`,
       description: `You can import this component with \`import Image from 'next/image';\`.
       Next.js can serve static assets, like images, under the top-level \`/public\` folder. This component
       comes with automatic image optimization: preventing layout shift automatically when images are loading, resizing images to avoid 
       shipping large images to devices with a smaller viewport and lazy loading images by default (images load as they enter 
       the viewport). It's good practice to set the width and height of your images to avoid layout shift, these should be an 
       aspect ratio identical to the source image. These values are not the size the image is rendered, but instead the size 
-      of the actual image file used to understand the aspect ratio, for instance:
+      of the actual image file used to understand the aspect ratio. In case you want to use remote images, you need to add the allowed domains in your \`next.config.ts\`, for instance when adding google account avatar images:
+
 \`\`\`tsx
-  <Image
-    src="/hero-desktop.png"
-    width={1000}
-    height={760}
-    className="hidden md:block"
-    alt="Screenshots of the dashboard project showing desktop version"
-  />
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+    ],
+  },
+};
+
+export default nextConfig;
 \`\`\``,
       link: "https://nextjs.org/learn/dashboard-app/optimizing-fonts-images",
       logo: "nextjs",
