@@ -21,5 +21,6 @@ const markdownNotes = {
     "errors_Nextjs_requires_a_later_node_version",
     "notes_useful_operators_js",
     "notes_nextjs",
+    "howto_fileshare_locally",
   ],
 };
