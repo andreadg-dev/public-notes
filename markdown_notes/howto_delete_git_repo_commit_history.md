@@ -1,5 +1,7 @@
 # HOW TO DELETE A GITHUB REPO COMMIT HISTORY #
 
+`Tag: [HOWTO_ANY_GIT]`
+
 If we want to delete all of our commit history, but keep the code in its current state:
 
 ```sh

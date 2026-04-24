@@ -1,4 +1,6 @@
-# [Linux] Nextjs project - Unsupported engine: required: { node: '>=20.9.0' } #
+# Nextjs project - Unsupported engine: required: { node: '>=20.9.0' } #
+
+`Tag: [ERROR_LINUX_NEXTJS]`
 
 I got this error when launching `npm install` to install all my next.js project dependencies:
 

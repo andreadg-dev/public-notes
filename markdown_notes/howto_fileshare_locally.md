@@ -1,5 +1,7 @@
 # HOW TO SHARE FILES FROM YOUR WINDOWS TO YOUR UBUNTU ON YOUR LOCAL NETWORK #
 
+`Tag: [HOWTO_LINUX_FILESHARING]`
+
 ## Set Up Sharing on Ubuntu ##
 - Install Samba on your Ubuntu with `sudo apt update && sudo apt install samba`
 - Create a Samba user and password with `sudo smbpasswd -a your_username`. You will be prompted to type a password:

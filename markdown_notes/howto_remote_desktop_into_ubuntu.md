@@ -1,5 +1,7 @@
 # HOW TO REMOTE DESKTOP INTO UBUNTU #
 
+`Tag: [HOWTO_LINUX_REMOTING]`
+
 ## Remoting to Ubuntu: Setup ##
 ```sh
 sudo apt install xrdp

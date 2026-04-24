@@ -22,5 +22,7 @@ const markdownNotes = {
     "notes_useful_operators_js",
     "notes_nextjs",
     "howto_fileshare_locally",
+    "errors_powerautomate_file_content_with_JSON",
+    "errors_powerautomate_filter_array_connector_issue",
   ],
 };

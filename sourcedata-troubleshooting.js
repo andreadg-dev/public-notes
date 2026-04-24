@@ -823,6 +823,55 @@ All Key Protectors
       tags: ["windows", "system", "powershell"],
     },
     {
+      item: `$dateString = '2025-10-03 13:01:01'
+[DateTime]::ParseExact($dateString, 'yyyy-MM-dd HH:mm:ss', $null)
+
+# When using culture info
+$fr = [System.Globalization.CultureInfo]::GetCultureInfo('fr-FR')
+[DateTime]::ParseExact('03 octobre 2025 13:01', 'dd MMMM yyyy HH:mm', $fr)
+
+$en = [System.Globalization.CultureInfo]::GetCultureInfo('en-US')
+[DateTime]::ParseExact('10/03/2025 01:05 PM', 'MM/dd/yyyy hh:mm tt', $en)
+
+# Using Invariant cutlure for good practice
+$inv = [System.Globalization.CultureInfo]::InvariantCulture
+[DateTime]::ParseExact('2025-10-03 13:01:01', 'yyyy-MM-dd HH:mm:ss', $inv)
+`,
+      description: `\`[DateTime]::ParseExact(...)\` converts a string into a .NET DateTime, requiring that the string match the exact format you specify.
+      $null is the IFormatProvider (culture info). With $null, .NET uses the current culture, but since the format is fully numeric and unambiguous here, 
+      culture typically doesn't change the result. You use the \`IFormatProvider\` argument when parsing/formatting might depend on culture-specific rules—things 
+      like decimal separators, month/day names, AM/PM designators, calendar settings. If the input is strictly numeric and you fully control the format (like \`yyyy-MM-dd HH:mm:ss\`), 
+      \`IFormatProvider\` usually won't change the outcome—but using \`InvariantCulture\` is a good practice for portability.`,
+      category: "win-env",
+      tags: ["windows", "system", "powershell"],
+    },
+    {
+      item: `[TimeSpan]::FromDays(2)
+[TimeSpan]::FromHours(48)
+[TimeSpan]::FromMinutes(2880)
+[TimeSpan]::FromSeconds(172800)
+[TimeSpan]::FromMilliseconds(172800000)`,
+      description: `Converts an amount of time to different magnitudes of time. In this case, all the code lines above return this output. 
+When converting large decimal numbers in string format to use with this method, you can use \`[float]\` or \`[double]\` casting (\`[int] castings are only 
+for integer and would round up any decimal to the closest integer\`). Double is great for any kind of large numbers with decimals:
+
+\`\`\`plaintext
+Days              : 2
+Hours             : 0
+Minutes           : 0
+Seconds           : 0
+Milliseconds      : 0
+Ticks             : 1728000000000
+TotalDays         : 2
+TotalHours        : 48
+TotalMinutes      : 2880
+TotalSeconds      : 172800
+TotalMilliseconds : 172800000
+\`\`\``,
+      category: "win-env",
+      tags: ["windows", "system", "powershell"],
+    },
+    {
       item: "%localappdata%\\Microsoft\\OneDrive\\onedrive.exe /reset",
       description: "Resets OneDrive if installed in that location",
       category: "win-onedrive",

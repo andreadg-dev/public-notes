@@ -1,5 +1,6 @@
 # Using WSL/CURL/WGET with Zscaler #
 
+`Tag: [ERROR_WINDOWS_ZSCALER]`
 
 ## **CURL: (60) SSL certificate problem**
 **ERROR**
