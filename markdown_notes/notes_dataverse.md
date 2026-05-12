@@ -1,16 +1,29 @@
 # Dataverse Table and Application User Setup
 
-This guide explains how to:
+`Tag: [NOTES_CLOUD_DATAVERSE]`
 
-1. Create a Dataverse table
-2. Create an application user
-3. Create a security role with access to the table
-4. Assign the role to the application user
-5. Optionally create an alternate key to help prevent duplicate entries
+**Index**
+- [Dataverse Table and Application User Setup](#dataverse-table-and-application-user-setup)
+  - [📍 Create a Dataverse table](#-create-a-dataverse-table)
+    - [Possible permission error](#possible-permission-error)
+    - [What to do if this happens](#what-to-do-if-this-happens)
+    - [Important note about dev vs production environments](#important-note-about-dev-vs-production-environments)
+  - [📍 Create an application user](#-create-an-application-user)
+  - [📍 Create a security role with access to the Dataverse table](#-create-a-security-role-with-access-to-the-dataverse-table)
+    - [Minimum suggested table permissions](#minimum-suggested-table-permissions)
+    - [Restricting users to only their own records](#restricting-users-to-only-their-own-records)
+  - [📍 Assign the security role to the application user](#-assign-the-security-role-to-the-application-user)
+  - [📍 Add an alternate key in Dataverse (optional)](#-add-an-alternate-key-in-dataverse-optional)
+  - [📍 Using views in a model-driven app](#-using-views-in-a-model-driven-app)
+    - [What you can do with views](#what-you-can-do-with-views)
+    - [Important note about assigning views](#important-note-about-assigning-views)
+    - [System views vs personal views](#system-views-vs-personal-views)
+    - [Best practice](#best-practice)
+  - [📍 Additional recommendations](#-additional-recommendations)
+  - [📍 Quick summary](#-quick-summary)
 
 
-
-## 1. Create a Dataverse table
+## 📍 Create a Dataverse table
 
 1. Go to **Power Apps**.
 2. Select **Tables**.
@@ -42,7 +55,7 @@ In many organizations, users without elevated permissions can create only a **De
 
 
 
-## 2. Create an application user
+## 📍 Create an application user
 
 1. Go to the **Power Platform admin center**.
 2. Navigate to **Manage** > **Environments**.
@@ -57,7 +70,7 @@ In many organizations, users without elevated permissions can create only a **De
 
 
 
-## 3. Create a security role with access to the Dataverse table
+## 📍 Create a security role with access to the Dataverse table
 
 1. Go to the **Power Platform admin center**.
 2. Navigate to **Manage** > **Environments**.
@@ -101,7 +114,7 @@ With **User-level** access:
 
 > **Important:** If your app creates relationships between records or updates related data, **Append** and **Append To** may also be required.
 
-## 4. Assign the security role to the application user
+## 📍 Assign the security role to the application user
 
 1. Go to the **Power Platform admin center**.
 2. Navigate to **Manage** > **Environments**.
@@ -113,7 +126,7 @@ With **User-level** access:
 
 
 
-## 5. Add an alternate key in Dataverse (optional)
+## 📍 Add an alternate key in Dataverse (optional)
 
 An **alternate key** can help prevent duplicate entries by enforcing uniqueness on one or more columns.
 
@@ -129,7 +142,7 @@ An **alternate key** can help prevent duplicate entries by enforcing uniqueness 
 > **Note:** Alternate keys are useful when integrating with external systems and when you want to identify records by a business-specific unique value instead of the Dataverse record ID.
 
 
-## 6. Using views in a model-driven app
+## 📍 Using views in a model-driven app
 
 Views in a model-driven app let you define how table data is displayed to users. They can be used to show only relevant records and simplify the user experience.
 
@@ -175,7 +188,7 @@ Use **security roles and Dataverse permissions** to control what users are allow
 > **Important:** Views help shape the user experience, but they should not be treated as the primary security boundary. Security should be enforced through Dataverse roles and permissions.
 
 
-## Additional recommendations
+## 📍 Additional recommendations
 
 - Use clear naming conventions for:
   - tables
@@ -190,7 +203,7 @@ Use **security roles and Dataverse permissions** to control what users are allow
 
 
 
-## Quick summary
+## 📍 Quick summary
 
 - Create the Dataverse table in the correct environment.
 - If you do not have permission, you may need a different environment or elevated permissions.

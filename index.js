@@ -1,3 +1,24 @@
+function wrapMdPagesSubsections() {
+  $("#md-pages h2").each((index, item) => {
+    const h2 = $(item);
+    const content = $(item).nextUntil("h2");
+    const h2Id = h2.attr("id");
+
+    const summary = $("<summary class='sub-summary'></summary>").html(
+      h2.html(),
+    );
+    const details = $("<details class='sub-details'></details>").append(
+      summary,
+    );
+    if (h2Id) {
+      summary.attr("id", h2Id);
+    }
+
+    details.append(content);
+    h2.replaceWith(details);
+  });
+}
+
 function hljsHighlightAllExceptNql(root = document) {
   if (!window.hljs) return;
 
@@ -503,12 +524,13 @@ async function appendMdNotesToRoot(objArray, index) {
   );
 
   $("#root").append(
-    `<h1 class="pageTitle"><code>markdown notes</code></h1><div class="markdown-body">${mdPagesParsedToHtml.join(customHorizontalLine)}</div>${spaceDiv}`,
+    `<h1 class="pageTitle"><code>markdown notes</code></h1><div class="markdown-body" id="md-pages">${mdPagesParsedToHtml.join(customHorizontalLine)}</div>${spaceDiv}`,
   );
 
   hljsHighlightAllExceptNql();
   addSnippetLineCounter();
   highlightNQL();
+  wrapMdPagesSubsections();
 }
 
 //Parent function to append item to 'root' element depending on the type

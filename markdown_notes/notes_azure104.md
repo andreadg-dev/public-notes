@@ -5,20 +5,20 @@
 **Index**
 
 - [AZ-104 Azure Administrator Associate Notes](#az-104-azure-administrator-associate-notes)
-  - [📍Useful Portals and Links](#useful-portals-and-links)
-  - [📍Note about Microsoft Graph vs Az PowerShell Modules](#note-about-microsoft-graph-vs-az-powershell-modules)
-  - [📍Module Discovery and Installation](#module-discovery-and-installation)
+  - [📍 Useful Portals and Links](#-useful-portals-and-links)
+  - [📍 Note about Microsoft Graph vs Az PowerShell Modules](#-note-about-microsoft-graph-vs-az-powershell-modules)
+  - [📍 Module Discovery and Installation](#-module-discovery-and-installation)
     - [Examples](#examples)
     - [Az PowerShell](#az-powershell)
     - [Microsoft Graph PowerShell](#microsoft-graph-powershell)
-  - [📍Command Discovery and Help](#command-discovery-and-help)
+  - [📍 Command Discovery and Help](#-command-discovery-and-help)
     - [Examples](#examples-1)
     - [Azure CLI](#azure-cli)
     - [Az PowerShell](#az-powershell-1)
     - [Microsoft Graph PowerShell](#microsoft-graph-powershell-1)
     - [Output Examples](#output-examples)
-    - [Note](#note)
-  - [📍Authentication and Context](#authentication-and-context)
+    - [Notes](#notes)
+  - [📍 Authentication and Context](#-authentication-and-context)
     - [Notes about `Connect-AzAccount`](#notes-about-connect-azaccount)
       - [Simple Rule of Thumb](#simple-rule-of-thumb)
       - [Exam Tip](#exam-tip)
@@ -26,48 +26,48 @@
     - [Azure CLI](#azure-cli-1)
     - [Az PowerShell](#az-powershell-2)
     - [Microsoft Graph PowerShell](#microsoft-graph-powershell-2)
-    - [Notes](#notes)
-  - [📍Subscription Information](#subscription-information)
+    - [Notes](#notes-1)
+  - [📍 Subscription Information](#-subscription-information)
     - [Examples](#examples-3)
     - [Azure CLI](#azure-cli-2)
     - [Az PowerShell](#az-powershell-3)
-  - [📍Entra ID / Azure AD Users](#entra-id--azure-ad-users)
+  - [📍 Entra ID - Azure AD Users](#-entra-id---azure-ad-users)
     - [Examples](#examples-4)
     - [Azure CLI](#azure-cli-3)
     - [Az PowerShell](#az-powershell-4)
     - [Microsoft Graph PowerShell](#microsoft-graph-powershell-3)
-  - [📍Entra ID / Azure AD Groups](#entra-id--azure-ad-groups)
+  - [📍 Entra ID - Azure AD Groups](#-entra-id---azure-ad-groups)
     - [Examples](#examples-5)
     - [Azure CLI](#azure-cli-4)
     - [Az PowerShell](#az-powershell-5)
     - [Microsoft Graph PowerShell](#microsoft-graph-powershell-4)
-  - [📍 Device and Intune Lookups](#-device-and-intune-lookups)
+  - [📍  Device and Intune Lookups](#--device-and-intune-lookups)
     - [Examples](#examples-6)
     - [Microsoft Graph PowerShell](#microsoft-graph-powershell-5)
-  - [📍Bulk Import Users](#bulk-import-users)
+  - [📍 Bulk Import Users](#-bulk-import-users)
     - [What it does](#what-it-does)
     - [Portal path](#portal-path)
     - [Basic process](#basic-process)
-    - [Notes](#notes-1)
-  - [📍Microsoft Entra Domain Services](#microsoft-entra-domain-services)
+    - [Notes](#notes-2)
+  - [📍 Microsoft Entra Domain Services](#-microsoft-entra-domain-services)
     - [What it is](#what-it-is)
     - [What it is used for](#what-it-is-used-for)
     - [Key points](#key-points)
     - [About the domain name / UPN](#about-the-domain-name--upn)
     - [Short summary](#short-summary)
-  - [📍Azure Management Groups](#azure-management-groups)
+  - [📍 Azure Management Groups](#-azure-management-groups)
     - [What they are](#what-they-are)
     - [Main benefits](#main-benefits)
     - [Important note](#important-note)
     - [Short summary](#short-summary-1)
-  - [📍Self-Service Password Reset (SSPR)](#self-service-password-reset-sspr)
+  - [📍 Self-Service Password Reset (SSPR)](#-self-service-password-reset-sspr)
     - [What it is](#what-it-is-1)
     - [Portal path](#portal-path-1)
     - [Main configuration](#main-configuration)
-    - [Notes](#notes-2)
+    - [Notes](#notes-3)
     - [Why it matters](#why-it-matters)
     - [Short summary](#short-summary-2)
-  - [📍Identity Protection](#identity-protection)
+  - [📍 Identity Protection](#-identity-protection)
     - [What it is](#what-it-is-2)
     - [Portal path](#portal-path-2)
     - [Dashboard examples](#dashboard-examples)
@@ -76,9 +76,9 @@
       - [User risk policy](#user-risk-policy)
       - [Sign-in risk policy](#sign-in-risk-policy)
       - [MFA registration policy](#mfa-registration-policy)
-    - [Notes](#notes-3)
+    - [Notes](#notes-4)
     - [Short summary](#short-summary-3)
-  - [📍Enabling MFA](#enabling-mfa)
+  - [📍 Enabling MFA](#-enabling-mfa)
     - [Portal path for authentication methods](#portal-path-for-authentication-methods)
       - [What you configure there](#what-you-configure-there)
     - [Monitoring paths](#monitoring-paths)
@@ -88,30 +88,30 @@
       - [Per-user MFA states](#per-user-mfa-states)
       - [Meaning of Enforced](#meaning-of-enforced)
     - [Best practice note](#best-practice-note)
-  - [📍Blocking Users / MFA Lockout](#blocking-users--mfa-lockout)
+  - [📍 Blocking Users / MFA Lockout](#-blocking-users--mfa-lockout)
     - [What it is](#what-it-is-3)
     - [Portal paths](#portal-paths)
     - [Account lockout](#account-lockout)
     - [Block / unblock users](#block--unblock-users)
     - [Important notes](#important-notes)
-  - [📍Microsoft Entra Connect](#microsoft-entra-connect)
+  - [📍 Microsoft Entra Connect](#-microsoft-entra-connect)
     - [What it is](#what-it-is-4)
     - [Why it is useful](#why-it-is-useful)
     - [Main sync options](#main-sync-options)
       - [Cloud Sync](#cloud-sync)
         - [Characteristics](#characteristics)
-        - [Notes](#notes-4)
+        - [Notes](#notes-5)
       - [Connect Sync](#connect-sync)
         - [Characteristics](#characteristics-1)
         - [Typical advanced capabilities](#typical-advanced-capabilities)
     - [Cloud Sync deployment notes](#cloud-sync-deployment-notes)
       - [Download agent](#download-agent)
       - [Basic setup](#basic-setup)
-    - [Notes](#notes-5)
+    - [Notes](#notes-6)
 
 
 
-## 📍Useful Portals and Links
+## 📍 Useful Portals and Links
 
 | Tool | URL | Purpose |
 |---|---|---|
@@ -122,12 +122,12 @@
 | Microsoft Certified: Azure Administrator Associate Certification | https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/?practice-assessment-type=certification | AZ-104 Certification learning path, info etc |
 
 
-## 📍Note about Microsoft Graph vs Az PowerShell Modules
+## 📍 Note about Microsoft Graph vs Az PowerShell Modules
 
 For Microsoft Entra ID administration, Microsoft Graph PowerShell is generally preferred over Az PowerShell because it is more aligned with Microsoft’s modern identity management model.
 Az PowerShell remains the preferred choice for Azure resource and subscription management.
 
-## 📍Module Discovery and Installation
+## 📍 Module Discovery and Installation
 
 | Goal | Azure CLI | Az PowerShell | Microsoft Graph PowerShell | Notes |
 |---|---|---|---|---|
@@ -151,7 +151,7 @@ Install-Module Microsoft.Graph.DeviceManagement -Scope CurrentUser
 Update-Module Microsoft.Graph* -Scope CurrentUser
 ```
 
-## 📍Command Discovery and Help
+## 📍 Command Discovery and Help
 
 | Goal | Azure CLI | Az PowerShell | Microsoft Graph PowerShell | Notes |
 |---|---|---|---|---|
@@ -228,13 +228,13 @@ You're all set! Here are some commands to try:
  $ az feedback
 ```
 
-### Note
+### Notes
 `az configure` can prompt for user input and stores settings in the local Azure CLI config file. See an example of the output below:
 
 
 
 
-## 📍Authentication and Context
+## 📍 Authentication and Context
 
 | Goal | Azure CLI | Az PowerShell | Microsoft Graph PowerShell | Notes |
 |---|---|---|---|---|
@@ -308,7 +308,7 @@ Disconnect-MgGraph
 
 
 
-## 📍Subscription Information
+## 📍 Subscription Information
 
 | Goal | Azure CLI | Az PowerShell | Microsoft Graph PowerShell | Notes |
 |---|---|---|---|---|
@@ -331,7 +331,7 @@ Get-AzSubscription -TenantId $tenantId
 Get-AzContext
 ```
 
-## 📍Entra ID / Azure AD Users
+## 📍 Entra ID - Azure AD Users
 
 | Goal | Azure CLI | Az PowerShell | Microsoft Graph PowerShell | Notes |
 |---|---|---|---|---|
@@ -389,9 +389,8 @@ Update-MgUser -UserId $userUpnOrId -City "Brussels"
 Remove-MgUser -UserId $userUpnOrId
 ```
 
----
 
-## 📍Entra ID / Azure AD Groups
+## 📍 Entra ID - Azure AD Groups
 
 | Goal | Azure CLI | Az PowerShell | Microsoft Graph PowerShell | Notes |
 |---|---|---|---|---|
@@ -473,7 +472,7 @@ Select-Object @{ Name = 'DisplayName';Expression = { $_.AdditionalProperties.dis
 
 
 
-## 📍 Device and Intune Lookups
+## 📍  Device and Intune Lookups
 
 | Goal | Azure CLI | Az PowerShell | Microsoft Graph PowerShell | Notes |
 |---|---|---|---|---|
@@ -490,7 +489,7 @@ Get-MgDeviceManagementManagedDevice -Filter "serialNumber eq '$serialNumber'"
 
 
 
-## 📍Bulk Import Users
+## 📍 Bulk Import Users
 
 ### What it does
 Lets you create many Microsoft Entra ID users at once by uploading a CSV file.
@@ -512,7 +511,7 @@ Lets you create many Microsoft Entra ID users at once by uploading a CSV file.
 - Bulk operations may have service limits, so very large imports may need to be split into smaller files
 
 
-## 📍Microsoft Entra Domain Services
+## 📍 Microsoft Entra Domain Services
 
 ### What it is
 Microsoft Entra Domain Services provides **managed domain services** in Azure, such as:
@@ -541,7 +540,7 @@ It is mainly used for **legacy applications and workloads** that need traditiona
 Use Microsoft Entra Domain Services when cloud-hosted workloads still need traditional AD features without managing your own domain controllers.
 
 
-## 📍Azure Management Groups
+## 📍 Azure Management Groups
 
 ### What they are
 Management groups are containers placed **above subscriptions** in Azure. They help you organize multiple subscriptions and apply governance at scale.
@@ -560,9 +559,8 @@ They help reduce costs **indirectly** through better governance, policy enforcem
 ### Short summary
 Use management groups to manage many subscriptions consistently from a higher level.
 
----
 
-## 📍Self-Service Password Reset (SSPR)
+## 📍 Self-Service Password Reset (SSPR)
 
 ### What it is
 Self-Service Password Reset lets users reset or unlock their password/account without needing helpdesk support.
@@ -590,9 +588,9 @@ Set **Self service password reset enabled** to:
 ### Short summary
 SSPR allows users to reset their own passwords securely, reducing admin effort.
 
----
 
-## 📍Identity Protection
+
+## 📍 Identity Protection
 
 ### What it is
 Microsoft Entra ID Protection helps detect and respond to **identity-based risks**.
@@ -646,9 +644,9 @@ Can require users to register for Microsoft Entra MFA.
 ### Short summary
 Identity Protection detects risky users and risky sign-ins, then helps enforce remediation actions like MFA or password reset.
 
----
 
-## 📍Enabling MFA
+
+## 📍 Enabling MFA
 
 ### Portal path for authentication methods
 ---
@@ -698,7 +696,7 @@ instead of relying only on legacy **per-user MFA**.
 
 
 
-## 📍Blocking Users / MFA Lockout
+## 📍 Blocking Users / MFA Lockout
 
 ### What it is
 Microsoft Entra can block or lock MFA activity when suspicious behavior or repeated denials occur.
@@ -723,9 +721,9 @@ Admins can manually unblock users who were blocked for MFA-related reasons.
 
 When an Entra ID (Azure AD) user is blocked due to an MFA fraud alert, the account remains blocked for 90 days unless an administrator manually unblocks it.
 
----
 
-## 📍Microsoft Entra Connect
+
+## 📍 Microsoft Entra Connect
 
 ### What it is
 Microsoft Entra Connect links **on-premises Active Directory** with **Microsoft Entra ID** so identities can be synchronized.
