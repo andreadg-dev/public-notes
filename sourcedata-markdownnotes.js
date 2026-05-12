@@ -25,5 +25,6 @@ const markdownNotes = {
     "errors_powerautomate_file_content_with_JSON",
     "errors_powerautomate_filter_array_connector_issue",
     "notes_dataverse",
+    "notes_azure104",
   ],
 };
