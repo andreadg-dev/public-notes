@@ -37,6 +37,12 @@
     - [Az PowerShell](#az-powershell-4)
     - [Microsoft Graph PowerShell](#microsoft-graph-powershell-3)
   - [📍 Entra ID - Azure AD Groups](#-entra-id---azure-ad-groups)
+    - [Overview](#overview)
+      - [Notes](#notes-2)
+    - [Example of dynamic rule syntax](#example-of-dynamic-rule-syntax)
+    - [Self-Service Group Management (SSGM)](#self-service-group-management-ssgm)
+      - [Notes](#notes-3)
+    - [Cheatsheet](#cheatsheet)
     - [Examples](#examples-5)
     - [Azure CLI](#azure-cli-4)
     - [Az PowerShell](#az-powershell-5)
@@ -48,7 +54,7 @@
     - [What it does](#what-it-does)
     - [Portal path](#portal-path)
     - [Basic process](#basic-process)
-    - [Notes](#notes-2)
+    - [Notes](#notes-4)
   - [📍 Microsoft Entra Domain Services](#-microsoft-entra-domain-services)
     - [What it is](#what-it-is)
     - [What it is used for](#what-it-is-used-for)
@@ -64,7 +70,7 @@
     - [What it is](#what-it-is-1)
     - [Portal path](#portal-path-1)
     - [Main configuration](#main-configuration)
-    - [Notes](#notes-3)
+    - [Notes](#notes-5)
     - [Why it matters](#why-it-matters)
     - [Short summary](#short-summary-2)
   - [📍 Identity Protection](#-identity-protection)
@@ -76,7 +82,7 @@
       - [User risk policy](#user-risk-policy)
       - [Sign-in risk policy](#sign-in-risk-policy)
       - [MFA registration policy](#mfa-registration-policy)
-    - [Notes](#notes-4)
+    - [Notes](#notes-6)
     - [Short summary](#short-summary-3)
   - [📍 Enabling MFA](#-enabling-mfa)
     - [Portal path for authentication methods](#portal-path-for-authentication-methods)
@@ -100,14 +106,16 @@
     - [Main sync options](#main-sync-options)
       - [Cloud Sync](#cloud-sync)
         - [Characteristics](#characteristics)
-        - [Notes](#notes-5)
+        - [Notes](#notes-7)
       - [Connect Sync](#connect-sync)
         - [Characteristics](#characteristics-1)
         - [Typical advanced capabilities](#typical-advanced-capabilities)
     - [Cloud Sync deployment notes](#cloud-sync-deployment-notes)
       - [Download agent](#download-agent)
       - [Basic setup](#basic-setup)
-    - [Notes](#notes-6)
+    - [Notes](#notes-8)
+  - [📍 Useful PowerShell Code](#-useful-powershell-code)
+    - [Other useful Cmdlets](#other-useful-cmdlets)
 
 
 
@@ -251,13 +259,14 @@ You're all set! Here are some commands to try:
 | `Connect-AzAccount` | Interactive user login | Yes | Normal admin sign-in |
 | `Connect-AzAccount -UseDeviceAuthentication` | Device code login | Yes, through browser and code | Remote terminal or no popup login |
 | `Connect-AzAccount -Identity` | Managed identity | No | Azure-hosted automation |
+| `Enable-AzContextAutosave -Scope CurrentUser` | Save your Azure context to disk for your current user profile | No | Reduce manual sign-in occurrences
 
 #### Simple Rule of Thumb
 
 - Use **`Connect-AzAccount`** for normal interactive administration
 - Use **`Connect-AzAccount -UseDeviceAuthentication`** when interactive popup login is not practical. Graph has `Connect-MgGraph -UseDeviceCode`
 - Use **`Connect-AzAccount -Identity`** for automation running inside Azure with a managed identity: Azure VM, Azure Automation, Azure Functions, Azure App Service, other Azure-hosted workloads. Graph has `Connect-MgGraph -Identity`
-
+- Use **`Enable-AzContextAutosave -Scope CurrentUser`** after you log in and select a subscription so that Az can reuse that context in future PowerShell sessions for the same user, therefore reducing the occurrences of interactive sign-ins. There is not MgGraph equivalent
 
 #### Exam Tip
 
@@ -392,12 +401,61 @@ Remove-MgUser -UserId $userUpnOrId
 
 ## 📍 Entra ID - Azure AD Groups
 
+### Overview
+- Group type: Security or Microsoft 365
+- Membership type*: Assigned, Dynamic User, Dynamic Device 
+- Microsoft Entra roles can be assigned to the group**: Yes/No
+
+#### Notes
+> *Assigned, users are manually added to the group. Dynamic groups allow to use condition using attirbutes. You need at least Entr ID Premium P1 license for dynamic groups. Dynamic groups can contain users or devices but not both
+
+> **this option cannot be changed after creation. Same goes for group type
+When assigning a license to the group, it only applies to the members and not the owners
+
+### Example of dynamic rule syntax
+```plaintext
+(user.country -eq "Belgium") and (user.city -eq "Brussels") and (user.department -startsWith "IT")
+(user.accountEnabled -eq true)
+(user.jobTitle -startsWith "Manager") or (user.jobTitle -startsWith "Director")
+(device.deviceOSType -eq "iPhone") or (device.deviceManufacturer -eq "Apple")
+```
+
+*Rules are case-insensitive*
+
+![dynamic_group_example](images/az104-groups-dynamic.jpg)
+
+
+### Self-Service Group Management (SSGM)
+You can enable SSGM from 
+`portal.azure.com > Groups > General > Owners can manage group membership requests in My Groups > Yes`
+
+![ssgm_entraid_config](images/az104-groups-ssgm.jpg)
+
+A user can manage groups from:
+- https://myaccount.microsoft.com/groups/groups-i-own: check details, add/remove members/owners, change access policy*, change group visibility settings**, delete and leave
+- https://myaccount.microsoft.com/groups/groups-i-belong-to: leave a group (except for on-premises mastered and security groups)
+- https://myaccount.microsoft.com/groups/search: search and request to join a group
+
+#### Notes
+> *Access Policy: When creating a security group, you can set the access policy to the options in the screenshot below. Policies are only for security groups
+
+> **Group visibility: Only available for M365 groups
+
+
+![ssgm_group_access_settings](images/az104-groups-ssgm_policy.jpg)
+
+
+### Cheatsheet
 | Goal | Azure CLI | Az PowerShell | Microsoft Graph PowerShell | Notes |
 |---|---|---|---|---|
 | List groups | `az ad group list` | `Get-AzADGroup` | `Get-MgGroup` | Basic group listing |
 | List group display names | `az ad group list --query "[].displayName"` | `Get-AzADGroup \| Select-Object DisplayName` | `Get-MgGroup \| Select-Object DisplayName` | Cleaner output |
 | Get one group | `az ad group show --group "GroupName"` | `Get-AzADGroup -DisplayName "GroupName"` | `Get-MgGroup -Filter "displayName eq 'GroupName'"` | Graph often uses OData filter |
 | List group members | `az ad group member list --group "GroupName"` | `Get-AzADGroupMember -GroupDisplayName "GroupName"` | `Get-MgGroupMember -GroupId "<group-id>"` | Graph usually requires group ID |
+| Create group | `az ad group create --display-name "ProjectA_members" --mail-nickname "projecta_members"` | `New-AzADGroup -DisplayName $groupDisplayName -MailNickname $groupMailNickname` | `New-MgGroup -DisplayName "ProjectA_members" -MailNickname "projecta_members" -MailEnabled:$false -SecurityEnabled:$true` | For Graph, security groups typically use `MailEnabled:$false` and `SecurityEnabled:$true` |
+| Add member to group | `az ad group member add --group "ProjectA_members" --member-id "abcd1234-1234-5678-9012-efghjk123456"` | `Add-AzADGroupMember -TargetGroupObjectID $groupId -MemberObjectID $memberIds` | `New-MgGroupMember -GroupId $groupId -DirectoryObjectId $userGroupOrAppId` | Adds a user, group, service principal, or other directory object depending on the object ID |
+| Delete group | `az ad group delete --group "ProjectA_members"` | `Remove-AzADGroup -ObjectId $groupId` | `Remove-MgGroup -GroupId $groupId` | Deletes the whole group |
+| Remove member from group | `az ad group member remove --group "ProjectA_members" --member-id "abcd1234-1234-5678-9012-efghjk123456"` | `Remove-AzADGroupMember -MemberObjectId $memberId -TargetGroupObjectId $groupId` | `Remove-MgGroupMemberByRef -GroupId $groupId -DirectoryObjectId $userGroupOrAppId` | Removes a member from the group without deleting the group itself |
 
 ### Examples
 ---
@@ -420,6 +478,15 @@ az ad group member list --group "{group_display_name/group_id}" --query "[?userP
 
 #returns a table of all group members and list both displayName and userPrincipalName
 az ad group member list --group "{group_display_name/group_id}" --query "[].{Name:displayName,UPN:userPrincipalName}" --output table 
+
+# Creates group
+az ad group create --display-name "ProjectA_members" --mail-nickname "projecta_members"
+
+# Adds member to group
+az ad group member add --group "ProjectA_members" --member-id "abcd1234-1234-5678-9012-efghjk123456"
+
+# Deletes group
+az ad group delete --group "ProjectA_members"
 
 ```
 
@@ -448,6 +515,17 @@ Get-AzADUserMemberOf -UserPrincipalName $userUpnOrId |
 Select-Object -ExpandProperty DisplayName |
 Sort-Object
 
+# Creates group
+New-AzADGroup -DisplayName $groupDisplayName -MailNickname $groupMailNickname
+
+# Adds member to group
+Add-AzADGroupMember -TargetGroupObjectID $groupId -MemberObjectID $memberIds
+Add-AzADGroupMember -TargetGroupDisplayName $groupDisplayName -MemberUserPrincipalName $memberUPNs
+
+# Deletes group
+Remove-AzADGroup -ObjectId $groupId
+Remove-AzADGroup -DisplayName $groupDisplayName
+
 ```
 
 ### Microsoft Graph PowerShell
@@ -465,9 +543,14 @@ Get-MgGroupMember -GroupId $group.Id -All |
 Where-Object { $_.'@odata.type' -eq '#microsoft.graph.user' } |
 Select-Object @{ Name = 'DisplayName';Expression = { $_.AdditionalProperties.displayName } }, @{ Name = 'UserPrincipalName'; Expression = { $_.AdditionalProperties.userPrincipalName } }
 
-
 # Return the group names a user is member of
 (Get-MgUserMemberOf -UserId $userUpnOrId | Select-Object -ExpandProperty AdditionalProperties).displayName | Sort-Object
+
+# Add member to group
+New-MgGroupMember -GroupId $groupId -DirectoryObjectId $userGroupOrAppId
+
+# Deletes group
+Remove-MgGroupMemberByRef -GroupId $groupId -DirectoryObjectId $userGroupOrAppId
 ```
 
 
@@ -797,3 +880,252 @@ The users on Entra ID will now list a On-Premise Directory Synchonization accoun
 - Cloud Sync uses a **gMSA** (group Managed Service Account) in supported scenarios
 - Synced users in Entra ID are shown as coming from on-premises directory synchronization
 - Cloud Sync is generally simpler, while Connect Sync is generally more powerful
+
+
+## 📍 Useful PowerShell Code
+```powershell
+#==================================
+# TenantId
+#==================================
+# Get TenantId
+$tenantId = ((dsregcmd /status) -match "TenantId").Trim().Replace("TenantId", "").Replace(":", "").Trim() #or add your tenant id here
+
+
+#==================================
+# Helper Functions
+#==================================
+# Function to generate select fields string for API calls
+function Get-SelectParams([Parameter(Mandatory)][object[]]$Props) { $props.ForEach({ $_[0].ToString().ToLower() + $_.ToString().Substring(1) }) -join "," }
+
+# Function to generate custom error object
+function Get-CustomError {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [object]$ErrorInput
+    )
+
+    $errorProps = @("Exception", "TargetObject", "CategoryInfo", "FullyQualifiedErrorId", "ErrorDetails", "InvocationInfo", "ScriptStackTrace")
+    $currentError = $ErrorInput
+    $errorObj = [PSCustomObject]@{}
+    $errorProps | ForEach-Object { $errorObj | Add-Member -MemberType NoteProperty -Name $_ -Value $currentError.$_ }
+
+    return $errorObj
+}
+
+# Function to generate filter or search query string
+function Get-CustomMgUserFilter {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [ValidateSet("userPrincipalName", "displayName", "employeeId", "mail")]
+        [string]$Property,
+
+        [Parameter(Mandatory)]
+        [ValidateSet("eq", "startsWith", "contains")]
+        [string]$Operator,
+
+        [Parameter(Mandatory)]
+        [string]$Value,
+
+        [Parameter()]
+        [switch]$Log
+    )
+
+    $filter = if ($Operator -eq "eq") { "$Property eq '$Value'" }
+    elseif ($Operator -eq "startsWith") { "startsWith($Property, '$Value')" }
+    elseif ($Operator -eq "contains") { "${Property}:${Value}" }
+    
+    if ($Log) { Write-Host "Filter: $filter" -ForegroundColor Cyan }
+    
+    return $filter
+}
+
+
+#==================================
+# Main Functions
+#==================================
+# Function to retrieve full user profile
+function Get-CustomMgUser {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [String]$Filter,
+
+        [Parameter()]
+        [ValidateSet("AuthMethods", "AssignedLicenses", "ManagerInfo", "GroupsInfo", "RegisteredDevices")]
+        [String[]]$ExtraProperties
+    )
+
+    $userProps = @("Id", "EmployeeId", "UserPrincipalName", "Mail", "DisplayName", "GivenName", "Surname", "AccountEnabled", "Country", "City", "OfficeLocation", "CompanyName", "EmployeeType", "JobTitle", "UserType", "CreatedDateTime", "LastPasswordChangeDateTime")
+    $userManagerProps = @("displayName", "mail", "userPrincipalName", "officeLocation")
+    $userGroupProps = @("displayName", "mail")
+    $userDevicesProps = @("deviceId", "isCompliant", "manufacturer", "model", "displayName", "approximateLastSignInDateTime", "accountEnabled", "enrollmentProfileName", "createdDateTime", "isManaged", "operatingSystem", "operatingSystemVersion", "enrollmentType", "deviceOwnership", "registrationDateTime")
+
+    if (-not (Get-MgContext)) { throw "No Microsoft Graph Context found. Please make sure to connect to MS Graph using 'Connect-MgGraph'" }
+
+    try {
+        # Generaing Get-MgUser parameters depending on the kind of filter/query
+        $params = @{Property = $userProps }
+
+        if ($Filter -match " eq |startsWith") { $params["Filter"] = $Filter }
+        elseif ($Filter -like "*:*") { 
+            $params["Search"] = $Filter 
+            $params["ConsistencyLevel"] = "eventual"     
+        }
+
+        Write-Host "GET $($params | ConvertTo-Json)" -ForegroundColor Cyan
+
+        # Making requests
+        $mgUsers = @(Get-MgUser @params | Select-Object @($userProps + @{N = "GRAPH_USER_URI"; E = { "https://graph.microsoft.com/v1.0/users/$($_.Id)?`$select=$(Get-SelectParams -Props $userProps)" } }, @{N = "GRAPH_REGDEVICES_URI"; E = { "https://graph.microsoft.com/v1.0/users/$($_.Id)/registeredDevices" } }))
+
+        if (!$mgUsers) { throw "No match found with filter: $Filter" }
+
+        $usersOutput = @()
+        foreach ($mgUser in $mgUsers) {
+            if ("AuthMethods" -in $ExtraProperties) {
+                try {
+                    $authMethods = Get-MgUserAuthenticationMethod -UserId $mgUser.userPrincipalName -ErrorAction Stop | Select-Object -ExpandProperty AdditionalProperties 
+                    $authMethodsParsed = $authMethods | ForEach-Object -Begin { $index = 0 } -Process { [PSCustomObject](@{Index = $index; AuthMethod = $_ }); $index++ }
+                    $mgUser | Add-Member -MemberType NoteProperty -Name "AUTH_METHODS" -Value @{
+                        Success = $true
+                        Message = $authMethodsParsed
+                    }
+                }
+                catch {
+                    $mgUser | Add-Member -MemberType NoteProperty -Name "AUTH_METHODS" -Value @{
+                        Success = $false 
+                        Message = @{ErrorMessage = $_.Exception.Message; FullError = (Get-CustomError -ErrorInput $_) }
+                    }
+                }
+                
+            }
+
+            if ("AssignedLicenses" -in $ExtraProperties) {
+                try {
+                    $licenseInfo = Get-MgUserLicenseDetail -UserId $mgUser.userPrincipalName -ErrorAction Stop
+                    $mgUser | Add-Member -MemberType NoteProperty -Name "ASSIGNED_LICENSES" -Value @{
+                        Success = $true
+                        Message = $licenseInfo
+                    }
+                }
+                catch {
+                    $mgUser | Add-Member -MemberType NoteProperty -Name "ASSIGNED_LICENSES" -Value @{
+                        Success = $false 
+                        Message = @{ErrorMessage = $_.Exception.Message; FullError = (Get-CustomError -ErrorInput $_) }
+                    }
+                }
+               
+            }
+
+            if ("ManagerInfo" -in $ExtraProperties) {
+                try {
+                    $managerInfo = Get-MgUserManager -UserId $mgUser.userPrincipalName -ErrorAction Stop | Select-Object -ExpandProperty AdditionalProperties | ForEach-Object { [PSCustomObject](@{} + $_); } #$currentObj = $_ ; $managerProps.ForEach({ $currentObj.$_ })
+                    $mgUser | Add-Member -MemberType NoteProperty -Name "MANAGER_INFO" -Value @{
+                        Success = $true
+                        Message = ($managerInfo | Select-Object $userManagerProps)
+                    }
+                }
+                catch {
+                    $mgUser | Add-Member -MemberType NoteProperty -Name "MANAGER_INFO" -Value @{
+                        Success = $false 
+                        Message = @{ErrorMessage = $_.Exception.Message; FullError = (Get-CustomError -ErrorInput $_) }
+                    }
+                }
+                
+            }
+         
+            if ("GroupsInfo" -in $ExtraProperties) {
+                try {
+                    $groupsInfo = Get-MgUserMemberOf -UserId $mgUser.userPrincipalName -ErrorAction Stop | Select-Object -ExpandProperty AdditionalProperties | ForEach-Object { [PSCustomObject](@{} + $_) }
+                    $mgUser | Add-Member -MemberType NoteProperty -Name "GROUPS_INFO" -Value @{
+                        Success = $true
+                        Message = ($groupsInfo | Select-Object $userGroupProps | Sort-Object displayName)
+                    }
+                }
+                catch {
+                    $mgUser | Add-Member -MemberType NoteProperty -Name "GROUPS_INFO" -Value @{
+                        Success = $false 
+                        Message = @{ErrorMessage = $_.Exception.Message; FullError = (Get-CustomError -ErrorInput $_) }
+                    }
+                }
+
+            }
+
+            if ("RegisteredDevices" -in $ExtraProperties) {
+                try {
+                    $registeredDevices = Get-MgUserRegisteredDevice -UserId $mgUser.userPrincipalName -ErrorAction Stop | Select-Object -ExpandProperty AdditionalProperties | ForEach-Object { [PSCustomObject](@{} + $_) }
+                    $mgUser | Add-Member -MemberType NoteProperty -Name "REGISTERED_DEVICES" -Value @{
+                        Success = $true
+                        Message = ($registeredDevices | Select-Object $userDevicesProps)
+                    }
+                }
+                catch {
+                    $mgUser | Add-Member -MemberType NoteProperty -Name "REGISTERED_DEVICES" -Value @{
+                        Success = $false 
+                        Message = @{ErrorMessage = $_.Exception.Message; FullError = (Get-CustomError -ErrorInput $_) }
+                    }
+                }  
+            }
+
+            $usersOutput += $mgUser
+        }
+
+        return $usersOutput
+    }
+    catch {
+        $errorMsg = "Error: $($_.Exception.Message)"
+        Write-Host $errorMsg -ForegroundColor Red
+
+        # Detailed debugging info:
+        Write-Host "Error at line: $($_.InvocationInfo.ScriptLineNumber)" -ForegroundColor Red
+        Write-Host "Code: $($_.InvocationInfo.Line.Trim())" -ForegroundColor Red
+        Write-Host "Position: $($_.InvocationInfo.PositionMessage)" -ForegroundColor DarkRed
+        Write-Host "StackTrace: $($_.ScriptStackTrace)" -ForegroundColor DarkRed
+        Write-Host "Response: $($_.Exception.Response)"  -ForegroundColor DarkRed
+    }
+
+}
+
+
+#==================================
+# Log in Azure and Microsoft Graph
+#==================================
+$azContext = Get-AzContext
+$mgContext = Get-MgContext 
+
+# Only AzCotext can be cached locally whereas MgContext has to be requested everytime the token expires
+Enable-AzContextAutosave -Scope CurrentUser | Out-Null
+
+# If contexts are null, requests both
+if ([string]::IsNullOrEmpty($azContext)) { Connect-AzAccount -UseDeviceAuthentication -Tenant $tenantId }
+if ([string]::IsNullOrEmpty($mgContext)) { Connect-MgGraph -UseDeviceCode -TenantId $tenantId }
+
+
+#==================================
+# Help
+#==================================
+Get-Command -Name Get-MgUser* -All | Select-Object Name
+
+
+#==================================
+# User requests examples
+#==================================
+$filterEq = Get-CustomMgUserFilter -Property "userPrincipalName" -Operator "eq" -Value "username@domain" -Log
+$filterStartswith = Get-CustomMgUserFilter -Property "userPrincipalName" -Operator "startsWith" -Value "username" -Log
+$filterContains = Get-CustomMgUserFilter -Property "userPrincipalName" -Operator "contains" -Value "username" -Log
+
+$extraProps = @("AuthMethods", "AssignedLicenses", "ManagerInfo", "GroupsInfo", "RegisteredDevices")
+$usersOutput = Get-CustomMgUser -Filter $filterEq -ExtraProperties $extraProps
+$usersOutput = Get-CustomMgUser -Filter $filterStartswith -ExtraProperties $extraProps
+$usersOutput = Get-CustomMgUser -Filter $filterContains -ExtraProperties $extraProps
+
+```
+
+### Other useful Cmdlets
+
+- Registered devices: `Get-MgUserOwnedDevice -UserId $userUpn | Select-Object -ExpandProperty AdditionalProperties | ForEach-Object { $_.displayName }`
+
+- MFA Method: `Get-MgUserAuthenticationMicrosoftAuthenticatorMethod -UserId $userUpn`
+
+- Phone Method: `Get-MgUserAuthenticationPhoneMethod -UserId $userUpn`

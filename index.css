@@ -832,6 +832,11 @@ code {
   margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #15b2e959;
+  font-size: larger;
+  font-weight: bold;
+  background-color: #75c5bd0f;
+  padding-top: 0.5rem;
+  padding-left: 0.5rem;
 }
 
 #md-pages .sub-details {
