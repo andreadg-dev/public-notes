@@ -32,16 +32,17 @@
     - [Azure CLI](#azure-cli-2)
     - [Az PowerShell](#az-powershell-3)
   - [📍 Entra ID - Azure AD Users](#-entra-id---azure-ad-users)
+    - [Notes](#notes-2)
     - [Examples](#examples-4)
     - [Azure CLI](#azure-cli-3)
     - [Az PowerShell](#az-powershell-4)
     - [Microsoft Graph PowerShell](#microsoft-graph-powershell-3)
   - [📍 Entra ID - Azure AD Groups](#-entra-id---azure-ad-groups)
     - [Overview](#overview)
-      - [Notes](#notes-2)
+      - [Notes](#notes-3)
     - [Example of dynamic rule syntax](#example-of-dynamic-rule-syntax)
     - [Self-Service Group Management (SSGM)](#self-service-group-management-ssgm)
-      - [Notes](#notes-3)
+      - [Notes](#notes-4)
     - [Cheatsheet](#cheatsheet)
     - [Examples](#examples-5)
     - [Azure CLI](#azure-cli-4)
@@ -54,7 +55,7 @@
     - [What it does](#what-it-does)
     - [Portal path](#portal-path)
     - [Basic process](#basic-process)
-    - [Notes](#notes-4)
+    - [Notes](#notes-5)
   - [📍 Microsoft Entra Domain Services](#-microsoft-entra-domain-services)
     - [What it is](#what-it-is)
     - [What it is used for](#what-it-is-used-for)
@@ -70,7 +71,7 @@
     - [What it is](#what-it-is-1)
     - [Portal path](#portal-path-1)
     - [Main configuration](#main-configuration)
-    - [Notes](#notes-5)
+    - [Notes](#notes-6)
     - [Why it matters](#why-it-matters)
     - [Short summary](#short-summary-2)
   - [📍 Identity Protection](#-identity-protection)
@@ -82,7 +83,7 @@
       - [User risk policy](#user-risk-policy)
       - [Sign-in risk policy](#sign-in-risk-policy)
       - [MFA registration policy](#mfa-registration-policy)
-    - [Notes](#notes-6)
+    - [Notes](#notes-7)
     - [Short summary](#short-summary-3)
   - [📍 Enabling MFA](#-enabling-mfa)
     - [Portal path for authentication methods](#portal-path-for-authentication-methods)
@@ -106,14 +107,20 @@
     - [Main sync options](#main-sync-options)
       - [Cloud Sync](#cloud-sync)
         - [Characteristics](#characteristics)
-        - [Notes](#notes-7)
+        - [Notes](#notes-8)
       - [Connect Sync](#connect-sync)
         - [Characteristics](#characteristics-1)
         - [Typical advanced capabilities](#typical-advanced-capabilities)
     - [Cloud Sync deployment notes](#cloud-sync-deployment-notes)
       - [Download agent](#download-agent)
       - [Basic setup](#basic-setup)
-    - [Notes](#notes-8)
+    - [Notes](#notes-9)
+  - [📍 Join device to MS Entr ID tenant](#-join-device-to-ms-entr-id-tenant)
+  - [📍 Conditional Access](#-conditional-access)
+    - [Named locations](#named-locations)
+    - [New policy](#new-policy)
+      - [Create new policy from templates example](#create-new-policy-from-templates-example)
+      - [Create new policy example](#create-new-policy-example)
   - [📍 Useful PowerShell Code](#-useful-powershell-code)
     - [Other useful Cmdlets](#other-useful-cmdlets)
 
@@ -351,6 +358,11 @@ Get-AzContext
 | Update user | `az ad user update ...` | `Update-AzADUser ...` | `Update-MgUser -UserId "user@domain.com" ...` | Syntax varies by property |
 | Delete user | `az ad user delete --id user@domain.com` | `Remove-AzADUser -UPNOrObjectId "user@domain.com"` | `Remove-MgUser -UserId "user@domain.com"` | Destructive command |
 
+
+### Notes
+> Users' `Usage location` property needs to be filled in for licensing purposes. Many licensing require this field and if not filled in during assignment, you will get a `License cannot be assigned to a user without a usage location` specified
+
+
 ### Examples
 ---
 ### Azure CLI
@@ -410,7 +422,8 @@ Remove-MgUser -UserId $userUpnOrId
 > *Assigned, users are manually added to the group. Dynamic groups allow to use condition using attirbutes. You need at least Entr ID Premium P1 license for dynamic groups. Dynamic groups can contain users or devices but not both
 
 > **this option cannot be changed after creation. Same goes for group type
-When assigning a license to the group, it only applies to the members and not the owners
+
+> When assigning a license to the group, it only applies to the members and not the owners
 
 ### Example of dynamic rule syntax
 ```plaintext
@@ -880,6 +893,52 @@ The users on Entra ID will now list a On-Premise Directory Synchonization accoun
 - Cloud Sync uses a **gMSA** (group Managed Service Account) in supported scenarios
 - Synced users in Entra ID are shown as coming from on-premises directory synchronization
 - Cloud Sync is generally simpler, while Connect Sync is generally more powerful
+
+
+## 📍 Join device to MS Entr ID tenant
+From the device: Settings > Accounts > Access work or school > Connect > Join this device to Microsoft Entra ID
+
+![join_device_to_entraidtenant](images/az104-device-jointenant.jpg)
+
+This method might not be allowed by your organization
+
+
+## 📍 Conditional Access
+
+### Named locations
+Portal path: `portal.azure.com > Security > Protect: Conditional Access > Named Locations`
+
+You can create locations based on countries or IP ranges locations
+- **Countries location**: determined by either IP address or GPS coordinates. In case of GPS coordinates, users will be prompted by the Authenticator app to share their GPS location
+
+![named_locations_countries](images/az104-conditionalaccess-nameloccountries.jpg)
+
+- **IP ranges**: useful when users are connecting to a corporate network that uses a public IP range. You can also mark these as trusted locations so that they can be included when creating conditional access policies. You have to enter an IP range in CIDR format (Classless Inter-Domain Routing), for instance 199.126.129.0/24
+
+![named_locations_ipranges](images/az104-conditionalaccess-namelocipranges.jpg)
+
+### New policy
+Portal path: `portal.azure.com > Security > Protect: Conditional Access > Overview` 
+
+The options are: 
+- Create new policy
+- Create new policy from templates
+
+![conditionalaccess_overview](images/az104-conditionalaccess-overview.jpg)
+
+#### Create new policy from templates example
+![conditionalaccess_fromtemplate](images/az104-conditionalaccess-fromtemplate.jpg)
+
+#### Create new policy example
+You can specify the following settings:
+- Users: the users targeted by the policy. Allow Include or Exclude rules. Can apply to all users or specify users and/or groups
+- Target resources: resources where access is granted or blocked, for instance cloud apps
+- Conditions: based on risk, device platforms, locations (see above) etc
+- Grant: grant or block access and allow extra requirements like MFA etc
+- Enable: you can enable it, disable it or select Report-only mode if you would like to monitor how many users the policy might have applied to if enabled
+![conditionalaccess_newpolicy](images/az104-conditionalaccess-newpolicy.jpg)
+
+
 
 
 ## 📍 Useful PowerShell Code
