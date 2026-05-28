@@ -121,6 +121,10 @@
     - [New policy](#new-policy)
       - [Create new policy from templates example](#create-new-policy-from-templates-example)
       - [Create new policy example](#create-new-policy-example)
+  - [📍 Azure Policy](#-azure-policy)
+    - [Overview](#overview-1)
+    - [Azure Policy Effects](#azure-policy-effects)
+    - [Azure Policy Initiatives](#azure-policy-initiatives)
   - [📍 Useful PowerShell Code](#-useful-powershell-code)
     - [Other useful Cmdlets](#other-useful-cmdlets)
 
@@ -938,7 +942,26 @@ You can specify the following settings:
 - Enable: you can enable it, disable it or select Report-only mode if you would like to monitor how many users the policy might have applied to if enabled
 ![conditionalaccess_newpolicy](images/az104-conditionalaccess-newpolicy.jpg)
 
+## 📍 Azure Policy
 
+### Overview
+- More granular than RBAC (role-based access control). For instance, with an RBAC you can specify who can deploy VMs or not but for instance, if you want to allow only certain sizes of VMs, you would need to do that using a Azure Policy
+- Control types of resources that can be deployed
+- Controls where resources can or cannot be deployed
+- Adds default tag values
+- Azure Policies are JSON formatted text files
+- Can be assigned to Management group, Subscription, Resource group. Policies usually apply cascading down unless exception are configured.
+
+### Azure Policy Effects
+- Append
+- Audit
+- AuditIfNotExists
+- DeployIfNotExists
+- Deny
+
+### Azure Policy Initiatives
+- Group of related Azure Policies
+- Can assign initiavies to resources
 
 
 ## 📍 Useful PowerShell Code

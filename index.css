@@ -847,3 +847,8 @@ code {
 #md-pages .sub-details[open] {
   margin-bottom: 2rem;
 }
+
+#md-pages h3 {
+  background-color: #f3ef700f;
+  padding: 10px;
+}
