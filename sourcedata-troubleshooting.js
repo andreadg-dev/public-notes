@@ -1324,13 +1324,6 @@ TotalMilliseconds : 172800000
       tags: ["windows", "network", "wifi", "netsh", "cmd"],
     },
     {
-      item: "netsh wlan show profiles",
-      description:
-        "Lists saved Wi-Fi profiles on the machine. Useful for identifying previously connected networks (and, with additional commands, retrieving saved keys).",
-      category: "win-network",
-      tags: ["windows", "network", "wifi", "netsh", "cmd"],
-    },
-    {
       item: "netsh lan show interfaces",
       description:
         "Shows wired (LAN) interface details, such as interface name, state, and MAC address.",
@@ -1350,6 +1343,66 @@ TotalMilliseconds : 172800000
         "Displays IP configuration for network adapters (IP address, gateway, DNS servers, etc.). Similar to ipconfig, but in PowerShell object form.",
       category: "win-network",
       tags: ["windows", "powershell", "network", "ip", "pwsh"],
+    },
+    {
+      item: `$localFilePath = "C:\\temp\\testfile.csv"\n[System.IO.Path]::GetExtension($localFilePath)`,
+      description: `Extracts and returns the file extension from a file path`,
+      category: "win-system",
+      tags: ["windows", "system", "ps1"],
+    },
+    {
+      item: `manage-bde -unlock c: -recoverypassword [BITLOCKER_RECOVERY_KEY]\ndel C:\\Windows\\System32\\drivers\\CrowdStrike\\C-00000291*.sys\nC:\\Windows\\System32\\shutdown.exe -r -t 00 -f`,
+      description: `These commands bypass BitLocker encryption, delete a specific CrowdStrike Falcon driver file, and immediately force-reboot the computer. This specific sequence was the manual fix widely used to recover Windows machines stuck in a "Blue Screen of Death" (BSOD) boot loop during the global CrowdStrike / Microsoft IT outage on July 19, 2024.`,
+      category: "win-system",
+      tags: ["windows", "system", "cmd"],
+    },
+    {
+      item: `netsh wlan show profiles`,
+      description: `Returns a list of every Wi-Fi network (SSID) your computer has ever successfully connected to in the past.`,
+      category: "win-network",
+      tags: ["windows", "network", "cmd"],
+    },
+    {
+      item: `netsh wlan show profile name="[SSID_NAME]" key=clear`,
+      description: `Returns the specific configuration, connection settings, and security data for the single Wi-Fi network you named.`,
+      category: "win-network",
+      tags: ["windows", "network", "cmd"],
+    },
+    {
+      item: `# 1. The HTML element string to search inside
+$htmlElement = '<img class="profile" src="https://example.com" alt="User">'
+
+# 2. The regex pattern with two capturing groups:
+#    Groups[1] matches: src="
+#    Groups[2] matches: everything inside the quotes (the actual URL)
+$pattern = '(src=")([^"]+)"'
+
+# 3. Execute the regex match and extract the second group
+$srcUrl = [regex]::Match($htmlElement, $pattern).Groups[2].Value
+
+# Output the result
+Write-Host $srcUrl -ForegroundColor Green`,
+      description: `Returns the src attribute value of the input string (for instance extracting the src value of an img html element).`,
+      category: "win-regex",
+      tags: ["windows", "regex", "ps1"],
+    },
+    {
+      item: `# 1. The HTML string containing the anchor link
+$htmlElement = '<a class="nav-link" href="https://example.com">Click Here</a>'
+
+# 2. The regex pattern with two capturing groups:
+#    Group 1 matches: href="
+#    Group 2 matches: everything inside the quotes (the actual URL)
+$pattern = '(href=")([^"]+)"'
+
+# 3. Execute the regex match and extract the second group
+$hrefUrl = [regex]::Match($htmlElement, $pattern).Groups[2].Value
+
+# Output the result
+Write-Host $hrefUrl -ForegroundColor Green`,
+      description: `Returns the href attribute value of the input string (for instance extracting the href value of an a html element).`,
+      category: "win-regex",
+      tags: ["windows", "regex", "ps1"],
     },
   ],
 };
