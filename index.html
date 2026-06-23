@@ -98,6 +98,7 @@
         // Wait briefly after DOM change
         setTimeout(updateHeadingBasedOnDevice, 50);
       }); */
+      filterMdPages();
 
       $(document).on("click", "#category_filter_component input", function () {
         let categoryInput = $(this).val().toLowerCase();

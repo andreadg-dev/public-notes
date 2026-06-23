@@ -493,7 +493,8 @@ code {
   background-color: #c7c7c7;
 }
 
-#filterCard {
+#filterCard,
+#filterCardMdPages {
   width: 100%;
   justify-content: center;
   margin: 2em auto;
@@ -501,6 +502,11 @@ code {
     0 2px 2px rgb(117, 145, 175, 0.4),
     0 4px 4px rgb(117, 145, 175, 0.4),
     0 8px 8px rgb(117, 145, 175, 0.4);
+  background-color: #343a40;
+}
+
+#filterCardMdPages {
+  max-width: 90%;
 }
 
 #countersDiv {
@@ -553,14 +559,16 @@ code {
   font-weight: bold;
 }
 
-#filterCard .card-body {
-  background-color: #343a40;
-}
-
 .tablesRadioInput_fieldset {
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 0 1rem;
   display: grid;
+}
+
+.mdRadioInput_fieldset {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem 0 0;
 }
 
 /*Dynamic values*/
@@ -864,4 +872,12 @@ code {
 #md-pages h3 {
   background-color: #f3ef700f;
   padding: 10px;
+}
+
+#md-pages .md_errors,
+.md_notes,
+.md_howto {
+  border-bottom: 1px solid rgb(0, 255, 239);
+  margin: 10px 0px 20px;
+  padding-bottom: 1rem;
 }

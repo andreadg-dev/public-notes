@@ -524,13 +524,35 @@ async function appendMdNotesToRoot(objArray, index) {
   );
 
   $("#root").append(
-    `<h1 class="pageTitle"><code>markdown notes</code></h1><div class="markdown-body" id="md-pages">${mdPagesParsedToHtml.join(customHorizontalLine)}</div>${spaceDiv}`,
+    `<h1 class="pageTitle"><code>markdown notes</code></h1>${searchCardMdPages(mdPagesParsedToHtml.length, mdPagesParsedToHtml.length)}<div class="markdown-body" id="md-pages">${mdPagesParsedToHtml.join("")}</div>${spaceDiv}`,
   );
 
   hljsHighlightAllExceptNql();
   addSnippetLineCounter();
   highlightNQL();
   wrapMdPagesSubsections();
+}
+
+function filterMdPages() {
+  $(document).on("keyup", "#filterCardMdPages #filter", function () {
+    const searchInput = $(this).val().toLowerCase();
+    const searchScope = $('input[name="search_scope"]:checked').val();
+
+    $("#md-pages > details").each(function () {
+      const textToSearch =
+        searchScope === "article_titles"
+          ? $(this).children("summary").text().toLowerCase()
+          : $(this).text().toLowerCase();
+
+      $(this).toggle(textToSearch.indexOf(searchInput) > -1);
+    });
+
+    $("#filteredItemsCount").text($("#md-pages > details:visible").length);
+  });
+
+  $(document).on("change", 'input[name="search_scope"]', function () {
+    $("#filterCardMdPages #filter").trigger("keyup");
+  });
 }
 
 //Parent function to append item to 'root' element depending on the type
@@ -991,7 +1013,7 @@ function highlightNQL() {
 }
 
 const spaceDiv = `<div class="mt-6"></div>`;
-const customHorizontalLine = `<div style="height: 1px; background-color: #00ffef; margin: 10px 0 20px 0;">&nbsp;</div>`;
+const customHorizontalLine = `<div class="custom_horizontal_line" style="height: 1px; background-color: #00ffef; margin: 10px 0 20px 0;">&nbsp;</div>`;
 
 const snippetCodeHeader = `<div class="code-header">
       <div class="code-header-left">
@@ -1049,6 +1071,27 @@ const snippetCodeHeader = `<div class="code-header">
         </div>
       </div>
     </div>`;
+
+const searchCardMdPages = (totalItemsCount, filteredItemsCount) => {
+  return `<div id="filterCardMdPages">
+            <div class="card-body">
+              <div>
+                <p style="justify-content:space-between;display:flex"><span class="filter_card_headers">SEARCH</span><span style="font-weight:bold;">results: <span id="filteredItemsCount">${filteredItemsCount || 0}</span>/<span id="totalItemsCount">${totalItemsCount || 0}</span></span></p>
+                <input type="text" id="filter" class="form-control" placeholder="Type a keyword..."/>
+                <fieldset class="mdRadioInput_fieldset">
+                  <div>
+                    <input type="radio" id="whole_article" name="search_scope" value="whole_article" checked />
+                    <label for="whole_article">Whole article</label>
+                  </div>
+                  <div>
+                    <input type="radio" id="article_titles" name="search_scope" value="article_titles" />
+                    <label for="article_titles">Article titles</label>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          </div>`;
+};
 
 const searchCard = (
   totalItemsCount,
