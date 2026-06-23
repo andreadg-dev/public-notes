@@ -48,7 +48,7 @@
     - [Azure CLI](#azure-cli-4)
     - [Az PowerShell](#az-powershell-5)
     - [Microsoft Graph PowerShell](#microsoft-graph-powershell-4)
-  - [📍  Device and Intune Lookups](#--device-and-intune-lookups)
+  - [📍 Device and Intune Lookups](#--device-and-intune-lookups)
     - [Examples](#examples-6)
     - [Microsoft Graph PowerShell](#microsoft-graph-powershell-5)
   - [📍 Bulk Import Users](#-bulk-import-users)
@@ -128,18 +128,15 @@
   - [📍 Useful PowerShell Code](#-useful-powershell-code)
     - [Other useful Cmdlets](#other-useful-cmdlets)
 
-
-
 ## 📍 Useful Portals and Links
 
-| Tool | URL | Purpose |
-|---|---|---|
-| Microsoft Azure Portal | https://portal.azure.com | Main Azure management portal |
-| Microsoft Entra admin center | https://entra.microsoft.com/ | Identity and access management |
-| Microsoft Intune admin center | https://intune.microsoft.com | Device and endpoint management |
-| Graph Explorer | https://developer.microsoft.com/en-us/graph/graph-explorer | Test Microsoft Graph API queries |
+| Tool                                                             | URL                                                                                                                      | Purpose                                      |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| Microsoft Azure Portal                                           | https://portal.azure.com                                                                                                 | Main Azure management portal                 |
+| Microsoft Entra admin center                                     | https://entra.microsoft.com/                                                                                             | Identity and access management               |
+| Microsoft Intune admin center                                    | https://intune.microsoft.com                                                                                             | Device and endpoint management               |
+| Graph Explorer                                                   | https://developer.microsoft.com/en-us/graph/graph-explorer                                                               | Test Microsoft Graph API queries             |
 | Microsoft Certified: Azure Administrator Associate Certification | https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/?practice-assessment-type=certification | AZ-104 Certification learning path, info etc |
-
 
 ## 📍 Note about Microsoft Graph vs Az PowerShell Modules
 
@@ -148,15 +145,18 @@ Az PowerShell remains the preferred choice for Azure resource and subscription m
 
 ## 📍 Module Discovery and Installation
 
-| Goal | Azure CLI | Az PowerShell | Microsoft Graph PowerShell | Notes |
-|---|---|---|---|---|
-| Show installed modules | `N/A` | `Get-Module Az* -ListAvailable` | `Get-Module Microsoft.Graph* -ListAvailable` | PowerShell module discovery |
-| Install module | `N/A` | `Install-Module Az -Scope CurrentUser` | `Install-Module Microsoft.Graph.DeviceManagement -Scope CurrentUser` | Installs module for current user |
-| Update modules | `N/A` | `Update-Module Az*` | `Update-Module Microsoft.Graph* -Scope CurrentUser` | Keeps tooling current |
+| Goal                   | Azure CLI | Az PowerShell                          | Microsoft Graph PowerShell                                           | Notes                            |
+| ---------------------- | --------- | -------------------------------------- | -------------------------------------------------------------------- | -------------------------------- |
+| Show installed modules | `N/A`     | `Get-Module Az* -ListAvailable`        | `Get-Module Microsoft.Graph* -ListAvailable`                         | PowerShell module discovery      |
+| Install module         | `N/A`     | `Install-Module Az -Scope CurrentUser` | `Install-Module Microsoft.Graph.DeviceManagement -Scope CurrentUser` | Installs module for current user |
+| Update modules         | `N/A`     | `Update-Module Az*`                    | `Update-Module Microsoft.Graph* -Scope CurrentUser`                  | Keeps tooling current            |
 
 ### Examples
+
 ---
+
 ### Az PowerShell
+
 ```powershell
 Get-Module Az* -ListAvailable
 Install-Module Az -Scope CurrentUser
@@ -164,6 +164,7 @@ Update-Module Az*
 ```
 
 ### Microsoft Graph PowerShell
+
 ```powershell
 Get-Module Microsoft.Graph* -ListAvailable | Select Name, Version
 Install-Module Microsoft.Graph.DeviceManagement -Scope CurrentUser
@@ -172,19 +173,22 @@ Update-Module Microsoft.Graph* -Scope CurrentUser
 
 ## 📍 Command Discovery and Help
 
-| Goal | Azure CLI | Az PowerShell | Microsoft Graph PowerShell | Notes |
-|---|---|---|---|---|
-| Show general help | `az -h` | `Get-Command -Module Az*` | `Get-Command -Module Microsoft.Graph*` | Azure CLI uses `-h` or `--help` |
-| Show Entra-related help | `az ad -h` | `Get-Command -Module Az.Resources *AD*` | `Get-Command *Mg*User*`, `Get-Command *Mg*Group*` | `az ad help` is not valid |
-| Show user command help | `az ad user -h` | `Get-Command *Az*AD*User*` | `Get-Command *Mg*User*` | Good starting point for discovery |
-| Show group command help | `az ad group -h` | `Get-Command *Az*AD*Group*` | `Get-Command *Mg*Group*` | Finds group-related commands |
-| Show examples for one command | `az ad user create -h` | `Get-Help New-AzADUser -Examples` | `Get-Help New-MgUser -Examples` | PowerShell has richer example help |
-| Finds matching user-related cmdlets | `az find "az ad user"` | `Get-Command *Az*AD*User*` | `Get-Command *Mg*User*` | No exact equivalent to `az find` |
-| Azure CLI interactive configuration | `az configure` | No direct equivalent | No direct equivalent  | In PowerShell, configuration is handled differently |
+| Goal                                | Azure CLI              | Az PowerShell                           | Microsoft Graph PowerShell                        | Notes                                               |
+| ----------------------------------- | ---------------------- | --------------------------------------- | ------------------------------------------------- | --------------------------------------------------- |
+| Show general help                   | `az -h`                | `Get-Command -Module Az*`               | `Get-Command -Module Microsoft.Graph*`            | Azure CLI uses `-h` or `--help`                     |
+| Show Entra-related help             | `az ad -h`             | `Get-Command -Module Az.Resources *AD*` | `Get-Command *Mg*User*`, `Get-Command *Mg*Group*` | `az ad help` is not valid                           |
+| Show user command help              | `az ad user -h`        | `Get-Command *Az*AD*User*`              | `Get-Command *Mg*User*`                           | Good starting point for discovery                   |
+| Show group command help             | `az ad group -h`       | `Get-Command *Az*AD*Group*`             | `Get-Command *Mg*Group*`                          | Finds group-related commands                        |
+| Show examples for one command       | `az ad user create -h` | `Get-Help New-AzADUser -Examples`       | `Get-Help New-MgUser -Examples`                   | PowerShell has richer example help                  |
+| Finds matching user-related cmdlets | `az find "az ad user"` | `Get-Command *Az*AD*User*`              | `Get-Command *Mg*User*`                           | No exact equivalent to `az find`                    |
+| Azure CLI interactive configuration | `az configure`         | No direct equivalent                    | No direct equivalent                              | In PowerShell, configuration is handled differently |
 
 ### Examples
+
 ---
+
 ### Azure CLI
+
 ```bash
 az -h
 az ad -h
@@ -194,6 +198,7 @@ az ad user create -h
 ```
 
 ### Az PowerShell
+
 ```powershell
 Get-Command -Module Az*
 Get-Command -Module Az.Resources *AD*
@@ -202,6 +207,7 @@ Get-Help New-AzADUser -Examples
 ```
 
 ### Microsoft Graph PowerShell
+
 ```powershell
 Get-Command -Module Microsoft.Graph*
 Get-Command *Mg*User*
@@ -210,8 +216,11 @@ Get-Help New-MgUser -Examples
 ```
 
 ### Output Examples
+
 ---
+
 Output for `az find "az ad user"`:
+
 ```plaintext
 Finding examples...
 
@@ -226,6 +235,7 @@ az ad user delete --id myuser@contoso.com
 List all the Azure Active Directory users
 az ad user list
 ```
+
 ---
 
 Output for `az configure`:
@@ -248,29 +258,29 @@ You're all set! Here are some commands to try:
 ```
 
 ### Notes
+
 `az configure` can prompt for user input and stores settings in the local Azure CLI config file. See an example of the output below:
-
-
-
 
 ## 📍 Authentication and Context
 
-| Goal | Azure CLI | Az PowerShell | Microsoft Graph PowerShell | Notes |
-|---|---|---|---|---|
-| Sign in interactively | `az login` | `Connect-AzAccount` | `Connect-MgGraph` | Standard login methods |
-| Sign in to a specific tenant | `az login --tenant TENANT_ID` | `Connect-AzAccount -TenantId "TENANT_ID"` | `Connect-MgGraph -TenantId "TENANT_ID"` | Useful in multi-tenant environments |
-| Show current context | `az account show` | `Get-AzContext` | `Get-MgContext` | Shows active session details |
-| Set subscription context | `az account set --subscription "NAME_OR_ID"` | `Set-AzContext -Subscription "NAME_OR_ID"` | `N/A` | Graph has no subscription context |
-| Clear/disconnect session | `az account clear` | `Disconnect-AzAccount` | `Disconnect-MgGraph` | Ends active session |
+| Goal                         | Azure CLI                                    | Az PowerShell                              | Microsoft Graph PowerShell              | Notes                               |
+| ---------------------------- | -------------------------------------------- | ------------------------------------------ | --------------------------------------- | ----------------------------------- |
+| Sign in interactively        | `az login`                                   | `Connect-AzAccount`                        | `Connect-MgGraph`                       | Standard login methods              |
+| Sign in to a specific tenant | `az login --tenant TENANT_ID`                | `Connect-AzAccount -TenantId "TENANT_ID"`  | `Connect-MgGraph -TenantId "TENANT_ID"` | Useful in multi-tenant environments |
+| Show current context         | `az account show`                            | `Get-AzContext`                            | `Get-MgContext`                         | Shows active session details        |
+| Set subscription context     | `az account set --subscription "NAME_OR_ID"` | `Set-AzContext -Subscription "NAME_OR_ID"` | `N/A`                                   | Graph has no subscription context   |
+| Clear/disconnect session     | `az account clear`                           | `Disconnect-AzAccount`                     | `Disconnect-MgGraph`                    | Ends active session                 |
 
 ### Notes about `Connect-AzAccount`
+
 ---
-| Command | Authentication type | User interaction | Typical use case |
-|---|---|---|---|
-| `Connect-AzAccount` | Interactive user login | Yes | Normal admin sign-in |
-| `Connect-AzAccount -UseDeviceAuthentication` | Device code login | Yes, through browser and code | Remote terminal or no popup login |
-| `Connect-AzAccount -Identity` | Managed identity | No | Azure-hosted automation |
-| `Enable-AzContextAutosave -Scope CurrentUser` | Save your Azure context to disk for your current user profile | No | Reduce manual sign-in occurrences
+
+| Command                                       | Authentication type                                           | User interaction              | Typical use case                  |
+| --------------------------------------------- | ------------------------------------------------------------- | ----------------------------- | --------------------------------- |
+| `Connect-AzAccount`                           | Interactive user login                                        | Yes                           | Normal admin sign-in              |
+| `Connect-AzAccount -UseDeviceAuthentication`  | Device code login                                             | Yes, through browser and code | Remote terminal or no popup login |
+| `Connect-AzAccount -Identity`                 | Managed identity                                              | No                            | Azure-hosted automation           |
+| `Enable-AzContextAutosave -Scope CurrentUser` | Save your Azure context to disk for your current user profile | No                            | Reduce manual sign-in occurrences |
 
 #### Simple Rule of Thumb
 
@@ -288,8 +298,11 @@ For **AZ-104**, remember:
 - **managed identity** = best for secure automation without stored credentials
 
 ### Examples
+
 ---
+
 ### Azure CLI
+
 ```bash
 az login
 az login --tenant TENANT_ID
@@ -300,6 +313,7 @@ az account clear
 ```
 
 ### Az PowerShell
+
 ```powershell
 Connect-AzAccount
 Connect-AzAccount -TenantId $tenantId
@@ -312,6 +326,7 @@ Disconnect-AzAccount
 ```
 
 ### Microsoft Graph PowerShell
+
 ```powershell
 Connect-MgGraph
 Connect-MgGraph -TenantId $tenantId
@@ -322,29 +337,32 @@ Disconnect-MgGraph
 ```
 
 ### Notes
+
 - If multiple tenants are available, you may be prompted to choose one.
 - Some tenants may not have accessible subscriptions.
 - Use `--tenant` or `-TenanId` when you must target a specific directory.
 
-
-
 ## 📍 Subscription Information
 
-| Goal | Azure CLI | Az PowerShell | Microsoft Graph PowerShell | Notes |
-|---|---|---|---|---|
-| List subscriptions | `az account list --output table` | `Get-AzSubscription \| Format-Table` | `N/A` | Subscription management belongs to Azure, not Graph |
-| Show current subscription | `az account show` | `Get-AzContext` | `N/A` | Graph does not expose Azure subscription context |
-| List subscriptions for a tenant | `az account list` | `Get-AzSubscription -TenantId "TENANT_ID"` | `N/A` | Useful in multi-tenant environments |
+| Goal                            | Azure CLI                        | Az PowerShell                              | Microsoft Graph PowerShell | Notes                                               |
+| ------------------------------- | -------------------------------- | ------------------------------------------ | -------------------------- | --------------------------------------------------- |
+| List subscriptions              | `az account list --output table` | `Get-AzSubscription \| Format-Table`       | `N/A`                      | Subscription management belongs to Azure, not Graph |
+| Show current subscription       | `az account show`                | `Get-AzContext`                            | `N/A`                      | Graph does not expose Azure subscription context    |
+| List subscriptions for a tenant | `az account list`                | `Get-AzSubscription -TenantId "TENANT_ID"` | `N/A`                      | Useful in multi-tenant environments                 |
 
 ### Examples
+
 ---
+
 ### Azure CLI
+
 ```bash
 az account list --output table
 az account show
 ```
 
 ### Az PowerShell
+
 ```powershell
 Get-AzSubscription | Format-Table
 Get-AzSubscription -TenantId $tenantId
@@ -353,23 +371,25 @@ Get-AzContext
 
 ## 📍 Entra ID - Azure AD Users
 
-| Goal | Azure CLI | Az PowerShell | Microsoft Graph PowerShell | Notes |
-|---|---|---|---|---|
-| List users | `az ad user list` | `Get-AzADUser` | `Get-MgUser` | Graph is often the most modern option |
-| List only display names | `az ad user list --query "[].displayName"` | `Get-AzADUser \| Select-Object DisplayName` | `Get-MgUser \| Select-Object DisplayName` | Output shaping |
-| Get user by UPN | `az ad user show --id user@domain.com` | `Get-AzADUser -UserPrincipalName "user@domain.com"` | `Get-MgUser -UserId "user@domain.com"` | UPN commonly works as user ID |
-| Create user | `az ad user create --display-name "John Doe" --password "..." --user-principal-name john@domain.com` | `New-AzADUser -DisplayName "John Doe" -UserPrincipalName "john@domain.com" -Password $securePassword` | `New-MgUser ...` | Graph creation usually needs more properties |
-| Update user | `az ad user update ...` | `Update-AzADUser ...` | `Update-MgUser -UserId "user@domain.com" ...` | Syntax varies by property |
-| Delete user | `az ad user delete --id user@domain.com` | `Remove-AzADUser -UPNOrObjectId "user@domain.com"` | `Remove-MgUser -UserId "user@domain.com"` | Destructive command |
-
+| Goal                    | Azure CLI                                                                                            | Az PowerShell                                                                                         | Microsoft Graph PowerShell                    | Notes                                        |
+| ----------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------- | -------------------------------------------- |
+| List users              | `az ad user list`                                                                                    | `Get-AzADUser`                                                                                        | `Get-MgUser`                                  | Graph is often the most modern option        |
+| List only display names | `az ad user list --query "[].displayName"`                                                           | `Get-AzADUser \| Select-Object DisplayName`                                                           | `Get-MgUser \| Select-Object DisplayName`     | Output shaping                               |
+| Get user by UPN         | `az ad user show --id user@domain.com`                                                               | `Get-AzADUser -UserPrincipalName "user@domain.com"`                                                   | `Get-MgUser -UserId "user@domain.com"`        | UPN commonly works as user ID                |
+| Create user             | `az ad user create --display-name "John Doe" --password "..." --user-principal-name john@domain.com` | `New-AzADUser -DisplayName "John Doe" -UserPrincipalName "john@domain.com" -Password $securePassword` | `New-MgUser ...`                              | Graph creation usually needs more properties |
+| Update user             | `az ad user update ...`                                                                              | `Update-AzADUser ...`                                                                                 | `Update-MgUser -UserId "user@domain.com" ...` | Syntax varies by property                    |
+| Delete user             | `az ad user delete --id user@domain.com`                                                             | `Remove-AzADUser -UPNOrObjectId "user@domain.com"`                                                    | `Remove-MgUser -UserId "user@domain.com"`     | Destructive command                          |
 
 ### Notes
+
 > Users' `Usage location` property needs to be filled in for licensing purposes. Many licensing require this field and if not filled in during assignment, you will get a `License cannot be assigned to a user without a usage location` specified
 
-
 ### Examples
+
 ---
+
 ### Azure CLI
+
 ```bash
 az ad user list
 az ad user list --query "[].displayName"
@@ -379,6 +399,7 @@ az ad user delete --id johndoe@example.com
 ```
 
 ### Az PowerShell
+
 ```powershell
 Get-AzADUser
 Get-AzADUser | Select-Object DisplayName
@@ -394,6 +415,7 @@ Remove-AzADUser -UPNOrObjectId $userUpnOrId
 ```
 
 ### Microsoft Graph PowerShell
+
 ```powershell
 Get-MgUser
 Get-MgUser | Select-Object DisplayName
@@ -414,22 +436,24 @@ Update-MgUser -UserId $userUpnOrId -City "Brussels"
 Remove-MgUser -UserId $userUpnOrId
 ```
 
-
 ## 📍 Entra ID - Azure AD Groups
 
 ### Overview
+
 - Group type: Security or Microsoft 365
-- Membership type*: Assigned, Dynamic User, Dynamic Device 
-- Microsoft Entra roles can be assigned to the group**: Yes/No
+- Membership type\*: Assigned, Dynamic User, Dynamic Device
+- Microsoft Entra roles can be assigned to the group\*\*: Yes/No
 
 #### Notes
-> *Assigned, users are manually added to the group. Dynamic groups allow to use condition using attirbutes. You need at least Entr ID Premium P1 license for dynamic groups. Dynamic groups can contain users or devices but not both
 
-> **this option cannot be changed after creation. Same goes for group type
+> \*Assigned, users are manually added to the group. Dynamic groups allow to use condition using attirbutes. You need at least Entr ID Premium P1 license for dynamic groups. Dynamic groups can contain users or devices but not both
+
+> \*\*this option cannot be changed after creation. Same goes for group type
 
 > When assigning a license to the group, it only applies to the members and not the owners
 
 ### Example of dynamic rule syntax
+
 ```plaintext
 (user.country -eq "Belgium") and (user.city -eq "Brussels") and (user.department -startsWith "IT")
 (user.accountEnabled -eq true)
@@ -437,46 +461,50 @@ Remove-MgUser -UserId $userUpnOrId
 (device.deviceOSType -eq "iPhone") or (device.deviceManufacturer -eq "Apple")
 ```
 
-*Rules are case-insensitive*
+_Rules are case-insensitive_
 
 ![dynamic_group_example](images/az104-groups-dynamic.jpg)
 
-
 ### Self-Service Group Management (SSGM)
-You can enable SSGM from 
+
+You can enable SSGM from
 `portal.azure.com > Groups > General > Owners can manage group membership requests in My Groups > Yes`
 
 ![ssgm_entraid_config](images/az104-groups-ssgm.jpg)
 
 A user can manage groups from:
-- https://myaccount.microsoft.com/groups/groups-i-own: check details, add/remove members/owners, change access policy*, change group visibility settings**, delete and leave
+
+- https://myaccount.microsoft.com/groups/groups-i-own: check details, add/remove members/owners, change access policy\*, change group visibility settings\*\*, delete and leave
 - https://myaccount.microsoft.com/groups/groups-i-belong-to: leave a group (except for on-premises mastered and security groups)
 - https://myaccount.microsoft.com/groups/search: search and request to join a group
 
 #### Notes
-> *Access Policy: When creating a security group, you can set the access policy to the options in the screenshot below. Policies are only for security groups
 
-> **Group visibility: Only available for M365 groups
+> \*Access Policy: When creating a security group, you can set the access policy to the options in the screenshot below. Policies are only for security groups
 
+> \*\*Group visibility: Only available for M365 groups
 
 ![ssgm_group_access_settings](images/az104-groups-ssgm_policy.jpg)
 
-
 ### Cheatsheet
-| Goal | Azure CLI | Az PowerShell | Microsoft Graph PowerShell | Notes |
-|---|---|---|---|---|
-| List groups | `az ad group list` | `Get-AzADGroup` | `Get-MgGroup` | Basic group listing |
-| List group display names | `az ad group list --query "[].displayName"` | `Get-AzADGroup \| Select-Object DisplayName` | `Get-MgGroup \| Select-Object DisplayName` | Cleaner output |
-| Get one group | `az ad group show --group "GroupName"` | `Get-AzADGroup -DisplayName "GroupName"` | `Get-MgGroup -Filter "displayName eq 'GroupName'"` | Graph often uses OData filter |
-| List group members | `az ad group member list --group "GroupName"` | `Get-AzADGroupMember -GroupDisplayName "GroupName"` | `Get-MgGroupMember -GroupId "<group-id>"` | Graph usually requires group ID |
-| Create group | `az ad group create --display-name "ProjectA_members" --mail-nickname "projecta_members"` | `New-AzADGroup -DisplayName $groupDisplayName -MailNickname $groupMailNickname` | `New-MgGroup -DisplayName "ProjectA_members" -MailNickname "projecta_members" -MailEnabled:$false -SecurityEnabled:$true` | For Graph, security groups typically use `MailEnabled:$false` and `SecurityEnabled:$true` |
-| Add member to group | `az ad group member add --group "ProjectA_members" --member-id "abcd1234-1234-5678-9012-efghjk123456"` | `Add-AzADGroupMember -TargetGroupObjectID $groupId -MemberObjectID $memberIds` | `New-MgGroupMember -GroupId $groupId -DirectoryObjectId $userGroupOrAppId` | Adds a user, group, service principal, or other directory object depending on the object ID |
-| Delete group | `az ad group delete --group "ProjectA_members"` | `Remove-AzADGroup -ObjectId $groupId` | `Remove-MgGroup -GroupId $groupId` | Deletes the whole group |
-| Remove member from group | `az ad group member remove --group "ProjectA_members" --member-id "abcd1234-1234-5678-9012-efghjk123456"` | `Remove-AzADGroupMember -MemberObjectId $memberId -TargetGroupObjectId $groupId` | `Remove-MgGroupMemberByRef -GroupId $groupId -DirectoryObjectId $userGroupOrAppId` | Removes a member from the group without deleting the group itself |
+
+| Goal                     | Azure CLI                                                                                                 | Az PowerShell                                                                    | Microsoft Graph PowerShell                                                                                                | Notes                                                                                       |
+| ------------------------ | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| List groups              | `az ad group list`                                                                                        | `Get-AzADGroup`                                                                  | `Get-MgGroup`                                                                                                             | Basic group listing                                                                         |
+| List group display names | `az ad group list --query "[].displayName"`                                                               | `Get-AzADGroup \| Select-Object DisplayName`                                     | `Get-MgGroup \| Select-Object DisplayName`                                                                                | Cleaner output                                                                              |
+| Get one group            | `az ad group show --group "GroupName"`                                                                    | `Get-AzADGroup -DisplayName "GroupName"`                                         | `Get-MgGroup -Filter "displayName eq 'GroupName'"`                                                                        | Graph often uses OData filter                                                               |
+| List group members       | `az ad group member list --group "GroupName"`                                                             | `Get-AzADGroupMember -GroupDisplayName "GroupName"`                              | `Get-MgGroupMember -GroupId "<group-id>"`                                                                                 | Graph usually requires group ID                                                             |
+| Create group             | `az ad group create --display-name "ProjectA_members" --mail-nickname "projecta_members"`                 | `New-AzADGroup -DisplayName $groupDisplayName -MailNickname $groupMailNickname`  | `New-MgGroup -DisplayName "ProjectA_members" -MailNickname "projecta_members" -MailEnabled:$false -SecurityEnabled:$true` | For Graph, security groups typically use `MailEnabled:$false` and `SecurityEnabled:$true`   |
+| Add member to group      | `az ad group member add --group "ProjectA_members" --member-id "abcd1234-1234-5678-9012-efghjk123456"`    | `Add-AzADGroupMember -TargetGroupObjectID $groupId -MemberObjectID $memberIds`   | `New-MgGroupMember -GroupId $groupId -DirectoryObjectId $userGroupOrAppId`                                                | Adds a user, group, service principal, or other directory object depending on the object ID |
+| Delete group             | `az ad group delete --group "ProjectA_members"`                                                           | `Remove-AzADGroup -ObjectId $groupId`                                            | `Remove-MgGroup -GroupId $groupId`                                                                                        | Deletes the whole group                                                                     |
+| Remove member from group | `az ad group member remove --group "ProjectA_members" --member-id "abcd1234-1234-5678-9012-efghjk123456"` | `Remove-AzADGroupMember -MemberObjectId $memberId -TargetGroupObjectId $groupId` | `Remove-MgGroupMemberByRef -GroupId $groupId -DirectoryObjectId $userGroupOrAppId`                                        | Removes a member from the group without deleting the group itself                           |
 
 ### Examples
+
 ---
+
 ### Azure CLI
+
 ```bash
 az ad group list
 az ad group list --query "[].displayName"
@@ -485,16 +513,16 @@ az ad group show --group "HR Team"
 az ad group member list --group "HR Team"
 
 #gets the display names of all the members of a specific group
-az ad group member list --group "{group_display_name/group_id}" --query [].displayName 
+az ad group member list --group "{group_display_name/group_id}" --query [].displayName
 
 #gets the UPNs of all the members of a specific group
-az ad group member list --group "{group_display_name/group_id}" --query [].userPrincipalName 
+az ad group member list --group "{group_display_name/group_id}" --query [].userPrincipalName
 
 #returns a table of only group members whose UPN is not null and list both displayName and userPrincipalName
-az ad group member list --group "{group_display_name/group_id}" --query "[?userPrincipalName].{Name:displayName,UPN:userPrincipalName}" --output table 
+az ad group member list --group "{group_display_name/group_id}" --query "[?userPrincipalName].{Name:displayName,UPN:userPrincipalName}" --output table
 
 #returns a table of all group members and list both displayName and userPrincipalName
-az ad group member list --group "{group_display_name/group_id}" --query "[].{Name:displayName,UPN:userPrincipalName}" --output table 
+az ad group member list --group "{group_display_name/group_id}" --query "[].{Name:displayName,UPN:userPrincipalName}" --output table
 
 # Creates group
 az ad group create --display-name "ProjectA_members" --mail-nickname "projecta_members"
@@ -508,6 +536,7 @@ az ad group delete --group "ProjectA_members"
 ```
 
 ### Az PowerShell
+
 ```powershell
 Get-AzADGroup
 Get-AzADGroup | Select-Object DisplayName
@@ -516,16 +545,16 @@ Get-AzADGroupMember -GroupDisplayName $displayName
 Get-AzADGroupMember -GroupObjectId $groupId
 
 #gets the display names of all the members of a specific group
-Get-AzADGroupMember -GroupDisplayName $displayName | Select-Object -ExpandProperty DisplayName 
+Get-AzADGroupMember -GroupDisplayName $displayName | Select-Object -ExpandProperty DisplayName
 
 #gets the UPNs of all the members of a specific group
-Get-AzADGroupMember -GroupDisplayName $displayName | Select-Object -ExpandProperty UserPrincipalName 
+Get-AzADGroupMember -GroupDisplayName $displayName | Select-Object -ExpandProperty UserPrincipalName
 
 # Returns a table of only group members whose UPN is not null and list both displayName and userPrincipalName
-Get-AzADGroupMember -GroupDisplayName $displayName  | Where-Object {$_.UserPrincipalName} | Select-Object DisplayName, UserPrincipalName 
+Get-AzADGroupMember -GroupDisplayName $displayName  | Where-Object {$_.UserPrincipalName} | Select-Object DisplayName, UserPrincipalName
 
 # Returns a table of all group members and list both displayName and userPrincipalName
-Get-AzADGroupMember -GroupDisplayName $displayName  | Select-Object DisplayName, UserPrincipalName 
+Get-AzADGroupMember -GroupDisplayName $displayName  | Select-Object DisplayName, UserPrincipalName
 
 # Return the group names a user is member of
 Get-AzADUserMemberOf -UserPrincipalName $userUpnOrId |
@@ -546,6 +575,7 @@ Remove-AzADGroup -DisplayName $groupDisplayName
 ```
 
 ### Microsoft Graph PowerShell
+
 ```powershell
 Get-MgGroup
 Get-MgGroup | Select-Object DisplayName
@@ -570,34 +600,36 @@ New-MgGroupMember -GroupId $groupId -DirectoryObjectId $userGroupOrAppId
 Remove-MgGroupMemberByRef -GroupId $groupId -DirectoryObjectId $userGroupOrAppId
 ```
 
+## 📍 Device and Intune Lookups
 
-
-## 📍  Device and Intune Lookups
-
-| Goal | Azure CLI | Az PowerShell | Microsoft Graph PowerShell | Notes |
-|---|---|---|---|---|
-| Get Entra device by name | `N/A` | `N/A` | `Get-MgDevice -Filter "displayName eq 'DEVICE01'"` | Best handled with Graph |
-| Get Intune managed device by serial | `N/A` | `N/A` | `Get-MgDeviceManagementManagedDevice -Filter "serialNumber eq 'ABC123'"` | Requires Graph device management module |
+| Goal                                | Azure CLI | Az PowerShell | Microsoft Graph PowerShell                                               | Notes                                   |
+| ----------------------------------- | --------- | ------------- | ------------------------------------------------------------------------ | --------------------------------------- |
+| Get Entra device by name            | `N/A`     | `N/A`         | `Get-MgDevice -Filter "displayName eq 'DEVICE01'"`                       | Best handled with Graph                 |
+| Get Intune managed device by serial | `N/A`     | `N/A`         | `Get-MgDeviceManagementManagedDevice -Filter "serialNumber eq 'ABC123'"` | Requires Graph device management module |
 
 ### Examples
+
 ---
+
 ### Microsoft Graph PowerShell
+
 ```powershell
 Get-MgDevice -Filter "displayName eq '$displayName'" | Format-List
 Get-MgDeviceManagementManagedDevice -Filter "serialNumber eq '$serialNumber'"
 ```
 
-
-
 ## 📍 Bulk Import Users
 
 ### What it does
+
 Lets you create many Microsoft Entra ID users at once by uploading a CSV file.
 
 ### Portal path
+
 `portal.azure.com/entra.microsoft.com > Users > All users > Bulk operation > Bulk create`
 
 ### Basic process
+
 1. Download the CSV template
 2. Fill in the required user details
 3. Upload the CSV
@@ -605,15 +637,16 @@ Lets you create many Microsoft Entra ID users at once by uploading a CSV file.
 5. Review the results for any errors
 
 ### Notes
+
 - Use the **latest template** downloaded from the portal
 - One row usually represents one user
 - This is useful for onboarding many users quickly without scripting
 - Bulk operations may have service limits, so very large imports may need to be split into smaller files
 
-
 ## 📍 Microsoft Entra Domain Services
 
 ### What it is
+
 Microsoft Entra Domain Services provides **managed domain services** in Azure, such as:
 
 - domain join
@@ -623,29 +656,34 @@ Microsoft Entra Domain Services provides **managed domain services** in Azure, s
 - Group Policy support for joined machines
 
 ### What it is used for
+
 It is mainly used for **legacy applications and workloads** that need traditional Active Directory features, but where you do not want to deploy and manage domain controllers manually.
 
 ### Key points
+
 - It is a **managed service**
 - It is deployed into an **Azure virtual network (VNet)**
 - It can support VMs and applications that require classic AD-compatible authentication
 - It does **not** replace Microsoft Entra ID; it complements it for legacy scenarios
 
 ### About the domain name / UPN
+
 - By default, Microsoft Entra users often have the `onmicrosoft.com` domain
 - If you add a **custom domain**, users can sign in with that domain instead
 - In practice, the **UPN suffix can use the custom domain**, but this depends on how identities are configured and synchronized
 
 ### Short summary
-Use Microsoft Entra Domain Services when cloud-hosted workloads still need traditional AD features without managing your own domain controllers.
 
+Use Microsoft Entra Domain Services when cloud-hosted workloads still need traditional AD features without managing your own domain controllers.
 
 ## 📍 Azure Management Groups
 
 ### What they are
+
 Management groups are containers placed **above subscriptions** in Azure. They help you organize multiple subscriptions and apply governance at scale.
 
 ### Main benefits
+
 - central policy management
 - centralized RBAC assignment
 - delegated cloud administration
@@ -653,60 +691,72 @@ Management groups are containers placed **above subscriptions** in Azure. They h
 - better governance, which can help reduce unnecessary cloud costs
 
 ### Important note
+
 Management groups do **not directly reduce costs** by themselves.  
 They help reduce costs **indirectly** through better governance, policy enforcement, and administrative control.
 
 ### Short summary
-Use management groups to manage many subscriptions consistently from a higher level.
 
+Use management groups to manage many subscriptions consistently from a higher level.
 
 ## 📍 Self-Service Password Reset (SSPR)
 
 ### What it is
+
 Self-Service Password Reset lets users reset or unlock their password/account without needing helpdesk support.
 
 ### Portal path
+
 `portal.azure.com > Manage: Password reset > Properties > Self service password reset enabled`
 
 ### Main configuration
+
 Set **Self service password reset enabled** to:
+
 - **None**
 - **Selected** = only selected groups
 - **All** = all users in the tenant
 
 ### Notes
+
 - SSPR mainly applies to **end users**
 - Administrator accounts have additional protections and separate considerations
 - Users must register authentication methods before they can use SSPR
 - In many cases, users need to have signed in successfully at least once before completing registration
 
 ### Why it matters
+
 - reduces helpdesk workload
 - improves user autonomy
 - supports secure password recovery
 
 ### Short summary
+
 SSPR allows users to reset their own passwords securely, reducing admin effort.
-
-
 
 ## 📍 Identity Protection
 
 ### What it is
+
 Microsoft Entra ID Protection helps detect and respond to **identity-based risks**.
 
 ### Portal path
+
 `portal.azure.com > Manage: Security > Identity Protection`
 
 ### Dashboard examples
+
 The dashboard can show items such as:
+
 - risky users
 - risky sign-ins
 - risk detections
 - trends and summaries of identity-related risk activity
 
 ### What it looks for
+
 Examples of suspicious activity include:
+
 - leaked credentials
 - unusual sign-in behavior
 - risky locations
@@ -716,24 +766,30 @@ Examples of suspicious activity include:
 ### Main policies
 
 #### User risk policy
+
 `portal.azure.com > Manage: Security > Identity Protection > User risk policy`
 Targets the **risk level of the user account**.  
 Example action:
+
 - require password change
 - by default applied to all users but disabled. So it needs to be enabled
 
 #### Sign-in risk policy
+
 `portal.azure.com > Manage: Security > Identity Protection > Sign-in risk policy`
 Targets the **risk level of a specific authentication attempt**.  
 Example action:
+
 - require MFA
 - block access
 
 #### MFA registration policy
+
 `portal.azure.com > Manage: Security > Identity Protection > Multifactor authentication registration policy `
 Can require users to register for Microsoft Entra MFA.
 
 ### Notes
+
 - Policies often exist but must be **enabled**
 - They can target:
   - all users
@@ -742,18 +798,21 @@ Can require users to register for Microsoft Entra MFA.
 - Identity Protection is more effective when used together with Conditional Access
 
 ### Short summary
+
 Identity Protection detects risky users and risky sign-ins, then helps enforce remediation actions like MFA or password reset.
-
-
 
 ## 📍 Enabling MFA
 
 ### Portal path for authentication methods
+
 ---
+
 `portal.azure.com > Manage: Security > Authentication methods > Policies`
 
 #### What you configure there
+
 You can enable or control methods such as:
+
 - Microsoft Authenticator
 - SMS
 - voice call
@@ -762,87 +821,108 @@ You can enable or control methods such as:
 - software OATH tokens
 
 ### Monitoring paths
+
 ---
+
 `portal.azure.com > Manage: Security > Authentication methods > Monitoring`
 
 #### Useful monitoring pages
+
 - **User registration details**
 - **Registration and reset events**
 
 #### What "Capable" means
+
 In **User registration details**, a user shown as **Capable** means the user has a registered method that can be used for MFA and/or self-service password reset, depending on the policy and method.
 
 ### Per-user MFA
+
 ---
+
 Legacy per-user MFA can still be managed here:
 
 `portal.azure.com > Users > Per-user MFA`
 
 #### Per-user MFA states
+
 - **Disabled**
 - **Enabled**
 - **Enforced**
 
 #### Meaning of Enforced
+
 The user has MFA enabled and has completed registration of an MFA method.
 
 ### Best practice note
+
 ---
+
 For modern environments, prefer:
+
 - **Conditional Access**
 - **Authentication methods policies**
 
 instead of relying only on legacy **per-user MFA**.
 
-
-
 ## 📍 Blocking Users / MFA Lockout
 
 ### What it is
+
 Microsoft Entra can block or lock MFA activity when suspicious behavior or repeated denials occur.
 
 ### Portal paths
+
 - `portal.azure.com > Manage: Security > Multifactor authentication > Account lockout`
 - `portal.azure.com > Manage: Security > Multifactor authentication > Block/unblock users`
 
 ### Account lockout
+
 This lets you configure settings such as:
+
 - number of MFA denials before lockout
 - reset period for the counter
 - automatic unblock time
 
 ### Block / unblock users
+
 Admins can manually unblock users who were blocked for MFA-related reasons.
 
 ### Important notes
+
 - Blocking in this area affects **MFA attempts**, not necessarily the entire user account sign-in
 - Users listed here are usually users relevant to MFA management
 - Microsoft can also automatically respond to reported fraud or suspicious MFA activity
 
 When an Entra ID (Azure AD) user is blocked due to an MFA fraud alert, the account remains blocked for 90 days unless an administrator manually unblocks it.
 
-
-
 ## 📍 Microsoft Entra Connect
 
 ### What it is
+
 Microsoft Entra Connect links **on-premises Active Directory** with **Microsoft Entra ID** so identities can be synchronized.
 
 ### Why it is useful
+
 It helps avoid:
+
 - manual recreation of accounts in the cloud
 - duplicate identity management
 - inconsistent user information across on-prem and cloud
 
 ### Main sync options
+
 ---
+
 There are two main approaches:
 
 #### Cloud Sync
+
 ---
+
 A lightweight, cloud-managed synchronization option.
 
 ##### Characteristics
+
 - uses a lightweight on-premises provisioning agent
 - configuration is managed in Microsoft Entra
 - good for simpler or multi-forest scenarios
@@ -851,15 +931,19 @@ A lightweight, cloud-managed synchronization option.
 - sync frequency is very short, typically every few minutes
 
 ##### Notes
+
 - simpler to deploy than full Entra Connect Sync
 - does **not** support all advanced hybrid scenarios
 - feature set is more limited than Connect Sync
 
 #### Connect Sync
+
 ---
+
 The traditional and more feature-rich synchronization option.
 
 ##### Characteristics
+
 - requires an on-premises server
 - supports more advanced hybrid identity features
 - supports more complex filtering and configuration scenarios
@@ -868,21 +952,26 @@ The traditional and more feature-rich synchronization option.
 - entra ID tenant custom DNS domain name has to match the on-premises AD domain name
 
 ##### Typical advanced capabilities
+
 Depending on design and version, Connect Sync can support scenarios such as:
+
 - password hash sync
 - password writeback
 - device-related hybrid scenarios
 - more advanced filtering and synchronization options
 
-
 ### Cloud Sync deployment notes
+
 ---
+
 Typical high-level process:
 
 #### Download agent
+
 `portal.azure.com > Micosoft Entra Connect > Manage > Manage from the cloud: Cloud Sync > Download Provisioning agent`
 
 #### Basic setup
+
 1. Install the provisioning agent on a server joined to the on-prem AD environment
 2. Sign in with an Entra admin account
 3. Provide on-prem AD credentials
@@ -894,25 +983,27 @@ Typical high-level process:
 The users on Entra ID will now list a On-Premise Directory Synchonization account, whereas a gMSA account will appear in the Managed Service Account o the on-prem AD forest
 
 ### Notes
+
 - Cloud Sync uses a **gMSA** (group Managed Service Account) in supported scenarios
 - Synced users in Entra ID are shown as coming from on-premises directory synchronization
 - Cloud Sync is generally simpler, while Connect Sync is generally more powerful
 
-
 ## 📍 Join device to MS Entr ID tenant
+
 From the device: Settings > Accounts > Access work or school > Connect > Join this device to Microsoft Entra ID
 
 ![join_device_to_entraidtenant](images/az104-device-jointenant.jpg)
 
 This method might not be allowed by your organization
 
-
 ## 📍 Conditional Access
 
 ### Named locations
+
 Portal path: `portal.azure.com > Security > Protect: Conditional Access > Named Locations`
 
 You can create locations based on countries or IP ranges locations
+
 - **Countries location**: determined by either IP address or GPS coordinates. In case of GPS coordinates, users will be prompted by the Authenticator app to share their GPS location
 
 ![named_locations_countries](images/az104-conditionalaccess-nameloccountries.jpg)
@@ -922,29 +1013,35 @@ You can create locations based on countries or IP ranges locations
 ![named_locations_ipranges](images/az104-conditionalaccess-namelocipranges.jpg)
 
 ### New policy
-Portal path: `portal.azure.com > Security > Protect: Conditional Access > Overview` 
 
-The options are: 
+Portal path: `portal.azure.com > Security > Protect: Conditional Access > Overview`
+
+The options are:
+
 - Create new policy
 - Create new policy from templates
 
 ![conditionalaccess_overview](images/az104-conditionalaccess-overview.jpg)
 
 #### Create new policy from templates example
+
 ![conditionalaccess_fromtemplate](images/az104-conditionalaccess-fromtemplate.jpg)
 
 #### Create new policy example
+
 You can specify the following settings:
+
 - Users: the users targeted by the policy. Allow Include or Exclude rules. Can apply to all users or specify users and/or groups
 - Target resources: resources where access is granted or blocked, for instance cloud apps
 - Conditions: based on risk, device platforms, locations (see above) etc
 - Grant: grant or block access and allow extra requirements like MFA etc
 - Enable: you can enable it, disable it or select Report-only mode if you would like to monitor how many users the policy might have applied to if enabled
-![conditionalaccess_newpolicy](images/az104-conditionalaccess-newpolicy.jpg)
+  ![conditionalaccess_newpolicy](images/az104-conditionalaccess-newpolicy.jpg)
 
 ## 📍 Azure Policy
 
 ### Overview
+
 - More granular than RBAC (role-based access control). For instance, with an RBAC you can specify who can deploy VMs or not but for instance, if you want to allow only certain sizes of VMs, you would need to do that using a Azure Policy
 - Control types of resources that can be deployed
 - Controls where resources can or cannot be deployed
@@ -953,6 +1050,7 @@ You can specify the following settings:
 - Can be assigned to Management group, Subscription, Resource group. Policies usually apply cascading down unless exception are configured.
 
 ### Azure Policy Effects
+
 - Append
 - Audit
 - AuditIfNotExists
@@ -960,17 +1058,27 @@ You can specify the following settings:
 - Deny
 
 ### Azure Policy Initiatives
+
 - Group of related Azure Policies
 - Can assign initiavies to resources
 
-
 ## 📍 Useful PowerShell Code
+
 ```powershell
 #==================================
 # TenantId
 #==================================
 # Get TenantId
-$tenantId = ((dsregcmd /status) -match "TenantId").Trim().Replace("TenantId", "").Replace(":", "").Trim() #or add your tenant id here
+# Test-Path -Path C:\Windows\sysnative\dsregcmd.exe (the actual file path is Test-Path -Path C:\Windows\System32\dsregcmd.exe but Windows automatically redirects 'System32' to 'SysWOW64' in PowerShell)
+$cloudDomainJoinInfo = C:\Windows\sysnative\dsregcmd.exe /status 2>$null
+
+if([string]::IsNullOrWhiteSpace($cloudDomainJoinInfo)){
+    $joinInfoGuid = Split-Path (Get-ChildItem "HKLM:\SYSTEM\CurrentControlSet\Control\CloudDomainJoin\JoinInfo" | Select-Object -First 1).Name -Leaf
+    $tenantId = (Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\CloudDomainJoin\JoinInfo\${joinInfoGuid}").TenantId
+}
+else{
+    $tenantId = ($cloudDomainJoinInfo -match "TenantId").Trim().Replace("TenantId", "").Replace(":", "").Trim() #or add your tenant id here
+}
 
 
 #==================================
@@ -1017,9 +1125,9 @@ function Get-CustomMgUserFilter {
     $filter = if ($Operator -eq "eq") { "$Property eq '$Value'" }
     elseif ($Operator -eq "startsWith") { "startsWith($Property, '$Value')" }
     elseif ($Operator -eq "contains") { "${Property}:${Value}" }
-    
+
     if ($Log) { Write-Host "Filter: $filter" -ForegroundColor Cyan }
-    
+
     return $filter
 }
 
@@ -1051,9 +1159,9 @@ function Get-CustomMgUser {
         $params = @{Property = $userProps }
 
         if ($Filter -match " eq |startsWith") { $params["Filter"] = $Filter }
-        elseif ($Filter -like "*:*") { 
-            $params["Search"] = $Filter 
-            $params["ConsistencyLevel"] = "eventual"     
+        elseif ($Filter -like "*:*") {
+            $params["Search"] = $Filter
+            $params["ConsistencyLevel"] = "eventual"
         }
 
         Write-Host "GET $($params | ConvertTo-Json)" -ForegroundColor Cyan
@@ -1067,7 +1175,7 @@ function Get-CustomMgUser {
         foreach ($mgUser in $mgUsers) {
             if ("AuthMethods" -in $ExtraProperties) {
                 try {
-                    $authMethods = Get-MgUserAuthenticationMethod -UserId $mgUser.userPrincipalName -ErrorAction Stop | Select-Object -ExpandProperty AdditionalProperties 
+                    $authMethods = Get-MgUserAuthenticationMethod -UserId $mgUser.userPrincipalName -ErrorAction Stop | Select-Object -ExpandProperty AdditionalProperties
                     $authMethodsParsed = $authMethods | ForEach-Object -Begin { $index = 0 } -Process { [PSCustomObject](@{Index = $index; AuthMethod = $_ }); $index++ }
                     $mgUser | Add-Member -MemberType NoteProperty -Name "AUTH_METHODS" -Value @{
                         Success = $true
@@ -1076,11 +1184,11 @@ function Get-CustomMgUser {
                 }
                 catch {
                     $mgUser | Add-Member -MemberType NoteProperty -Name "AUTH_METHODS" -Value @{
-                        Success = $false 
+                        Success = $false
                         Message = @{ErrorMessage = $_.Exception.Message; FullError = (Get-CustomError -ErrorInput $_) }
                     }
                 }
-                
+
             }
 
             if ("AssignedLicenses" -in $ExtraProperties) {
@@ -1093,11 +1201,11 @@ function Get-CustomMgUser {
                 }
                 catch {
                     $mgUser | Add-Member -MemberType NoteProperty -Name "ASSIGNED_LICENSES" -Value @{
-                        Success = $false 
+                        Success = $false
                         Message = @{ErrorMessage = $_.Exception.Message; FullError = (Get-CustomError -ErrorInput $_) }
                     }
                 }
-               
+
             }
 
             if ("ManagerInfo" -in $ExtraProperties) {
@@ -1110,13 +1218,13 @@ function Get-CustomMgUser {
                 }
                 catch {
                     $mgUser | Add-Member -MemberType NoteProperty -Name "MANAGER_INFO" -Value @{
-                        Success = $false 
+                        Success = $false
                         Message = @{ErrorMessage = $_.Exception.Message; FullError = (Get-CustomError -ErrorInput $_) }
                     }
                 }
-                
+
             }
-         
+
             if ("GroupsInfo" -in $ExtraProperties) {
                 try {
                     $groupsInfo = Get-MgUserMemberOf -UserId $mgUser.userPrincipalName -ErrorAction Stop | Select-Object -ExpandProperty AdditionalProperties | ForEach-Object { [PSCustomObject](@{} + $_) }
@@ -1127,7 +1235,7 @@ function Get-CustomMgUser {
                 }
                 catch {
                     $mgUser | Add-Member -MemberType NoteProperty -Name "GROUPS_INFO" -Value @{
-                        Success = $false 
+                        Success = $false
                         Message = @{ErrorMessage = $_.Exception.Message; FullError = (Get-CustomError -ErrorInput $_) }
                     }
                 }
@@ -1144,10 +1252,10 @@ function Get-CustomMgUser {
                 }
                 catch {
                     $mgUser | Add-Member -MemberType NoteProperty -Name "REGISTERED_DEVICES" -Value @{
-                        Success = $false 
+                        Success = $false
                         Message = @{ErrorMessage = $_.Exception.Message; FullError = (Get-CustomError -ErrorInput $_) }
                     }
-                }  
+                }
             }
 
             $usersOutput += $mgUser
@@ -1174,7 +1282,7 @@ function Get-CustomMgUser {
 # Log in Azure and Microsoft Graph
 #==================================
 $azContext = Get-AzContext
-$mgContext = Get-MgContext 
+$mgContext = Get-MgContext
 
 # Only AzCotext can be cached locally whereas MgContext has to be requested everytime the token expires
 Enable-AzContextAutosave -Scope CurrentUser | Out-Null

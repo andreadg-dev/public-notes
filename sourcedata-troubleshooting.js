@@ -1404,6 +1404,47 @@ Write-Host $hrefUrl -ForegroundColor Green`,
       category: "win-regex",
       tags: ["windows", "regex", "ps1"],
     },
+    {
+      item: `systempropertiesadvanced.exe`,
+      description: `Opens the System Properties Advanced which is a Windows system tool that opens the Advanced tab of the System Properties window. It provides quick access to settings like performance options, environment variables, startup and recovery configuration, and user profile management.`,
+      category: "win-system",
+      tags: ["windows", "system", "cmd"],
+    },
+    {
+      item: `profiles status -type enrollment`,
+      description: `This command is a diagnostic tool used to check the current MDM enrollment status of the Mac. When you run it, it queries the system and returns information regarding how the device is managed.`,
+      category: "mac-mdm",
+      tags: ["MacOS", "mdm", "bash"],
+    },
+    {
+      item: `sudo profiles renew -type enrollment`,
+      description: `Tells the macOS profile daemon to reach out to Apple's Device Enrollment servers, fetch the latest management profile assigned to this device's serial number, and prompt the device to enroll (or re-enroll). It can fix a broken connection between an already-enrolled Mac and its MDM server.`,
+      category: "mac-mdm",
+      tags: ["MacOS", "mdm", "bash"],
+    },
+    {
+      item: `nxtcfg /l 
+nxtcfg /stop
+nxtcfg /start
+nxtcfg /restart`,
+      description: `The first command lists all the Nexthink collector properties and their values and the other three stop, start or restart the Nexthink collector. You can check the Nexthink collector state by looking at the 'clt_state' and the 'tcp_status' values`,
+      category: "all-nexthink",
+      tags: ["windows", "MacOS", "nexthink", "cmd"],
+    },
+    {
+      item: `$joinInfoGuid = Split-Path (Get-ChildItem "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\CloudDomainJoin\\JoinInfo" | Select-Object -First 1).Name -Leaf
+Get-ItemProperty "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\CloudDomainJoin\\JoinInfo\\\${joinInfoGuid}"`,
+      description: `Looks in the registry where Windows stores Azure AD device join details, retrieves the first subkey (a GUID representing the join record) and outputs its properties (e.g., device ID, join status, tenant reference).`,
+      category: "win-regex",
+      tags: ["windows", "powershell", "regex", "aad", "mdm"],
+    },
+    {
+      item: `$tenantId = Split-Path (Get-ChildItem "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\CloudDomainJoin\\TenantInfo" | Select-Object -First 1).Name -Leaf
+Get-ItemProperty "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\CloudDomainJoin\\TenantInfo\\$tenantId"`,
+      description: `Accesses the registry location storing tenant (organization) details, extracts the tenant ID key and displays info such as tenant ID, domain name, and related metadata.`,
+      category: "win-regex",
+      tags: ["windows", "powershell", "regex", "aad", "mdm"],
+    },
   ],
 };
 
