@@ -850,7 +850,6 @@ code {
 }
 
 #md-pages .sub-details[open] > .sub-summary {
-  margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid #15b2e959;
   font-size: larger;
@@ -867,6 +866,16 @@ code {
 
 #md-pages .sub-details[open] {
   margin-bottom: 2rem;
+}
+
+#md-pages .sub-details-content {
+  padding: 1.5rem 2rem;
+  border: 1px solid #ffffff6e;
+  border-top: none;
+  margin: 0 1rem;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  background-color: #00000040;
 }
 
 #md-pages h3 {

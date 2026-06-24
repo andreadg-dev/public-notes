@@ -3,25 +3,16 @@
 `Tag: [NOTES_CLOUD_DATAVERSE]`
 
 **Index**
+
 - [Dataverse Table and Application User Setup](#dataverse-table-and-application-user-setup)
   - [📍 Create a Dataverse table](#-create-a-dataverse-table)
-    - [Possible permission error](#possible-permission-error)
-    - [What to do if this happens](#what-to-do-if-this-happens)
-    - [Important note about dev vs production environments](#important-note-about-dev-vs-production-environments)
   - [📍 Create an application user](#-create-an-application-user)
   - [📍 Create a security role with access to the Dataverse table](#-create-a-security-role-with-access-to-the-dataverse-table)
-    - [Minimum suggested table permissions](#minimum-suggested-table-permissions)
-    - [Restricting users to only their own records](#restricting-users-to-only-their-own-records)
   - [📍 Assign the security role to the application user](#-assign-the-security-role-to-the-application-user)
   - [📍 Add an alternate key in Dataverse (optional)](#-add-an-alternate-key-in-dataverse-optional)
   - [📍 Using views in a model-driven app](#-using-views-in-a-model-driven-app)
-    - [What you can do with views](#what-you-can-do-with-views)
-    - [Important note about assigning views](#important-note-about-assigning-views)
-    - [System views vs personal views](#system-views-vs-personal-views)
-    - [Best practice](#best-practice)
   - [📍 Additional recommendations](#-additional-recommendations)
   - [📍 Quick summary](#-quick-summary)
-
 
 ## 📍 Create a Dataverse table
 
@@ -53,8 +44,6 @@ In many organizations, users without elevated permissions can create only a **De
 
 > **Note:** Exact access behavior depends on your Microsoft Power Platform tenant configuration, security roles, and whether Microsoft Entra ID groups / environment security groups are being used.
 
-
-
 ## 📍 Create an application user
 
 1. Go to the **Power Platform admin center**.
@@ -67,8 +56,6 @@ In many organizations, users without elevated permissions can create only a **De
 8. Select the app and create the application user.
 
 > **Note:** The app registration must already exist in Microsoft Entra ID (Azure AD) before you can add it as an application user.
-
-
 
 ## 📍 Create a security role with access to the Dataverse table
 
@@ -106,6 +93,7 @@ and, in some scenarios:
 If you want users to see and work only with the records they own, you can set permissions such as **Read** and **Write** to **User-level** instead of **Organization-level**.
 
 With **User-level** access:
+
 - users can only access records they own
 - this is useful when table entries should be visible only to their respective owners
 - record ownership becomes important for the security model
@@ -124,8 +112,6 @@ With **User-level** access:
 6. Open the corresponding application user.
 7. Assign the newly created security role.
 
-
-
 ## 📍 Add an alternate key in Dataverse (optional)
 
 An **alternate key** can help prevent duplicate entries by enforcing uniqueness on one or more columns.
@@ -141,7 +127,6 @@ An **alternate key** can help prevent duplicate entries by enforcing uniqueness 
 
 > **Note:** Alternate keys are useful when integrating with external systems and when you want to identify records by a business-specific unique value instead of the Dataverse record ID.
 
-
 ## 📍 Using views in a model-driven app
 
 Views in a model-driven app let you define how table data is displayed to users. They can be used to show only relevant records and simplify the user experience.
@@ -156,6 +141,7 @@ You can create views that:
 - support scenarios such as “My records”, “Active records”, or records matching specific conditions
 
 For example, you can create a view that shows only records:
+
 - owned by the current user
 - created in the last 30 days
 - with a specific status
@@ -165,6 +151,7 @@ For example, you can create a view that shows only records:
 Views can be filtered and tailored for different scenarios, but they are **not typically assigned directly to specific users or groups as a native security mechanism**.
 
 Instead, access is usually controlled through:
+
 - **security roles**
 - **table permissions**
 - **record ownership**
@@ -187,7 +174,6 @@ Use **security roles and Dataverse permissions** to control what users are allow
 
 > **Important:** Views help shape the user experience, but they should not be treated as the primary security boundary. Security should be enforced through Dataverse roles and permissions.
 
-
 ## 📍 Additional recommendations
 
 - Use clear naming conventions for:
@@ -200,8 +186,6 @@ Use **security roles and Dataverse permissions** to control what users are allow
   - access in the correct **environment**
 - Test permissions with a simple create/read/update operation before integrating the app fully.
 - If this setup is intended for production use, coordinate with your Power Platform administrator to ensure the environment and security model align with organizational policies.
-
-
 
 ## 📍 Quick summary
 

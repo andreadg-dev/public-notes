@@ -1,22 +1,18 @@
-# MY JQUERY NOTES #
+# MY JQUERY NOTES
 
 - [MY JQUERY NOTES](#my-jquery-notes)
   - [JavaScript vs jQuery](#javascript-vs-jquery)
-    - [Getting properties/attributes](#getting-propertiesattributes)
-    - [Setting/Updating properties/attributes and calling methods](#settingupdating-propertiesattributes-and-calling-methods)
-    - [Adding EventListeners](#adding-eventlisteners)
   - [jQuery Specific Code](#jquery-specific-code)
   - [Quick tips](#quick-tips)
 
+## JavaScript vs jQuery
 
+### Getting properties/attributes
 
-
-## JavaScript vs jQuery ##
-### Getting properties/attributes ###
-**js without jQuery** 
+**js without jQuery**
 
 ```js
-document.querySelector("p").innerHTML; 
+document.querySelector("p").innerHTML;
 //gets the HTML content of the first element in the set of matched elements, in this case the html content of the first 'p' element
 
 document.querySelector("p").textContent;
@@ -29,8 +25,7 @@ document.querySelector("a").href;
 //gets the href attribute value of the first element in the set of matched elements, in this case the text content of the first 'a' element
 ```
 
-
- **js with jQuery** 
+**js with jQuery**
 
 ```js
 $("p").html();
@@ -44,20 +39,13 @@ $("p").attr("class");
 
 $("a").attr("href");
 //gets the value of an attribute for the first element in the set of matched elements, in this case the value for the 'href' attribute
-
 ```
 
+### Setting/Updating properties/attributes and calling methods
 
-
-
-
-
-### Setting/Updating properties/attributes and calling methods ###
 Settings properties/attributes in jQuery works a bit differently than in JavaScript, therefore the comparison below perform the same action to an extent. jQuery usually sets properties to all matched elements by default, whereas JavaScript might need a loop function to iterate and sets the properties/attributes to all matched elements.
 
-
-
- **js without jQuery** 
+**js without jQuery**
 
 ```js
 //Example #1
@@ -91,16 +79,15 @@ document.querySelector("a").href = "https://www.wikipedia.com/";
 
 ```
 
-
- **js with jQuery** 
+**js with jQuery**
 
 ```js
 //Example #1
-$("h1").css("color","red");
+$("h1").css("color", "red");
 //sets the color of each element in the set of matched elements to red, in this case all 'h1' elements
 
 //Example #2
-$("p").css("color","red");
+$("p").css("color", "red");
 //sets the color of each element in the set of matched elements to red, in this case all 'p' elements
 
 //Example #3
@@ -120,15 +107,16 @@ $("p").text("Again a new paragraph");
 //sets the content of each element in the set of matched elements to 'Again a new paragraph'
 
 //Example #7
-$("p").attr("class","newParagraph");
+$("p").attr("class", "newParagraph");
 //sets the 'class' attribute of each element in the set of matched elements to 'newParagraph'
 
 //Example #8
-$("a").attr("href","https://www.wikipedia.com/");
+$("a").attr("href", "https://www.wikipedia.com/");
 //sets the 'href' attribute of each element in the set of matched elements to 'https://www.wikipedia.com/'
 ```
 
- **Comments**  
+**Comments**
+
 - In jQuery, you can either use `jQuery` or `$` to define the query. In the examples above, I will always be using `$` since the purpose of jQuery is to shorten the code to the essential.
 - The `$` replaces both `.querySelector()` and `.querySelectorAll()`. Also, when changing something in an element with jQuery, for instance its style, we do not need to specify which element in the array we want to change or use a foreach function to apply the change to all elements in the array, jQuery will take care of that and apply our change to all elements satisfying our query, in this case all 'p' elements in our page.
 - Make sure to include the jQuery js in your html page, at the bottom of the body together with the rest of the scripts and before your own js file. Html is read from top to bottom, therefore the browsers needs to first load the jQuery library before it is able to understand what `$` and `jQuery` and the rest of its syntax stand for.
@@ -137,32 +125,28 @@ $("a").attr("href","https://www.wikipedia.com/");
 
 ```js
 $(document).ready(function () {
-  $("h1").css("color","red");
+  $("h1").css("color", "red");
 });
 //In thise case our code waits until the page is loaded before coloring the h1 red. Including the script element at the end of the body instead of the head of the page does exactly the same thing: it loads the page first before executing any script.
-
 ```
 
 Example of a `foreach` loop with JavaScript and JQuery
 
 ```js
 //JavaScript
-document.querySelectorAll(".card-body").forEach(function(element) {
-    console.log(element.innerHTML);
+document.querySelectorAll(".card-body").forEach(function (element) {
+  console.log(element.innerHTML);
 });
 
 //JQuery
-$(".card-body").each(function() {
-    console.log($(this).html());
+$(".card-body").each(function () {
+  console.log($(this).html());
 });
-
 ```
 
+### Adding EventListeners
 
-
-
-### Adding EventListeners ###
- **js without jQuery** 
+**js without jQuery**
 
 ```js
 document.querySelector("h1").addEventListener("click", function () {
@@ -178,12 +162,10 @@ document.addEventListener("keypress", function (event) {
 document.querySelector("input").addEventListener("keypress", function (event) {
   console.log(event.key);
 });
-//logs to the console the key pressed in the first element in the set of matched elements, in this case the first 'input' element 
-
+//logs to the console the key pressed in the first element in the set of matched elements, in this case the first 'input' element
 ```
 
-
- **js with jQuery** 
+**js with jQuery**
 
 ```js
 $(document).keypress(function (event) {
@@ -197,10 +179,9 @@ $("h1").click(function () {
 //sets the color of each element in the set of matched elements to blue, in this case all 'h1' elements
 
 $("input").keypress(function (event) {
- console.log(event.key);
+  console.log(event.key);
 });
 //logs to the console the key pressed in each element in the set of matched elements, in this case all 'input' elements
-
 
 //Alternatives using the on() method:
 $(document).on("keypress", function (event) {
@@ -212,31 +193,25 @@ $("h1").on("click", function () {
 });
 
 $("input").on("click", function (event) {
- console.log(event.key);
+  console.log(event.key);
 });
 
 //the on() method attaches an event handler function for one or more events to the selected elements
-
 ```
- **Comments**  
 
-- When referring to `document` in `jQuery`, you do not need quotation marks, as you instead do need for element selectors: 
+**Comments**
+
+- When referring to `document` in `jQuery`, you do not need quotation marks, as you instead do need for element selectors:
   - `$(document)`
   - `$("h1")`
   - `$(".class")`
   - `$("#id")`
 
-
-
-
-
-
-
-## jQuery Specific Code ##
+## jQuery Specific Code
 
 ```js
 $("p").css("color");
-//queries the color of the selected elements and returns an RGB value in this case. 
+//queries the color of the selected elements and returns an RGB value in this case.
 
 $("p").hasClass("yetAnotherClass");
 //queries if the selected elements have the corresponding class and returns a boolean value
@@ -283,39 +258,33 @@ $("h1").slideDown();
 $("h1").slideToggle();
 //hides and displayes the matched elements with a sliding motion, in this case, all 'h1' elements
 
-
 //Animate() method
-$("h1").animate({opacity: 0.5});
+$("h1").animate({ opacity: 0.5 });
 //performs a custom animation of a set of CSS properties, in this case it makes transition the opacity of all matched elements to 0.5
 
-$("h1").animate({margin: "20px"});
-$("h1").animate({margin: "4rem"});
-$("h1").animate({margin: "20%"});
-//performs a custom animation of a set of CSS properties, in this case it makes transition the margin of all matched elemnts to 20px/4rem/20% 
+$("h1").animate({ margin: "20px" });
+$("h1").animate({ margin: "4rem" });
+$("h1").animate({ margin: "20%" });
+//performs a custom animation of a set of CSS properties, in this case it makes transition the margin of all matched elemnts to 20px/4rem/20%
 
-$("h1").animate({fontSize: "4rem"});
+$("h1").animate({ fontSize: "4rem" });
 //performs a custom animation of a set of CSS properties, in this case it makes transition the font size of all matched elemnts to 4rem
 
-
 //Chain methods (will be performed in succession)
-$("h1").slideUp().slideDown().animate({fontSize: "4rem"});
+$("h1").slideUp().slideDown().animate({ fontSize: "4rem" });
 //all matched elements will firstly be hidden in a sliding motion, then dispalayed with a same kind of motion and then their font size will transition to 4rem
 
-$("h1").slideUp().slideDown().animate({opacity: 0.5});
+$("h1").slideUp().slideDown().animate({ opacity: 0.5 });
 //all matched elements will firstly be hidden in a sliding motion, then dispalayed with a same kind of motion and then their opacity will transition to 0.5
 
 $("h1").fadeIn(100).fadeOut(100).fadeIn(100);
 //all matched elements will quickly flash
 ```
 
- **Comments**  
+**Comments**
+
 - You can only use the `animate()` method with CSS properties that take a number as value. In case you have to add the unit values (%, rem, px), type the whole thing between quotation marks: `"4rem"`, `"20px"`, `"20%"`
 
+## Quick tips
 
-
-
-
-
-## Quick tips ##
 - How to add jQuery to your html: `<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>`. Add jQuery at the end of the body, right before your own js script line. If you use jQuery syntax in your own script, you have to make sure that the browser has loaded the library first.
-

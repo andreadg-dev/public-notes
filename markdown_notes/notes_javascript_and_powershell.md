@@ -1,4 +1,4 @@
-# MY JAVASCRIPT & POWERSHELL NOTES #
+# MY JAVASCRIPT & POWERSHELL NOTES
 
 - [MY JAVASCRIPT \& POWERSHELL NOTES](#my-javascript--powershell-notes)
   - [**Declare and modify a variable/array**](#declare-and-modify-a-variablearray)
@@ -14,27 +14,22 @@
   - [**Objects \& Constructor Functions: HelpdeskAgent**](#objects--constructor-functions-helpdeskagent)
   - [**NewSec**](#newsec)
   - [**Tips**](#tips)
-    - [**PowerShell: Difference between `Write-Output` and `Write-Host`**](#powershell-difference-between-write-output-and-write-host)
-
-
-
-
 
 ## **Declare and modify a variable/array**
 
-**PowerShell** 
+**PowerShell**
 
 ```ps1
 #String variable
 $name = "Andrea"
-$name = "Giovanni" 
+$name = "Giovanni"
 
 #String array
 $buttonColors = ("green", "red", "yellow", "blue")
 $buttonColors = ("green", "red", "yellow", "purple")
 ```
 
-**JavaScript** 
+**JavaScript**
 
 ```js
 //String variable
@@ -46,16 +41,12 @@ let buttonColors = ["green", "red", "yellow", "blue"];
 buttonColors = ["green", "red", "yellow", "purple"];
 ```
 
-**Comments** 
+**Comments**
+
 - Every line in **JavaScript** ends with **;**
 - Variables can be declared with either `var`, `let` or `const`. I will use `let` in all my notes.
 
-
-
-
-
-
-## **Write output with first letter capitalised** 
+## **Write output with first letter capitalised**
 
 **PowerShell**
 
@@ -64,27 +55,24 @@ $name = Read-Host "Type your name here"
 $len = $name.Length - 1
 $firstCharacter = ($name.Substring(0, 1)).ToUpper()
 $restofCharacters = ($name.Substring(1, $len)).ToLower()
-Write-Output "Your name is $firstCharacter$restofCharacters" 
+Write-Output "Your name is $firstCharacter$restofCharacters"
 ```
 
-**JavaScript** 
+**JavaScript**
+
 ```js
 let yourName = window.prompt("Type your name here:");
-let firstCharacter = (yourName.slice(0,1)).toUpperCase();
-let restOfCharacters = (yourName.slice(1,yourName.length).toLowerCase());
+let firstCharacter = yourName.slice(0, 1).toUpperCase();
+let restOfCharacters = yourName.slice(1, yourName.length).toLowerCase();
 alert("Your name is " + firstCharacter + restOfCharacters);
 ```
 
-**Comments** 
+**Comments**
 `Read-Host` prompts user for input directly in the Shell, whereas the **JavaScript** `prompt()` or `window.prompt()` methods prompt the user to type an input in a browser prompt window
-
-
-
-
 
 ## **Examples of function with a single parameter: getMilk**
 
-**PowerShell** 
+**PowerShell**
 
 ```ps1
 function Get-Milk {
@@ -105,7 +93,7 @@ Get-Milk -Money 11
 
 function Get-Milk($money) {
     #cost of a bottle of milk is 1.5$
-    
+
     $bottles = [math]::Floor($money / 1.5);
     Write-Output "With $money dollars, you can buy $bottles bottles of milk"
 }
@@ -113,31 +101,27 @@ function Get-Milk($money) {
 Get-Milk(11)
 ```
 
-**JavaScript** 
+**JavaScript**
 
 ```js
 function getMilk(money) {
-    //cost of a bottle of milk is 1.5$
-    let bottles = Math.floor(money / 1.5);
-    return console.log("With " + money + " dollars, you can buy " + bottles + " bottles of milk");
-  }
-  
-  getMilk(11);
+  //cost of a bottle of milk is 1.5$
+  let bottles = Math.floor(money / 1.5);
+  return console.log(
+    "With " + money + " dollars, you can buy " + bottles + " bottles of milk",
+  );
+}
+
+getMilk(11);
 ```
-**Comments** 
-Output: `With 11 dollars, you can buy 7 bottles of milk` 
+
+**Comments**
+Output: `With 11 dollars, you can buy 7 bottles of milk`
 In both PowerShell and JavaScript, we have to use the `[math]::Floor()` and `Math.floor()` functions to round up the result to an integer, a whole number and not a float (for instance 7,33333).
-
-
-
-
-
-
-
 
 ## **Examples of function with a single parameter: getTimeLeft**
 
-**PowerShell** 
+**PowerShell**
 
 ```ps1
 function Get-TimeLeft {
@@ -177,36 +161,38 @@ function Get-TimeLeft($Age) {
 Get-TimeLeft(34)
 ```
 
-**JavaScript** 
+**JavaScript**
 
 ```js
-function getTimeLeft(age){
-//how many days, weeks and months left until getting 90 years old
-//output: You have x days, y weeks and z months left
+function getTimeLeft(age) {
+  //how many days, weeks and months left until getting 90 years old
+  //output: You have x days, y weeks and z months left
 
-let remainingYears = 90 - age;
-let days = remainingYears * 365;
-let weeks = remainingYears * 52;
-let months = remainingYears * 12;
+  let remainingYears = 90 - age;
+  let days = remainingYears * 365;
+  let weeks = remainingYears * 52;
+  let months = remainingYears * 12;
 
-console.log("You have " + days + " days, " + weeks + " weeks and " + months + " months left")
-
+  console.log(
+    "You have " +
+      days +
+      " days, " +
+      weeks +
+      " weeks and " +
+      months +
+      " months left",
+  );
 }
 
 getTimeLeft(34);
 ```
 
-**Comments** 
+**Comments**
 Output: `You have 20440 days, 2912 weeks and 672 months left`
-
-
-
-
-
 
 ## **Example of function with multiple parameters: getBmi**
 
-**PowerShell** 
+**PowerShell**
 
 ```ps1
 function Get-Bmi {
@@ -215,7 +201,7 @@ function Get-Bmi {
         [Parameter(Mandatory = $true)]$Weight,
         [Parameter(Mandatory = $true)]$Height
     )
-    
+
     $bmi = $weight / [Math]::Pow($height, 2)
     $bmi = [Math]::Round($bmi)
     Write-Output "Your BMI is $bmi"
@@ -234,7 +220,7 @@ function Get-Bmi([float]$Weight, [float]$Height){
 Get-Bmi -Weight 78 -Height 1.74
 ```
 
-**JavaScript** 
+**JavaScript**
 
 ```js
 function getBmi(weight, height) {
@@ -256,7 +242,7 @@ function getBmi(weight, height) {
 getBmi(78, 1.74);
 ```
 
-**Comments** 
+**Comments**
 
 Output: `Your BMI is 26`
 
@@ -267,14 +253,9 @@ Output: `Your BMI is 26`
 - In PowerShell, we use the `[math]::Round` static method to round a number to the nearest whole number, while in JavaScript, we use the `Math.round` method.
 - In PowerShell, we use named parameter syntax to specify the values of the function arguments, while in JavaScript, we use positional argument syntax.
 
-
-
-
-
-
 ## **Math Functions: Math.Round()**
 
-**PowerShell** 
+**PowerShell**
 
 ```ps1
 $float76 = 7.6
@@ -287,7 +268,7 @@ Write-Output "Float 7.6 becomes $float76"
 Write-Output "Float 7.4 becomes $float74"
 ```
 
-**JavaScript** 
+**JavaScript**
 
 ```js
 let float76 = 7.6;
@@ -300,18 +281,13 @@ console.log("Float 7.6 becomes " + float76);
 console.log("Float 7.4 becomes " + float74);
 ```
 
-**Comments** 
+**Comments**
 
 Output: `Float 7.6 becomes 8` and `Float 7.4 becomes 7`
 
-
-
-
-
-
 ## **Math Functions: Math.Floor()**
 
-**PowerShell** 
+**PowerShell**
 
 ```ps1
 $float76 = 7.6
@@ -324,7 +300,7 @@ Write-Output "Float 7.6 becomes $float76"
 Write-Output "Float 7.4 becomes $float74"
 ```
 
-**JavaScript** 
+**JavaScript**
 
 ```js
 let float76 = 7.6;
@@ -337,22 +313,13 @@ console.log("Float 7.6 becomes " + float76);
 console.log("Float 7.4 becomes " + float74);
 ```
 
-**Comments** 
+**Comments**
 
 Output: `Float 7.6 becomes 7` and `Float 7.4 becomes 7`
 
-
-
-
-
-
-
-
-
-
 ## **Math Functions: Math.random()**
 
-**PowerShell** 
+**PowerShell**
 
 ```ps1
 function Get-RandomDiceNumber{
@@ -369,103 +336,100 @@ Get-RandomDiceNumber
 Get-RandomPercentage
 ```
 
-**JavaScript** 
+**JavaScript**
 
 ```js
-function getRandomPercentage(){
+function getRandomPercentage() {
   let rn1 = Math.random();
   //the math.random() function generate a random float number between 0 and 1 (not included)
-  let randomPercentage = Math.floor(rn1 * 100) + 1; 
+  let randomPercentage = Math.floor(rn1 * 100) + 1;
   //the math.floor() rounds up the float number to a whole one. In order to get the range that we want (1 to 100), we multiply by that range and then we add one, if not we would have a range of 0 to 99
   return console.log("The random percentage is " + randomPercentage + "%");
-  }
-  
+}
+
 getRandomPercentage();
-  
-  
-function getRandomDiceNumber(){
+
+function getRandomDiceNumber() {
   let rn2 = Math.random();
   //the math.random() function generate a random float number between 0 and 1 (not included)
-  let randomDiceNumber = Math.floor(rn2 * 12) + 1; 
+  let randomDiceNumber = Math.floor(rn2 * 12) + 1;
   //the math.floor() rounds up the float number to a whole one. In order to get the range that we want (1 to 12, we multiply by that range and then we add one, if not we would have a range of 0 to 11
   return console.log("The random dice number is " + randomDiceNumber);
-  }
-  
+}
+
 getRandomDiceNumber();
 ```
 
-**Comments** 
+**Comments**
 PowerShell already has a set up CmdLet for this therefore we do not have to write the function from scratch as we did with JavaScript
-
-
-
-
-
 
 ## **Equal Operators**
 
-**PowerShell** 
+**PowerShell**
 
 ```ps1
+
 ```
 
-**JavaScript** 
+**JavaScript**
 
 ```js
 let a = 1;
 let b = "1";
 
-console.log("Variable 'a' is a " + typeof(a));
-console.log("Variable 'b' is a " + typeof(b));
+console.log("Variable 'a' is a " + typeof a);
+console.log("Variable 'b' is a " + typeof b);
 
 //EQUAL OPERATOR
 //The triple equal sign operator verify that both sides of the statement are equal for both value and data type
-if(a === b){
-    console.log("Triple equal sign - 'a' is equal to 'b' for both its value and data type")
+if (a === b) {
+  console.log(
+    "Triple equal sign - 'a' is equal to 'b' for both its value and data type",
+  );
 } else {
-    console.log("Triple equal sign - 'a' is not equal to 'b' for either its value or data type")
+  console.log(
+    "Triple equal sign - 'a' is not equal to 'b' for either its value or data type",
+  );
 }
 
 //The double equal sign operator verify that both sides of the statement have the same value. It does not care about the data type
-if(a == b){
-    console.log("Double equal sign - 'a' is equal to 'b' for its value")
+if (a == b) {
+  console.log("Double equal sign - 'a' is equal to 'b' for its value");
 } else {
-    console.log("Double equal sign - 'a' is not equal to 'b' for its value")
+  console.log("Double equal sign - 'a' is not equal to 'b' for its value");
 }
-
 
 //NOT EQUAL OPERATOR
 //The NOT plus double equal sign verifies that both sides of the statement are NOT equal for both value and data type
-if(a !== b){
-    console.log("NOT plus double equal sign - 'a' is not equal to 'b' for both its value and data type")
+if (a !== b) {
+  console.log(
+    "NOT plus double equal sign - 'a' is not equal to 'b' for both its value and data type",
+  );
 } else {
-    console.log("NOT plus double equal sign - 'a' is equal to 'b' for either its value or data type")
+  console.log(
+    "NOT plus double equal sign - 'a' is equal to 'b' for either its value or data type",
+  );
 }
 
 //The NOT plus double equal sign verifies that both sides of the statement are NOT equal for their value. It does not care about the data type
-if(a != b){
-    console.log("NOT plus equal sign - 'a' is not equal to 'b' for its value")
+if (a != b) {
+  console.log("NOT plus equal sign - 'a' is not equal to 'b' for its value");
 } else {
-    console.log("NOT plus equal sign - 'a' is equal to 'b' for its value")
+  console.log("NOT plus equal sign - 'a' is equal to 'b' for its value");
 }
-
 ```
 
-**Comments** 
-
-
-
-
-
+**Comments**
 
 ## **Example of function with parameter: getLeapYear**
 
-**PowerShell** 
+**PowerShell**
 
 ```ps1
+
 ```
 
-**JavaScript** 
+**JavaScript**
 
 ```js
 function getLeapYear(year) {
@@ -487,18 +451,12 @@ function getLeapYear(year) {
 getLeapYear(240);
 ```
 
-**Comments** 
+**Comments**
 Output: `Leap year.`
-
-
-
-
-
-
 
 ## **Objects & Constructor Functions: HelpdeskAgent**
 
-**PowerShell** 
+**PowerShell**
 
 ```ps1
 Class HelpdeskAgent {
@@ -507,7 +465,7 @@ Class HelpdeskAgent {
     [bool]$hasWorkPermit
     [int]$age
     [int]$yearsOfExperience
-    
+
     HelpdeskAgent([string]$fullName, [string[]]$languages, [bool]$hasWorkPermit, [int]$age, [int]$yearsOfExperience) {
         $this.fullName = $fullName
         $this.languages = $languages
@@ -515,7 +473,7 @@ Class HelpdeskAgent {
         $this.age = $age
         $this.yearsOfExperience = $yearsOfExperience
     }
-    
+
     [void]alertCaller() {
         Write-Host "Good morning, this is $($this.fullName) from Helpdesk Agents Inc. I can help you in $($this.languages -join ', '). How can I help you?"
     }
@@ -564,91 +522,106 @@ $helpdeskAgent1.yearsOfExperience.GetType().Name
 $helpdeskAgent1.alertCaller.GetType().Name
 # returns 'PSMethod' -function
 ```
+
 <br>
 
-**JavaScript** 
+**JavaScript**
 
 ```js
-function HelpdeskAgent (fullName, languages, hasWorkPermit, age, yearsOfExperience){
-    this.fullName = fullName;
-    this.languages = languages;
-    this.hasWorkPermit = hasWorkPermit;
-    this.age = age;
-    this.yearsOfExperience = yearsOfExperience;
-    this.alertCaller = function(){
-        alert("Good morning, this is " + fullName + " from Helpdesk Agents Inc. I can help you in " + languages + ". How can I help you?")
-    }
+function HelpdeskAgent(
+  fullName,
+  languages,
+  hasWorkPermit,
+  age,
+  yearsOfExperience,
+) {
+  this.fullName = fullName;
+  this.languages = languages;
+  this.hasWorkPermit = hasWorkPermit;
+  this.age = age;
+  this.yearsOfExperience = yearsOfExperience;
+  this.alertCaller = function () {
+    alert(
+      "Good morning, this is " +
+        fullName +
+        " from Helpdesk Agents Inc. I can help you in " +
+        languages +
+        ". How can I help you?",
+    );
+  };
 }
 
 //we can add properties and methods as you can see in the constructor function above. Methods are nothing but function assigned to objects
 
-let helpdeskAgent1 = new HelpdeskAgent("Jon Doe",["English","French","Spanish"],true,25,3);
+let helpdeskAgent1 = new HelpdeskAgent(
+  "Jon Doe",
+  ["English", "French", "Spanish"],
+  true,
+  25,
+  3,
+);
 
 //We can than query the object and the single properties using the dot notation, .property:
-helpdeskAgent1
+helpdeskAgent1;
 //returns all the properties of the corresponding object, in this case: HelpdeskAgent {fullName: 'Jon Doe', languages: Array(3), hasWorkPermit: true, age: 25, yearsOfExperience: 3}
 
-helpdeskAgent1.fullName
+helpdeskAgent1.fullName;
 //returns 'Jon Doe'
 
-helpdeskAgent1.languages
+helpdeskAgent1.languages;
 //returns (3) ['English', 'French', 'Spanish']
 
-helpdeskAgent1.hasWorkPermit
+helpdeskAgent1.hasWorkPermit;
 //returns true
 
-helpdeskAgent1.age
+helpdeskAgent1.age;
 //returns 25
 
-helpdeskAgent1.yearsOfExperience
+helpdeskAgent1.yearsOfExperience;
 //returns 3
 
 helpdeskAgent1.alertCaller();
 //returns an alert with the following text: Good morning, this is Jon Doe from Helpdesk Agents Inc. I can help you in French,English,Spanish. How can I help you?
 
-
 //We can also query the value type with the typeof() function - the value type depends on our input
-typeof(helpdeskAgent1.fullName)
+typeof helpdeskAgent1.fullName;
 //returns 'string'
 
-typeof(helpdeskAgent1.languages)
+typeof helpdeskAgent1.languages;
 //returns 'object'
 
-typeof(helpdeskAgent1.hasWorkPermit)
+typeof helpdeskAgent1.hasWorkPermit;
 //returns 'boolean'
 
-typeof(helpdeskAgent1.age)
+typeof helpdeskAgent1.age;
 //returns 'number'
 
-typeof(helpdeskAgent1.yearsOfExperience)
+typeof helpdeskAgent1.yearsOfExperience;
 //returns 'number'
 
-typeof(helpdeskAgent1.alertCaller)
+typeof helpdeskAgent1.alertCaller;
 //returns 'function'
-
 ```
 
-**Comments** 
+**Comments**
+
 - A constructor function in JavaScript always starts with an uppercase letter to distinguish them from normal functions.
-
-
-
-
 
 ## **NewSec**
 
-**PowerShell** 
+**PowerShell**
 
 ```ps1
+
 ```
 
-**JavaScript** 
+**JavaScript**
+
 ```js
+
 ```
 
-**Comments** 
-
-
+**Comments**
 
 ## **Tips**
 
@@ -661,5 +634,3 @@ This means that when you use `Write-Output`, you can use the output of the cmdle
 Another difference between the two cmdlets is that `Write-Host` allows you to specify the foreground and background colors of the output text, using the `-ForegroundColor` and `-BackgroundColor` parameters. `Write-Output` does not have these parameters, so you cannot change the colors of the output text.
 
 In general, it is recommended to use `Write-Output` instead of `Write-Host` unless you have a specific need for the additional features provided by `Write-Host`. Using `Write-Output` makes your scripts more flexible and easier to work with, since you can use the output of the cmdlet in other parts of your script.
-
-

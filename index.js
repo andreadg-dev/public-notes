@@ -14,7 +14,10 @@ function wrapMdPagesSubsections() {
       summary.attr("id", h2Id);
     }
 
-    details.append(content);
+    const contentWrapper = $('<div class="sub-details-content"></div>').append(
+      content,
+    );
+    details.append(contentWrapper);
     h2.replaceWith(details);
   });
 }

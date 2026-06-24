@@ -199,6 +199,15 @@
           .find(".nb-burger-icon")
           .removeClass("active");
       });
+
+      $(document).on("click", "details a", function () {
+        let indexHref = $(this).attr("href");
+        $(this)
+          .closest("details")
+          .find(indexHref)
+          .closest(".sub-details")
+          .attr("open", true);
+      });
     </script>
   </body>
 </html>
