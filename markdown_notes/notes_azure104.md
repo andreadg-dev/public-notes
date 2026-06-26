@@ -63,10 +63,17 @@ Update-Module Az*
 
 ### Microsoft Graph PowerShell
 
+It's always better to install these modules as administrator. In that case, you can remove the `-Scope CurrentUser` part of the command:
+
 ```powershell
 Get-Module Microsoft.Graph* -ListAvailable | Select Name, Version
 Install-Module Microsoft.Graph.DeviceManagement -Scope CurrentUser
 Update-Module Microsoft.Graph* -Scope CurrentUser
+Install-Module -Name Microsoft.Graph.Authentication -Scope CurrentUser -Force
+Install-Module -Name Microsoft.Graph.Sites -Scope CurrentUser -Force
+Install-Module -Name Microsoft.Graph.Users   -Scope CurrentUser
+Install-Module -Name Microsoft.Graph.Groups  -Scope CurrentUser
+Install-Module -Name Microsoft.Graph.DeviceManagement -Scope CurrentUser
 ```
 
 ## 📍 Command Discovery and Help
@@ -955,10 +962,89 @@ You can specify the following settings:
 - DeployIfNotExists
 - Deny
 
-### Azure Policy Initiatives
+### Azure Policy Notes
 
-- Group of related Azure Policies
-- Can assign initiavies to resources
+- Specific definition for checking/restricting something
+- There are two types of policy definition: policy and initiative. An initiative is a grouping of related policies
+- Policy definitions are basically JSON config files
+- Policies can be assigned to an entire management group (collection of subscriptions), a single subscription, a single resource group and they cascade down
+- There are also built-in policies that can be applied as is (https://portal.azure.com/#view/Microsoft_Azure_Policy/PolicyMenuBlade.MenuView/~/Definitions)
+
+![policy_overview](images/az104-policies-overview.jpg)
+
+For instance, this policy definition denies the creation of VMs that are not Standard A1
+
+![vm_size_limit_policy](images/az104-vmsizelimit-policy-example.jpg)
+
+```json
+[
+  {
+    "description": "This policy enables you to specify a set of virtual machine size SKUs that your organization can deploy.",
+    "displayName": "Allowed virtual machine size SKUs",
+    "id": "/providers/Microsoft.Authorization/policyDefinitions/cccc23c7-8427-4f53-ad12-b6a63eb452b3",
+    "metadata": {
+      "category": "Compute",
+      "version": "1.0.1"
+    },
+    "mode": "Indexed",
+    "name": "cccc23c7-8427-4f53-ad12-b6a63eb452b3",
+    "parameters": {
+      "listOfAllowedSKUs": {
+        "allowedValues": null,
+        "defaultValue": null,
+        "metadata": {
+          "additionalProperties": null,
+          "assignPermissions": null,
+          "description": "The list of size SKUs that can be specified for virtual machines.",
+          "displayName": "Allowed Size SKUs",
+          "strongType": "VMSKUs"
+        },
+        "type": "Array"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "equals": "Microsoft.Compute/virtualMachines",
+            "field": "type"
+          },
+          {
+            "not": {
+              "field": "Microsoft.Compute/virtualMachines/sku.name",
+              "in": "[parameters('listOfAllowedSKUs')]"
+            }
+          }
+        ]
+      },
+      "then": {
+        "effect": "Deny"
+      }
+    },
+    "policyType": "BuiltIn",
+    "systemData": null,
+    "type": "Microsoft.Authorization/policyDefinitions"
+  }
+]
+```
+
+- You can also check for assignment here and see if policies/initiative are assigned to the whole subscription or to specific children resource groups (https://portal.azure.com/#view/Microsoft_Azure_Policy/PolicyMenuBlade.MenuView/~/Assignments)
+
+![policy_assignment_menu](images/az104-policy-assignment-menu.jpg)
+
+- In the policy compliance section, you can drill down to see which devices and which assigned policies are not compliant and remediate them (https://portal.azure.com/#view/Microsoft_Azure_Policy/PolicyMenuBlade.MenuView/~/Compliance)
+
+![policy_compliance_menu](images/az104-policy-compliance-menu.jpg)
+
+### CODE
+
+```bash
+az policy definition list -o table #gets a list of currently assigned policies
+az policy definition list --query [].displayName #gets all policies display names
+az policy definition list --query "[?displayName=='Allowed virtual machine size SKUs']" #gets the policy definition of a specific policy. Filtered by displayName
+az policy assignment create --name 'Allowed Virtual Machine SKUs' --display-name 'Allowed Virtual Machine SKUs' --scope $scope --policy $policyId --params "$policyParam" #assign a policy to a scope, for instance a resource group, based on an existing policy where the parameters are customized
+az policy assignment list --disable-scope-strict-match --query [].displayName #gets the display names of all policies regardless of their scope
+```
 
 ## 📍 Useful PowerShell Code
 
