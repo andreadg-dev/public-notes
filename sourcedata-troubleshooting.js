@@ -1445,6 +1445,17 @@ Get-ItemProperty "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\CloudDomainJoin\\Te
       category: "win-regex",
       tags: ["windows", "powershell", "regex", "aad", "mdm"],
     },
+    {
+      item: `# Serial Number
+$sn = (Get-WmiObject Win32_ComputerSystemProduct).IdentifyingNumber
+
+# Product Number (SKU)
+$pn = (Get-WmiObject -Namespace root\\HP\\InstrumentedBIOS -Class HP_BIOSString |
+Where-Object {$_.Name -like "*SKU*"}).Value`,
+      description: `Retrieve an HP serial number and prodcut number`,
+      category: "win-system",
+      tags: ["windows", "powershell", "regex", "hp"],
+    },
   ],
 };
 

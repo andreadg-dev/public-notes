@@ -1,16 +1,15 @@
 # MY TYPESCRIPT NOTES
 
-- [MY TYPESCRIPT NOTES](#my-typescript-notes)
-  - [Basic Primite Types](#basic-primite-types)
-  - [Objects](#objects)
-  - [Arrays](#arrays)
-  - [Type inference and Type annotation](#type-inference-and-type-annotation)
-  - [Union Types](#union-types)
-  - [Functions](#functions)
-  - [Type Aliases and Interfaces](#type-aliases-and-interfaces)
-  - [Type literals](#type-literals)
-  - [Type Guards](#type-guards)
-  - [Tips](#tips)
+- [Basic Primite Types](#basic-primite-types)
+- [Objects](#objects)
+- [Arrays](#arrays)
+- [Type inference and Type annotation](#type-inference-and-type-annotation)
+- [Union Types](#union-types)
+- [Functions](#functions)
+- [Type Aliases and Interfaces](#type-aliases-and-interfaces)
+- [Type literals](#type-literals)
+- [Type Guards](#type-guards)
+- [Tips](#tips)
 
 ## Basic Primite Types
 

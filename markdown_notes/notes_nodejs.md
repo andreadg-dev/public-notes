@@ -1,19 +1,18 @@
 # MY NODE.JS NOTES
 
-- [MY NODE.JS NOTES](#my-nodejs-notes)
-  - [Bash Basics](#bash-basics)
-  - [Node.js](#nodejs)
-  - [Node Package Manager](#node-package-manager)
-  - [Express.js: Creating our first server](#expressjs-creating-our-first-server)
-  - [Handling requests: GET request](#handling-requests-get-request)
-  - [Handling requests: POST request](#handling-requests-post-request)
-  - [API Basics](#api-basics)
-  - [How to serve static files on a server](#how-to-serve-static-files-on-a-server)
-  - [Git](#git)
-  - [CommonJS VS ES6 syntax: `require()`, `import from`, `function(){}`, `() =>`](#commonjs-vs-es6-syntax-require-import-from-function--)
-  - [EJS: Embedded Javascript Templating](#ejs-embedded-javascript-templating)
-  - [Useful Chrome add-ons](#useful-chrome-add-ons)
-  - [Useful Libraries](#useful-libraries)
+- [Bash Basics](#bash-basics)
+- [Node.js](#nodejs)
+- [Node Package Manager](#node-package-manager)
+- [Express.js: Creating our first server](#expressjs-creating-our-first-server)
+- [Handling requests: GET request](#handling-requests-get-request)
+- [Handling requests: POST request](#handling-requests-post-request)
+- [API Basics](#api-basics)
+- [How to serve static files on a server](#how-to-serve-static-files-on-a-server)
+- [Git](#git)
+- [CommonJS VS ES6 syntax: `require()`, `import from`, `function(){}`, `() =>`](#commonjs-vs-es6-syntax-require-import-from-function--)
+- [EJS: Embedded Javascript Templating](#ejs-embedded-javascript-templating)
+- [Useful Chrome add-ons](#useful-chrome-add-ons)
+- [Useful Libraries](#useful-libraries)
 
 ## Bash Basics
 

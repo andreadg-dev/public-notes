@@ -1,12 +1,11 @@
 # KNOWN ERRORS
 
-- [KNOWN ERRORS](#known-errors)
-  - [**How do you change the default start location in git bash to the current folder?**](#how-do-you-change-the-default-start-location-in-git-bash-to-the-current-folder)
-  - [**All connections to the npm registry - including for package installation - must use TLS 1.2 or higher**](#all-connections-to-the-npm-registry---including-for-package-installation---must-use-tls-12-or-higher)
-  - [**Unable to get local issuer certificate**](#unable-to-get-local-issuer-certificate)
-  - [**Visual Studio Code: Problems loading reference/Unable to load schema**](#visual-studio-code-problems-loading-referenceunable-to-load-schema)
-  - [**Refused to apply style because its MIME type ('text/html') is not a supported stylesheet MIME type**](#refused-to-apply-style-because-its-mime-type-texthtml-is-not-a-supported-stylesheet-mime-type)
-  - [**fatal: Authentication failed for \[GIT_REPO\]**](#fatal-authentication-failed-for-git_repo)
+- [**How do you change the default start location in git bash to the current folder?**](#how-do-you-change-the-default-start-location-in-git-bash-to-the-current-folder)
+- [**All connections to the npm registry - including for package installation - must use TLS 1.2 or higher**](#all-connections-to-the-npm-registry---including-for-package-installation---must-use-tls-12-or-higher)
+- [**Unable to get local issuer certificate**](#unable-to-get-local-issuer-certificate)
+- [**Visual Studio Code: Problems loading reference/Unable to load schema**](#visual-studio-code-problems-loading-referenceunable-to-load-schema)
+- [**Refused to apply style because its MIME type ('text/html') is not a supported stylesheet MIME type**](#refused-to-apply-style-because-its-mime-type-texthtml-is-not-a-supported-stylesheet-mime-type)
+- [**fatal: Authentication failed for \[GIT_REPO\]**](#fatal-authentication-failed-for-git_repo)
 
 ## **How do you change the default start location in git bash to the current folder?**
 

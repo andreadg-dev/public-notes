@@ -1,12 +1,10 @@
-# MY CMD NOTES #
+# MY CMD NOTES
 
-- [MY CMD NOTES](#my-cmd-notes)
-  - [Basics](#basics)
-  - [Variables](#variables)
-  - [File Output](#file-output)
+- [Basics](#basics)
+- [Variables](#variables)
+- [File Output](#file-output)
 
-
-## Basics ##
+## Basics
 
 ```cmd
 :: Turn off command echoing. You can use :: or REM for comments
@@ -16,7 +14,8 @@
 pause
 ```
 
-## Variables ##
+## Variables
+
 ```cmd
 :: Set a variable — no spaces around '='
 set variablename=variablevalue
@@ -25,7 +24,8 @@ set variablename=variablevalue
 echo %variablename%
 ```
 
-## File Output ##
+## File Output
+
 ```cmd
 :: Overwrite file with output of a command
 ipconfig /all > C:\\temp\\ipconfig.log

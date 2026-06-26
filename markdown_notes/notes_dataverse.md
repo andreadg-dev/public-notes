@@ -4,15 +4,14 @@
 
 **Index**
 
-- [Dataverse Table and Application User Setup](#dataverse-table-and-application-user-setup)
-  - [📍 Create a Dataverse table](#-create-a-dataverse-table)
-  - [📍 Create an application user](#-create-an-application-user)
-  - [📍 Create a security role with access to the Dataverse table](#-create-a-security-role-with-access-to-the-dataverse-table)
-  - [📍 Assign the security role to the application user](#-assign-the-security-role-to-the-application-user)
-  - [📍 Add an alternate key in Dataverse (optional)](#-add-an-alternate-key-in-dataverse-optional)
-  - [📍 Using views in a model-driven app](#-using-views-in-a-model-driven-app)
-  - [📍 Additional recommendations](#-additional-recommendations)
-  - [📍 Quick summary](#-quick-summary)
+- [📍 Create a Dataverse table](#-create-a-dataverse-table)
+- [📍 Create an application user](#-create-an-application-user)
+- [📍 Create a security role with access to the Dataverse table](#-create-a-security-role-with-access-to-the-dataverse-table)
+- [📍 Assign the security role to the application user](#-assign-the-security-role-to-the-application-user)
+- [📍 Add an alternate key in Dataverse (optional)](#-add-an-alternate-key-in-dataverse-optional)
+- [📍 Using views in a model-driven app](#-using-views-in-a-model-driven-app)
+- [📍 Additional recommendations](#-additional-recommendations)
+- [📍 Quick summary](#-quick-summary)
 
 ## 📍 Create a Dataverse table
 

@@ -1,9 +1,8 @@
 # MY JQUERY NOTES
 
-- [MY JQUERY NOTES](#my-jquery-notes)
-  - [JavaScript vs jQuery](#javascript-vs-jquery)
-  - [jQuery Specific Code](#jquery-specific-code)
-  - [Quick tips](#quick-tips)
+- [JavaScript vs jQuery](#javascript-vs-jquery)
+- [jQuery Specific Code](#jquery-specific-code)
+- [Quick tips](#quick-tips)
 
 ## JavaScript vs jQuery
 

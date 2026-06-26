@@ -1,8 +1,7 @@
 # MY AZURE KEYVAULT NOTES
 
-- [MY AZURE KEYVAULT NOTES](#my-azure-keyvault-notes)
-  - [Using PowerShell and Az Modules](#using-powershell-and-az-modules)
-  - [Using JavaScript](#using-javascript)
+- [Using PowerShell and Az Modules](#using-powershell-and-az-modules)
+- [Using JavaScript](#using-javascript)
 
 An Azure Keyvault is a really useful tool to safely store credentials, client id, client secret, certificates etc.
 

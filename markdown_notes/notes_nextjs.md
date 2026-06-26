@@ -1,25 +1,20 @@
 # MY NEXT.JS NOTES
 
-## INDEX
+**INDEX**
 
-- [MY NEXT.JS NOTES](#my-nextjs-notes)
-  - [INDEX](#index)
-  - [PROJECT OVERVIEW](#project-overview)
-- [INITIALIZE A NEXTJS PROJECT WITH TYPESCRIPT](#initialize-a-nextjs-project-with-typescript)
-  - [INSTALL MATERIAL UI (OPTIONAL)](#install-material-ui-optional)
-  - [ADD GOOGLE FONTS](#add-google-fonts)
-  - [IMPORT REPO TO GITHUB ONLINE AND VERCEL](#import-repo-to-github-online-and-vercel)
-  - [CONNECT TO A FREE TIER SUPABASE DB](#connect-to-a-free-tier-supabase-db)
-  - [SET UP PRISMA WITH SUPABASE POSTGRES SQL DB FREE TIER](#set-up-prisma-with-supabase-postgres-sql-db-free-tier)
+- [PROJECT OVERVIEW](#project-overview)
+- [INSTALL MATERIAL UI (OPTIONAL)](#install-material-ui-optional)
+- [ADD GOOGLE FONTS](#add-google-fonts)
+- [IMPORT REPO TO GITHUB ONLINE AND VERCEL](#import-repo-to-github-online-and-vercel)
+- [CONNECT TO A FREE TIER SUPABASE DB](#connect-to-a-free-tier-supabase-db)
+- [SET UP PRISMA WITH SUPABASE POSTGRES SQL DB FREE TIER](#set-up-prisma-with-supabase-postgres-sql-db-free-tier)
 - [SET UP AUTHENTICATION VIA GITHUB/GOOGLE](#set-up-authentication-via-githubgoogle)
-  - [ADD CLIENT CREDENTIALS INTO YOUR VERCEL PROJECT](#add-client-credentials-into-your-vercel-project)
-  - [SET UP PRISMA SCHEMA WITH NEXT-AUTH MODELS](#set-up-prisma-schema-with-next-auth-models)
-  - [AUTH CONFIGURATION FILE \& AUTH ACTIONS](#auth-configuration-file--auth-actions)
-  - [CHECK IF USER AUTHENTICATED BEFORE ACCESSING APP](#check-if-user-authenticated-before-accessing-app)
-  - [LAST STEPS](#last-steps)
+- [ADD CLIENT CREDENTIALS INTO YOUR VERCEL PROJECT](#add-client-credentials-into-your-vercel-project)
+- [SET UP PRISMA SCHEMA WITH NEXT-AUTH MODELS](#set-up-prisma-schema-with-next-auth-models)
+- [AUTH CONFIGURATION FILE \& AUTH ACTIONS](#auth-configuration-file--auth-actions)
+- [CHECK IF USER AUTHENTICATED BEFORE ACCESSING APP](#check-if-user-authenticated-before-accessing-app)
+- [LAST STEPS](#last-steps)
 - [GOOD PRACTICE \& TIPS](#good-practice--tips)
-  - [IMPLEMENT PATH HELPERS](#implement-path-helpers)
-  - [TIPS](#tips)
 
 ## PROJECT OVERVIEW
 
@@ -398,7 +393,7 @@ import { PrismaClient } from "@prisma/client";
 export const db = new PrismaClient();
 ```
 
-# SET UP AUTHENTICATION VIA GITHUB/GOOGLE
+## SET UP AUTHENTICATION VIA GITHUB/GOOGLE
 
 - Run `npm install next-auth@beta @auth/prisma-adapter` to install next-auth and auth prisma adapter
 
@@ -799,9 +794,9 @@ Your database is now in sync with your schema.
 
 See: https://www.youtube.com/watch?v=O8Ae6MC5bf4
 
-# GOOD PRACTICE & TIPS
+## GOOD PRACTICE & TIPS
 
-## IMPLEMENT PATH HELPERS
+### IMPLEMENT PATH HELPERS
 
 Make a list of all the paths you need in your app by specifying the path name, path and data shown. Once you have a clear overview, create the `src/paths.ts` file, declare all your app paths and export it so that you can use them in your app, for instance:
 
@@ -827,6 +822,6 @@ Path helpers in a Next.js project are important for several reasons:
   Readability: Code like paths.ingredients(slug) is clearer than inline string concatenation.
 - Scalability: As your app grows, this prevents "magic strings" and makes refactoring easier.
 
-## TIPS
+### TIPS
 
 - Make a list of all the paths you need in your app by specifying the path name, path and data shown and server action used in each path in order to have a clearer app structure in your head. You can add all server actions in your `actions` folder.

@@ -1,19 +1,18 @@
 # MY JAVASCRIPT & POWERSHELL NOTES
 
-- [MY JAVASCRIPT \& POWERSHELL NOTES](#my-javascript--powershell-notes)
-  - [**Declare and modify a variable/array**](#declare-and-modify-a-variablearray)
-  - [**Write output with first letter capitalised**](#write-output-with-first-letter-capitalised)
-  - [**Examples of function with a single parameter: getMilk**](#examples-of-function-with-a-single-parameter-getmilk)
-  - [**Examples of function with a single parameter: getTimeLeft**](#examples-of-function-with-a-single-parameter-gettimeleft)
-  - [**Example of function with multiple parameters: getBmi**](#example-of-function-with-multiple-parameters-getbmi)
-  - [**Math Functions: Math.Round()**](#math-functions-mathround)
-  - [**Math Functions: Math.Floor()**](#math-functions-mathfloor)
-  - [**Math Functions: Math.random()**](#math-functions-mathrandom)
-  - [**Equal Operators**](#equal-operators)
-  - [**Example of function with parameter: getLeapYear**](#example-of-function-with-parameter-getleapyear)
-  - [**Objects \& Constructor Functions: HelpdeskAgent**](#objects--constructor-functions-helpdeskagent)
-  - [**NewSec**](#newsec)
-  - [**Tips**](#tips)
+- [**Declare and modify a variable/array**](#declare-and-modify-a-variablearray)
+- [**Write output with first letter capitalised**](#write-output-with-first-letter-capitalised)
+- [**Examples of function with a single parameter: getMilk**](#examples-of-function-with-a-single-parameter-getmilk)
+- [**Examples of function with a single parameter: getTimeLeft**](#examples-of-function-with-a-single-parameter-gettimeleft)
+- [**Example of function with multiple parameters: getBmi**](#example-of-function-with-multiple-parameters-getbmi)
+- [**Math Functions: Math.Round()**](#math-functions-mathround)
+- [**Math Functions: Math.Floor()**](#math-functions-mathfloor)
+- [**Math Functions: Math.random()**](#math-functions-mathrandom)
+- [**Equal Operators**](#equal-operators)
+- [**Example of function with parameter: getLeapYear**](#example-of-function-with-parameter-getleapyear)
+- [**Objects \& Constructor Functions: HelpdeskAgent**](#objects--constructor-functions-helpdeskagent)
+- [**NewSec**](#newsec)
+- [**Tips**](#tips)
 
 ## **Declare and modify a variable/array**
 
