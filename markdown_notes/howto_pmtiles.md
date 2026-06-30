@@ -3,6 +3,9 @@
 `Tag: [HOWTO_ALL_MAPS]`
 
 - Download the bynary for your OS from: https://github.com/protomaps/go-pmtiles/releases
+
+## WINDOWS
+
 - Unzip it, open terminal and check if the pmtiles software is working by launching from the unzipped folder (you can also add the route to your PATH variable): `pmtiles.exe version` (output sample: `pmtiles 1.30.3, commit b50d7b1acd72c02bf428e78f0f5c9dab020b6174, built at 2026-05-28T15:20:42Z`)
 - Check which build you are insterested in at https://maps.protomaps.com/builds/, right-click on the corresponding download link and copy link, for instance https://build.protomaps.com/20260617.pmtiles. To retrieve info about the build, you can run: `pmtiles.exe show https://build.protomaps.com/20260617.pmtiles`. See output sample:
 
@@ -58,3 +61,27 @@ fetching chunks  58% |███████████████████�
 ```
 
 You can then drag and drop your file at https://maps.protomaps.com/#flavorName=light&lang=en&map=0.6/0/0 to view it online
+
+## LINUX (UBUNTU)
+
+- Extract it and navigate to the folder via the terminal
+- Execute `sudo mv pmtiles /usr/local/bin/` to be able to use the pmtiles CLI
+- Once installed, checks if it works by executing `pmtiles version` or `pmtiles --help`
+- Now you can run commands just by typing `pmtiles` before the rest of the parameters, for instance:
+
+```bash
+pmtiles show https://build.protomaps.com/20260626.pmtiles
+pmtiles extract https://build.protomaps.com/20260626.pmtiles belgium.pmtiles --bbox=2.54,49.50,6.41,51.51
+```
+
+Output sample:
+
+```plaintext
+2026/06/26 11:57:46 extract.go:373: fetching 15 dirs, 15 chunks, 7 requests
+2026/06/26 11:57:51 extract.go:413: Region tiles 136462, result tile entries 133436
+2026/06/26 11:57:51 extract.go:422: fetching 133436 tiles, 522 chunks, 101 requests
+fetching chunks 100% |██████████████████████| (1.2/1.2 GB, 3.3 MB/s)
+2026/06/26 12:04:11 extract.go:578: Completed in 6m26.766334909s with 4 download threads (345.00417412633607 tiles/s).
+2026/06/26 12:04:11 extract.go:583: Extract required 111 total requests.
+2026/06/26 12:04:11 extract.go:584: Extract transferred 1.3 GB (overfetch 0.05) for an archive size of 1.2 GB
+```

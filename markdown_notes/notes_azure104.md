@@ -63,17 +63,18 @@ Update-Module Az*
 
 ### Microsoft Graph PowerShell
 
-It's always better to install these modules as administrator. In that case, you can remove the `-Scope CurrentUser` part of the command:
+It's always better to install these modules as administrator. If you need to install it only for your user, you can add the `-Scope CurrentUser` and replace the scope mentioned below:
 
 ```powershell
 Get-Module Microsoft.Graph* -ListAvailable | Select Name, Version
-Install-Module Microsoft.Graph.DeviceManagement -Scope CurrentUser
-Update-Module Microsoft.Graph* -Scope CurrentUser
-Install-Module -Name Microsoft.Graph.Authentication -Scope CurrentUser -Force
-Install-Module -Name Microsoft.Graph.Sites -Scope CurrentUser -Force
-Install-Module -Name Microsoft.Graph.Users   -Scope CurrentUser
-Install-Module -Name Microsoft.Graph.Groups  -Scope CurrentUser
-Install-Module -Name Microsoft.Graph.DeviceManagement -Scope CurrentUser
+Update-Module Microsoft.Graph* -Scope AllUsers -Force
+Install-Module -Name Microsoft.Graph.Authentication -Scope AllUsers -Force
+Install-Module -Name Microsoft.Graph.Sites -Scope AllUsers -Force
+Install-Module -Name Microsoft.Graph.Users -Scope AllUsers -Force
+Install-Module -Name Microsoft.Graph.Groups -Scope AllUsers -Force
+Install-Module -Name Microsoft.Graph.DeviceManagement -Scope AllUsers -Force
+Install-Module Microsoft.Graph.Reports -Scope AllUsers -Force # to retrieve user sign-ins information
+Install-Module Microsoft.Graph.Applications -Scope AllUsers -Force # to retrieve Azure Applications info
 ```
 
 ## 📍 Command Discovery and Help
@@ -239,6 +240,23 @@ Connect-MgGraph -UseDeviceCode
 Connect-MgGraph -Identity
 Get-MgContext
 Disconnect-MgGraph
+```
+
+Connect to MS Graph using an Azure Application client credentials:
+
+```powershell
+$joinInfoGuid = Split-Path (Get-ChildItem "HKLM:\SYSTEM\CurrentControlSet\Control\CloudDomainJoin\JoinInfo" | Select-Object -First 1).Name -Leaf
+$TenantId = (Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\CloudDomainJoin\JoinInfo\${joinInfoGuid}").TenantId #or type here the required tenant id
+$ClientId = "[CLIENT_ID_STRING]"
+
+# 1. Convert the plain text string into a secure string
+$SecureSecret = ConvertTo-SecureString "[CLIENT_SECRET_STRING]" -AsPlainText -Force
+
+# 2. Package the Client ID and SecureString together
+$CredentialObject = [System.Management.Automation.PSCredential]::new($ClientId, $SecureSecret)
+
+# 3. Connect using the unified credential object
+Connect-MgGraph -TenantId $TenantId -ClientSecretCredential $CredentialObject
 ```
 
 ### Notes
@@ -1293,6 +1311,45 @@ $extraProps = @("AuthMethods", "AssignedLicenses", "ManagerInfo", "GroupsInfo", 
 $usersOutput = Get-CustomMgUser -Filter $filterEq -ExtraProperties $extraProps
 $usersOutput = Get-CustomMgUser -Filter $filterStartswith -ExtraProperties $extraProps
 $usersOutput = Get-CustomMgUser -Filter $filterContains -ExtraProperties $extraProps
+
+
+#==================================
+# User sign-ins info
+#==================================
+
+# Retrieve all sign-ins of a specific user
+$userSignIns = Get-MgAuditLogSignIn -Filter "userPrincipalName eq 'username@domain'" -All
+
+# Expand all properties in the output
+$userSignInsExpanded = $userSignIns | Select-Object `
+    Id,
+    CreatedDateTime,
+    UserPrincipalName,
+    UserId,
+    AppDisplayName,
+    AppId,
+    ClientAppUsed,
+    CorrelationId,
+    IPAddress,
+    IsInteractive,
+    UserAgent,
+    # Flattening the Status object
+    @{Name="ErrorCode"; Expression={$_.Status.ErrorCode}},
+    @{Name="FailureReason"; Expression={$_.Status.FailureReason}},
+    @{Name="AdditionalDetails"; Expression={$_.Status.AdditionalDetails}},
+    # Flattening Geo/Location details
+    @{Name="City"; Expression={$_.Location.City}},
+    @{Name="State"; Expression={$_.Location.State}},
+    @{Name="CountryOrRegion"; Expression={$_.Location.CountryOrRegion}},
+    @{Name="Latitude"; Expression={$_.Location.GeoCoordinates.Latitude}},
+    @{Name="Longitude"; Expression={$_.Location.GeoCoordinates.Longitude}},
+    # Flattening Device details
+    @{Name="DeviceOperatingSystem"; Expression={$_.DeviceDetail.OperatingSystem}},
+    @{Name="DeviceBrowser"; Expression={$_.DeviceDetail.Browser}},
+    @{Name="DeviceId"; Expression={$_.DeviceDetail.DeviceId}},
+    @{Name="DeviceDisplayName"; Expression={$_.DeviceDetail.DisplayName}},
+    @{Name="IsCompliant"; Expression={$_.DeviceDetail.IsCompliant}},
+    @{Name="IsManaged"; Expression={$_.DeviceDetail.IsManaged}}
 
 ```
 
