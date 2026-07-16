@@ -168,6 +168,12 @@ Instead, access is usually controlled through:
   - filtered views
   - app design
 
+### Best practice
+
+Use **security roles and Dataverse permissions** to control what users are allowed to access, and use **views** to improve usability and focus users on the data most relevant to them.
+
+> **Important:** Views help shape the user experience, but they should not be treated as the primary security boundary. Security should be enforced through Dataverse roles and permissions.
+
 ## 📍 Create a caluclated column in a Dataverse table
 
 - Create/Import your table first, if not done yet
@@ -177,12 +183,6 @@ Instead, access is usually controlled through:
 - Type a formula using Power Fx syntax. Forumales _cannot be more than 1000 characters long_.
 
 Please note that Choice type of column usually have long names when having to refer to them in the formula therefore they can make your formula quickly reach the 1000-character limit
-
-### Best practice
-
-Use **security roles and Dataverse permissions** to control what users are allowed to access, and use **views** to improve usability and focus users on the data most relevant to them.
-
-> **Important:** Views help shape the user experience, but they should not be treated as the primary security boundary. Security should be enforced through Dataverse roles and permissions.
 
 ## 📍 Additional recommendations
 
