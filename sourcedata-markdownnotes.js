@@ -28,5 +28,6 @@ const markdownNotes = {
     "notes_azure104",
     "howto_pmtiles",
     "errors_MacOS_device_not_in_Intune",
+    "errors_device_not_in_nexthink",
   ],
 };

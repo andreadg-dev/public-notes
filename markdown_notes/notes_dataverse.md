@@ -10,6 +10,7 @@
 - [📍 Assign the security role to the application user](#-assign-the-security-role-to-the-application-user)
 - [📍 Add an alternate key in Dataverse (optional)](#-add-an-alternate-key-in-dataverse-optional)
 - [📍 Using views in a model-driven app](#-using-views-in-a-model-driven-app)
+- [📍 Create a caluclated column in a Dataverse table](#-create-a-caluclated-column-in-a-dataverse-table)
 - [📍 Additional recommendations](#-additional-recommendations)
 - [📍 Quick summary](#-quick-summary)
 
@@ -166,6 +167,16 @@ Instead, access is usually controlled through:
   - ownership-based access
   - filtered views
   - app design
+
+## 📍 Create a caluclated column in a Dataverse table
+
+- Create/Import your table first, if not done yet
+- Navigate to your table
+- Click on **Columns** in the **Schema** tile
+- Click on **New column** > **Data type: Formula**
+- Type a formula using Power Fx syntax. Forumales _cannot be more than 1000 characters long_.
+
+Please note that Choice type of column usually have long names when having to refer to them in the formula therefore they can make your formula quickly reach the 1000-character limit
 
 ### Best practice
 

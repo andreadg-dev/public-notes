@@ -1432,6 +1432,15 @@ nxtcfg /restart`,
       tags: ["windows", "MacOS", "nexthink", "cmd"],
     },
     {
+      item: `platform.audit_logs
+| where code == 91012
+| sort time asc
+| list time.as(format = date), time, code, category, account, message`,
+      description: `This nql query retrieves all platform logs related to 'User creation'. For more audit trail codes, see https://docs.nexthink.com/platform/security/exporting-audit-logs/audit-trail-codes`,
+      category: "all-nexthink",
+      tags: ["windows", "MacOS", "nexthink", "nql"],
+    },
+    {
       item: `$joinInfoGuid = Split-Path (Get-ChildItem "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\CloudDomainJoin\\JoinInfo" | Select-Object -First 1).Name -Leaf
 Get-ItemProperty "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\CloudDomainJoin\\JoinInfo\\\${joinInfoGuid}"`,
       description: `Looks in the registry where Windows stores Azure AD device join details, retrieves the first subkey (a GUID representing the join record) and outputs its properties (e.g., device ID, join status, tenant reference).`,
