@@ -29,5 +29,6 @@ const markdownNotes = {
     "howto_pmtiles",
     "errors_MacOS_device_not_in_Intune",
     "errors_device_not_in_nexthink",
+    "notes_comparative_syntax_cheat_sheet",
   ],
 };
