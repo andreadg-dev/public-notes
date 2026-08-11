@@ -20,13 +20,22 @@ function Format-Date {
         [object]$DateString
     )
 
+   # Returns an empty string when the input date is null
     if ($null -eq $DateString) { return "" }
 
+    # Returns the date already formatted correctly if the type is already datetime
     if ($DateString -is [datetime]) { return $DateString.ToString('yyyy-MM-dd') }
 
+    # Trims the date string
     $inputDate = $DateString.Trim()
-    if ([string]::IsNullOrWhiteSpace($inputDate) -or $inputDate -eq "-" -or $inputDate -eq "'-") { return "" }
 
+    # Returns an empty string when the input date is null, empty, whitespace, or contains a placeholder value: "-", "'-", "not_found", "nd", or "na".
+    if (
+        [string]::IsNullOrWhiteSpace($inputDate) -or
+        $inputDate -match "^(?:'?-|not_found|nd|na)$"
+    ) { return "" }
+
+    # Declare all scoped formats
     $formats = @(
         'dd/MM/yyyy HH:mm:ss',
         'dd/MM/yyyy',
