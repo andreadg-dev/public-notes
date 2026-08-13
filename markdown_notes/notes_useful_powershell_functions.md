@@ -4,10 +4,11 @@
 
 **Index**
 
-- [FORMAT-DATE](#format-date)
-- [GET-DEVICEIDENTITYINFO](#get-deviceidentityinfo)
+- [Format-Date](#format-date)
+- [Get-DeviceIdentityInfo](#get-deviceidentityinfo)
+- [Capturing Detailed API Errors in PowerShell](#capturing-detailed-api-errors-in-powershell)
 
-## FORMAT-DATE
+## Format-Date
 
 `Format-Date` is a PowerShell function that validates and normalizes dates provided in multiple supported formats. It detects the input date format using regular expressions, parses it using `DateTime.ParseExact`, and returns the date in the standard `yyyy-MM-dd` format.
 
@@ -164,7 +165,7 @@ function Format-Date {
 }
 ```
 
-## GET-DEVICEIDENTITYINFO
+## Get-DeviceIdentityInfo
 
 Collects Windows Cloud Domain Join / Entra device registration information from the local registry. The function safely handles missing or inaccessible registry keys and returns the available device and registration details without interrupting the rest of the diagnostic collection process.
 
@@ -280,5 +281,48 @@ function Get-DeviceIdentityInfo {
         Write-Warning "Error while generating output json file: $($_.Exception.Message)"
     }
 
+}
+```
+
+## Capturing Detailed API Errors in PowerShell
+
+Demonstrates how to call a API endpoint from PowerShell and reliably capture the detailed error response returned by the API. In particular, it handles cases where `$_.Exception.Message` only contains a generic HTTP error and does not expose the JSON error payload returned by the API.
+
+When available, the script retrieves the response body from the exception's response stream and reads it with `StreamReader`, allowing the actual API error details—such as the error code, message, request ID, and client request ID—to be displayed. This provides significantly more useful diagnostics than relying solely on `$_.Exception.Message`.
+
+This approach is particularly useful when troubleshooting authentication and authorization failures, such as `InvalidAuthenticationToken`, where the underlying API response contains the actionable error message that may otherwise be hidden from the standard PowerShell exception.
+
+In this instance I am using a MS Graph API endpoint as an example and purposely leaving out a bearer token to make the script generate an error:
+
+```powershell
+try {
+    Invoke-RestMethod -Uri "https://graph.microsoft.com/v1.0/me" -Method Get -UseBasicParsing
+}
+catch {
+    $errorDetail = $_.ErrorDetails.Message
+    if (-not $errorDetail -and $_.Exception.Response) {
+        $stream = $_.Exception.Response.GetResponseStream()
+        $reader = [System.IO.StreamReader]::new($stream)
+        $errorDetail = $reader.ReadToEnd()
+    }
+    else { $errorDetail = $_.Exception.Message }
+
+    Write-Warning "Error when processing ${caseId}: $errorDetail"
+}
+```
+
+Error output:
+
+```json
+{
+  "error": {
+    "code": "InvalidAuthenticationToken",
+    "message": "Access token is empty.",
+    "innerError": {
+      "date": "2026-08-13T07:54:55",
+      "request-id": "22a1ebe9-*",
+      "client-request-id": "22a1ebe9-*"
+    }
+  }
 }
 ```
