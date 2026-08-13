@@ -20,8 +20,8 @@ function Format-Date {
         [object]$DateString
     )
 
-   # Returns an empty string when the input date is null
-    if ($null -eq $DateString) { return "" }
+    # Returns an empty string when the input date is null
+    if ($null -eq $DateString) { return $null }
 
     # Returns the date already formatted correctly if the type is already datetime
     if ($DateString -is [datetime]) { return $DateString.ToString('yyyy-MM-dd') }
@@ -29,13 +29,18 @@ function Format-Date {
     # Trims the date string
     $inputDate = $DateString.Trim()
 
-    # Returns an empty string when the input date is null, empty, whitespace, or contains a placeholder value: "-", "'-", "not_found", "nd", or "na".
+    # Returns an empty string when the input date is null, empty, whitespace, or contains a placeholder value: "-", "'-", or contains any letters except for 'AM' and 'PM'
     if (
         [string]::IsNullOrWhiteSpace($inputDate) -or
-        $inputDate -match "^(?:'?-|not_found|nd|na)$"
-    ) { return "" }
+        (
+            $inputDate -match "[a-zA-Z]" -and
+            $inputDate -notmatch "(?i)\b(?:AM|PM)\b"
+        ) -or
+        $inputDate -match "^'?-$"
+    ) { return $null }
 
-    # Declare all scoped formats
+
+    # Scoped formats
     $formats = @(
         'dd/MM/yyyy HH:mm:ss',
         'dd/MM/yyyy',
@@ -45,10 +50,10 @@ function Format-Date {
         'dd MM yyyy',
         'yyyy-MM-dd HH:mm:ss',
         'yyyy-MM-dd',
-        'yyyy-MM-dd HH.mm.ss'
+        'yyyy-MM-dd HH.mm.ss',
         'yyyy/MM/dd HH:mm:ss',
-        'yyyy/MM/dd'
-        'yyyy/MM/dd HH.mm.ss'
+        'yyyy/MM/dd',
+        'yyyy/MM/dd HH.mm.ss',
         'yyyy MM dd HH:mm:ss',
         'yyyy MM dd',
         'yyyy.MM.dd HH:mm:ss',
