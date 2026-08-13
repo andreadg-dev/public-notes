@@ -286,28 +286,108 @@ function Get-DeviceIdentityInfo {
 
 ## Capturing Detailed API Errors in PowerShell
 
-Demonstrates how to call a API endpoint from PowerShell and reliably capture the detailed error response returned by the API. In particular, it handles cases where `$_.Exception.Message` only contains a generic HTTP error and does not expose the JSON error payload returned by the API.
+`Invoke-APICall` is a reusable PowerShell wrapper around `Invoke-RestMethod` designed to provide a consistent and comprehensive error object when an API request fails.
 
-When available, the script retrieves the response body from the exception's response stream and reads it with `StreamReader`, allowing the actual API error details—such as the error code, message, request ID, and client request ID—to be displayed. This provides significantly more useful diagnostics than relying solely on `$_.Exception.Message`.
+Rather than relying solely on PowerShell's default exception message, the function collects information from multiple layers of the failed request, including the API's response body, HTTP response details, and PowerShell execution context. This makes it useful when working with different API endpoints and platforms, where error responses and response object properties may vary.
 
-This approach is particularly useful when troubleshooting authentication and authorization failures, such as `InvalidAuthenticationToken`, where the underlying API response contains the actionable error message that may otherwise be hidden from the standard PowerShell exception.
+### What it captures
 
-In this instance I am using a MS Graph API endpoint as an example and purposely leaving out a bearer token to make the script generate an error:
+When an API request fails, the function attempts to collect:
+
+- **API error details** — Reads the response body from `ErrorDetails.Message` and falls back to the HTTP response stream when necessary.
+- **Structured error responses** — Attempts to deserialize JSON error responses with `ConvertFrom-Json`. If the response is not JSON, the original response is preserved as a string.
+- **HTTP response information** — Captures the HTTP status code, status description, response URI, and HTTP method.
+- **PowerShell exception information** — Preserves the original exception message.
+- **Execution context** — Includes the position of the failing command, the command itself, and the PowerShell script stack trace.
+- **Timestamp** — Records when the error was captured using an ISO 8601 timestamp.
+
+### Cross-version compatibility
+
+The structure of the HTTP response object can differ between PowerShell and underlying .NET versions. To account for these differences, the function uses the most directly available response properties and falls back to the corresponding `RequestMessage` properties when necessary.
+
+For example, the HTTP method is retrieved from `Response.Method` when available and falls back to `Response.RequestMessage.Method.Method` when it is not.
+
+This approach helps maintain consistent error information across different PowerShell environments without depending on a single response-object implementation.
+
+### Resulting error object
+
+The function returns a `PSCustomObject` with the following properties:
+
+| Property           | Description                                                                                         |
+| ------------------ | --------------------------------------------------------------------------------------------------- |
+| `ErrorTimeStamp`   | Timestamp indicating when the error was captured.                                                   |
+| `ResponseDetails`  | HTTP status code, status description, response URI, and HTTP method when a response is available.   |
+| `ErrorDetails`     | The API response body, deserialized when it contains valid JSON or preserved as a string otherwise. |
+| `ErrorMessage`     | The PowerShell exception message.                                                                   |
+| `ErrorPosition`    | The position information associated with the failed invocation.                                     |
+| `Code`             | The PowerShell command that generated the error.                                                    |
+| `ScriptStackTrace` | The PowerShell script stack trace at the point of failure.                                          |
+
+### Why use this approach?
+
+API error responses are not always consistent. One endpoint may return a structured JSON error, another may return plain text, while the PowerShell exception itself may contain additional information that is not present in the API response.
+
+`Invoke-APICall` therefore treats the error as information coming from **multiple sources rather than a single error message**. It preserves as much of the available information as possible while presenting it through a consistent object structure.
+
+This makes the resulting error object suitable for:
+
+- troubleshooting API requests
+- logging and diagnostics
+- investigating HTTP errors
+- inspecting API-specific error codes and messages
+- debugging PowerShell scripts
+- working across different API platforms and endpoints
+
+The function does not assume a particular API error schema, making it broadly reusable for REST APIs accessed through `Invoke-RestMethod`.
 
 ```powershell
-try {
-    Invoke-RestMethod -Uri "https://graph.microsoft.com/v1.0/me" -Method Get -UseBasicParsing
-}
-catch {
-    $errorDetail = $_.ErrorDetails.Message
-    if (-not $errorDetail -and $_.Exception.Response) {
-        $stream = $_.Exception.Response.GetResponseStream()
-        $reader = [System.IO.StreamReader]::new($stream)
-        $errorDetail = $reader.ReadToEnd()
+function Invoke-APICall {
+    try {
+        Invoke-RestMethod -Uri "https://graph.microsoft.com/v1.0/me" -Method Get -UseBasicParsing
     }
-    else { $errorDetail = $_.Exception.Message }
+    catch {
+        $errorDetails = $_.ErrorDetails.Message
+        if (-not $errorDetails -and $_.Exception.Response) {
+            $stream = $_.Exception.Response.GetResponseStream()
+            $reader = [System.IO.StreamReader]::new($stream)
 
-    Write-Warning "Error when processing ${caseId}: $errorDetail"
+            try { $errorDetails = $reader.ReadToEnd() }
+            finally { $reader.Dispose() }
+        }
+
+        # Try to parse the API response as JSON.
+        # If it isn't JSON, keep the original response as a string.
+        $errorDetailsObject = $errorDetails
+        if ($errorDetails) {
+            try { $errorDetailsObject = $errorDetails | ConvertFrom-Json -ErrorAction Stop }
+            catch {} # Not JSON - Keep the original response as a string
+        }
+
+        $errorMsg = $_.Exception.Message
+
+        # Retrieve response details if available.
+        # Response properties can differ between PowerShell/.NET versions,
+        # so fall back to the corresponding RequestMessage properties when needed.
+        if ($_.Exception.Response) {
+            $respDetails = $_.Exception.Response | Select-Object @{N = "StatusCode"; E = { [int]$_.StatusCode } },
+            @{N = "StatusDescription"; E = { if ($_.StatusDescription) { $_.StatusDescription }else { $_.ReasonPhrase } } },
+            @{N = "ResponseUri"; E = { if ($_.ResponseUri) { $_.ResponseUri }else { $_.RequestMessage.RequestUri.AbsoluteUri } } },
+            @{N = "Method"; E = { if ($_.Method) { $_.Method } else { $_.RequestMessage.Method.Method } } }
+        }
+
+        # Set the rest of output object properties
+        $errorOutput = [PSCustomObject]@{
+            ErrorTimeStamp   = (Get-Date).ToString("o")
+            ResponseDetails  = $respDetails
+            ErrorDetails     = $errorDetailsObject
+            ErrorMessage     = $errorMsg
+            ErrorPosition    = $_.InvocationInfo.PositionMessage
+            Code             = $_.InvocationInfo.Line.Trim()
+            ScriptStackTrace = $_.ScriptStackTrace
+        }
+
+        return $errorOutput
+    }
 }
 ```
 
@@ -315,14 +395,27 @@ Error output:
 
 ```json
 {
-  "error": {
-    "code": "InvalidAuthenticationToken",
-    "message": "Access token is empty.",
-    "innerError": {
-      "date": "2026-08-13T07:54:55",
-      "request-id": "22a1ebe9-*",
-      "client-request-id": "22a1ebe9-*"
+  "ErrorTimeStamp": "2026-08-13T15:03:10.2041417+02:00",
+  "ResponseDetails": {
+    "StatusCode": 401,
+    "StatusDescription": "Unauthorized",
+    "ResponseUri": "https://graph.microsoft.com/v1.0/me",
+    "Method": "GET"
+  },
+  "ErrorDetails": {
+    "error": {
+      "code": "InvalidAuthenticationToken",
+      "message": "Access token is empty.",
+      "innerError": {
+        "date": "2026-08-13T13:03:10",
+        "request-id": "e6ea1bde-9f04-46a8-9705-824047cfd611",
+        "client-request-id": "e6ea1bde-9f04-46a8-9705-824047cfd611"
+      }
     }
-  }
+  },
+  "ErrorMessage": "Response status code does not indicate success: 401 (Unauthorized).",
+  "ErrorPosition": "At line:3 char:9\r\n+         Invoke-RestMethod -Uri \"https://graph.microsoft.com/v1.0/me\"  …\r\n+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+  "Code": "Invoke-RestMethod -Uri \"https://graph.microsoft.com/v1.0/me\" -Method Get -UseBasicParsing",
+  "ScriptStackTrace": "at Invoke-APICall, <No file>: line 3\r\nat <ScriptBlock>, <No file>: line 50"
 }
 ```
