@@ -163,6 +163,11 @@ Simple script sample:
 ```python
 from faster_whisper import WhisperModel
 from pathlib import Path
+from datetime import datetime
+
+# Overall start time
+start_time = datetime.now()
+print(f"Started: {start_time:%Y-%m-%d %H:%M:%S}")
 
 # Folder containing this script and the MP3 files
 podcast_folder = Path(__file__).parent
@@ -182,6 +187,7 @@ print(f"Found {len(audio_files)} MP3 file(s).")
 
 for audio_file in audio_files:
 
+    # Setting output file path
     output_file = audio_file.with_suffix(".txt")
 
     # Don't transcribe files that already have a transcript
@@ -189,7 +195,12 @@ for audio_file in audio_files:
         print(f"Skipping: {audio_file.name} (transcript already exists)")
         continue
 
-    print(f"\nTranscribing: {audio_file.name}")
+    # Current audio start time
+    current_audio_starttime = datetime.now()
+    print(
+        f"\nTranscribing: {audio_file.name}"
+        f"\nStarted: {current_audio_starttime:%Y-%m-%d %H:%M:%S}"
+    )
 
     try:
         segments, info = model.transcribe(
@@ -215,13 +226,27 @@ for audio_file in audio_files:
                 print(line, end="")
                 f.write(line)
 
-        print(f"\nSaved: {output_file.name}")
+        current_audio_finishtime = datetime.now()
+        current_audio_duration = current_audio_finishtime - current_audio_starttime
+        print(f"\nCurrent audio duration: {current_audio_duration}")
+        print(f"\nSaved: {output_file.name} - {current_audio_finishtime:%Y-%m-%d %H:%M:%S}")
 
     except Exception as e:
         print(f"\nERROR processing {audio_file.name}:")
         print(e)
 
-print("\nFinished.")
+
+# Overall finish time
+finish_time = datetime.now()
+
+# Calculate total duration
+duration = finish_time - start_time
+
+print("\n" + "=" * 50)
+print(f"Started : {start_time:%Y-%m-%d %H:%M:%S}")
+print(f"Finished: {finish_time:%Y-%m-%d %H:%M:%S}")
+print(f"Duration: {duration}")
+print("=" * 50)
 
 ```
 
