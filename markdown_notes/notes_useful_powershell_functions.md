@@ -2,13 +2,30 @@
 
 `Tag: [NOTES_ALL_POWERSHELL]`
 
+In case you save these scripts in ps1 files, you can execute them via cmd with the following command: `pwsh.exe -ExecutionPolicy Bypass -File path\script.ps1`
+
+**What does it do?**
+
+This command starts **PowerShell 7+**, bypasses the normal PowerShell execution-policy restrictions for that process, and executes a PowerShell script named `script.ps1` located in the specified directory.
+
+**Breakdown**
+
+| Part                      | Meaning                                                                                                     |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `pwsh.exe`                | Launches **PowerShell 7+**. This is different from `powershell.exe`, which launches Windows PowerShell 5.1. |
+| `-ExecutionPolicy Bypass` | Tells PowerShell to bypass execution-policy restrictions for this PowerShell process.                       |
+| `-File`                   | Specifies that the following argument is a PowerShell script file to execute.                               |
+| `path\script.ps1`         | Refers to `script.ps1` in the specified path                                                                |
+
 **Index**
 
-- [Format-Date](#format-date)
-- [Get-DeviceIdentityInfo](#get-deviceidentityinfo)
+- [`Format-Date`](#format-date)
+- [`Get-DeviceIdentityInfo`](#get-deviceidentityinfo)
 - [Capturing Detailed API Errors in PowerShell](#capturing-detailed-api-errors-in-powershell)
+- [Add icon to shortcut from PNG](#add-icon-to-shortcut-from-png)
+- [`Get-IntuneDeviceHealth`](#get-intunedevicehealth)
 
-## Format-Date
+## `Format-Date`
 
 `Format-Date` is a PowerShell function that validates and normalizes dates provided in multiple supported formats. It detects the input date format using regular expressions, parses it using `DateTime.ParseExact`, and returns the date in the standard `yyyy-MM-dd` format.
 
@@ -165,7 +182,7 @@ function Format-Date {
 }
 ```
 
-## Get-DeviceIdentityInfo
+## `Get-DeviceIdentityInfo`
 
 Collects Windows Cloud Domain Join / Entra device registration information from the local registry. The function safely handles missing or inaccessible registry keys and returns the available device and registration details without interrupting the rest of the diagnostic collection process.
 
@@ -418,4 +435,758 @@ Error output:
   "Code": "Invoke-RestMethod -Uri \"https://graph.microsoft.com/v1.0/me\" -Method Get -UseBasicParsing",
   "ScriptStackTrace": "at Invoke-APICall, <No file>: line 3\r\nat <ScriptBlock>, <No file>: line 50"
 }
+```
+
+## Add icon to shortcut from PNG
+
+```powershell
+#===============================
+# Convert the PNG to a True ICO
+#===============================
+
+# 1. Load Windows graphic systems
+Add-Type -AssemblyName System.Drawing
+
+# 2. Define your source PNG and where to save the REAL .ico file temporarily
+$SourcePng = "C:\Path\To\YourSource.png"
+$TrueIcoPath = "$env:TEMP\FixedIcon.ico" # Saved to Temp folder first to avoid Program Files blocks
+
+# 3. Process the file translation
+$Bitmap = [System.Drawing.Bitmap]::FromFile($SourcePng)
+$IconHandle = $Bitmap.GetHicon()
+$TrueIcon = [System.Drawing.Icon]::FromHandle($IconHandle)
+
+# 4. Save the real icon container
+$FileStream = New-Object System.IO.FileStream($TrueIcoPath, 'OpenOrCreate')
+$TrueIcon.Save($FileStream)
+
+# 5. Clean up system memory
+$FileStream.Close()
+$TrueIcon.Dispose()
+$Bitmap.Dispose()
+
+Write-Host "Success! A real .ico file has been created at: $TrueIcoPath" -ForegroundColor Green
+
+
+#===============================
+# Apply the Shortcut Update
+#===============================
+
+# 1. Define paths (Using the newly fixed icon from Step 1)
+$ShortcutPath = "C:\Program Files\YourProgramFolder\Your Existing Shortcut.lnk"
+$RealIconPath = "$env:TEMP\FixedIcon.ico"
+
+# 2. Open the existing shortcut
+$WshShell = New-Object -ComObject WScript.Shell
+$Shortcut = $WshShell.CreateShortcut($ShortcutPath)
+
+# 3. Inject the real icon
+$Shortcut.IconLocation = "$RealIconPath, 0"
+
+# 4. Save and commit changes
+$Shortcut.Save()
+
+# 5. Clear Windows Explorer's cache so the icon refreshes immediately
+Stop-Process -Name explorer -Force
+```
+
+## `Get-IntuneDeviceHealth`
+
+### Overview
+
+`Get-IntuneDeviceHealth` is a local Windows PowerShell diagnostic function designed to evaluate the health of a Windows device from an Intune / MDM perspective.
+
+The function does **not** query Microsoft Intune directly and does not require Microsoft Graph authentication. Instead, it derives its health assessment from local operating-system state:
+
+- Windows certificate stores
+- Intune Management Extension service
+- Windows Device Enrollment service
+- MDM enrollment event logs
+- MDM synchronization events
+- MDM policy-processing events
+
+The result is returned as a structured `PSCustomObject`.
+
+At a high level:
+
+```text
+                    Windows Device
+                          │
+          ┌───────────────┼────────────────┐
+          │               │                │
+          ▼               ▼                ▼
+     Certificates      Services        MDM Event Logs
+          │               │                │
+          │               │       ┌────────┼─────────┐
+          │               │       │        │         │
+          │               │       ▼        ▼         ▼
+          │               │   Enrollment  Sync     Policy
+          │               │       │        │         │
+          └───────────────┴───────┴────────┴─────────┘
+                                  │
+                                  ▼
+                         State normalization
+                                  │
+                                  ▼
+                         Health evaluation
+                                  │
+                                  ▼
+                          PSCustomObject
+```
+
+The function is intended for scenarios such as:
+
+- Intune remediation scripts
+- Proactive Remediations
+- Endpoint diagnostics
+- Device-health reporting
+- Troubleshooting automation
+- Local MDM state collection
+- Fleet-level health reporting
+
+---
+
+##### Function Signature
+
+The function exposes one optional parameter:
+
+```powershell
+Get-IntuneDeviceHealth [-LookbackDays <int>]
+```
+
+The declaration is:
+
+```powershell
+[ValidateRange(1, 90)]
+[int]$LookbackDays = 30
+```
+
+The default behavior therefore examines the previous **30 days** of relevant event-log activity.
+
+For example:
+
+```powershell
+Get-IntuneDeviceHealth
+```
+
+uses a 30-day lookback.
+
+A 7-day window can be requested with:
+
+```powershell
+Get-IntuneDeviceHealth -LookbackDays 7
+```
+
+The accepted range is:
+
+```text
+1 <= LookbackDays <= 90
+```
+
+The maximum is intentionally limited to 90 days to prevent an accidentally expensive event-log query.
+
+### Microsoft Intune MDM Device CA
+
+The **Microsoft Intune MDM Device CA** certificate is a certificate authority (CA) certificate associated with **Microsoft Intune's Mobile Device Management (MDM)** infrastructure.
+
+It is used as part of the **certificate-based trust relationship between a Windows device and Intune**. During device enrollment, Intune can provision certificates that allow the device to identify and authenticate itself as an Intune-managed device.
+
+##### What it represents
+
+The certificate essentially represents **trust in the Intune MDM device certificate infrastructure**. Its presence on a Windows device generally indicates that the device has been enrolled or managed through Intune/MDM and that certificate-based device management is being used.
+
+It should **not** be confused with a certificate that identifies the user. It is primarily related to the **device's MDM identity and management relationship**.
+
+##### What it is used for
+
+Depending on the Intune configuration and Windows enrollment scenario, the certificate infrastructure can support:
+
+- **Device authentication** to Intune/MDM services.
+- Establishing and maintaining the device's **MDM enrollment identity**.
+- Secure communication and trust between the Windows device and management infrastructure.
+- Issuing or validating device certificates used by Intune-managed devices.
+- Supporting certificate-based authentication for other services when configured through Intune.
+
+##### In simple terms
+
+You can think of **Microsoft Intune MDM Device CA** as part of the certificate-based **"chain of trust" for an Intune-managed Windows device**.
+
+`Windows device → MDM enrollment → Intune certificate infrastructure → device authentication/management`
+
+Its presence by itself does not mean that a particular application is using the certificate; rather, it is part of the **Intune MDM enrollment and device-management infrastructure**.
+
+### IntuneManagementExtension and DmEnrollmentSvc services
+
+##### `IntuneManagementExtension` (Intune Management Extension)
+
+The **Intune Management Extension (IME)** is a Windows service used by Microsoft Intune to provide additional device-management capabilities beyond the native MDM functionality.
+
+It is primarily used for:
+
+- Deploying and running **PowerShell scripts**.
+- Installing and managing **Win32 applications** (`.intunewin`).
+- Running remediation scripts and other management tasks.
+- Reporting the execution status and results of these actions back to Intune.
+
+In short, **IME handles advanced management tasks and software/script deployment on Windows devices managed by Intune**.
+
+##### `DmEnrollmentSvc` (Device Management Enrollment Service)
+
+`DmEnrollmentSvc` is a Windows service associated with **device enrollment and MDM management**. It supports communication between Windows and the MDM service (such as Microsoft Intune) during enrollment and ongoing device management.
+
+It is involved in tasks such as:
+
+- Enrolling a Windows device into **MDM/Intune**.
+- Processing MDM enrollment and management information.
+- Supporting the application of **device management policies and configuration**.
+- Maintaining the device's management relationship with the MDM service.
+
+In short, **DmEnrollmentSvc supports the MDM enrollment and management infrastructure, while IntuneManagementExtension provides additional capabilities for scripts, Win32 apps, and other advanced management tasks**.
+
+##### Quick comparison
+
+| Service                     | Main purpose                                                            |
+| --------------------------- | ----------------------------------------------------------------------- |
+| `DmEnrollmentSvc`           | Windows MDM enrollment and policy/device-management communication       |
+| `IntuneManagementExtension` | Intune scripts, Win32 apps, remediations, and advanced management tasks |
+
+### Windows Event Log: DeviceManagement-Enterprise-Diagnostics-Provider/Admin
+
+The **`Microsoft-Windows-DeviceManagement-Enterprise-Diagnostics-Provider/Admin`** event log records events related to **Windows Mobile Device Management (MDM)** and enterprise device-management operations.
+
+For Windows devices managed by **Microsoft Intune**, this log is useful for monitoring and troubleshooting **MDM policy processing, configuration changes, and device-management operations**.
+
+##### Relevant Event IDs
+
+The following event IDs can be used to distinguish successful MDM processing from operations that encountered errors:
+
+| Event ID | Result     | Description                                                                                       |
+| -------- | ---------- | ------------------------------------------------------------------------------------------------- |
+| **71**   | ❌ Failure | Indicates that an MDM policy or management operation encountered a failure while being processed. |
+| **72**   | ✅ Success | Indicates that the corresponding MDM policy or management operation was processed successfully.   |
+| **75**   | ✅ Success | Indicates that an MDM management operation completed successfully.                                |
+| **76**   | ❌ Failure | Indicates that an MDM management operation or policy processing encountered a failure.            |
+
+##### Why these events are useful with Intune
+
+When investigating a Windows device managed by **Microsoft Intune**, these events can help determine whether MDM operations are being successfully processed.
+
+They are particularly useful for:
+
+- Detecting **failed MDM policy processing**.
+- Confirming that MDM operations completed successfully.
+- Identifying configuration or policy application problems.
+- Correlating Windows-side MDM activity with changes made through Intune.
+- Investigating devices that appear enrolled but are not receiving or applying configuration correctly.
+
+For failure events (**71 and 76**), the **event details/XML** are important because they can contain additional information such as the affected configuration, CSP, operation, and error/result code.
+
+### Windows MDM Sync Events: DeviceManagement-Enterprise-Diagnostics-Provider
+
+The **`Microsoft-Windows-DeviceManagement-Enterprise-Diagnostics-Provider`** provider generates events related to **Windows MDM synchronization and policy processing**.
+
+For Windows devices managed by **Microsoft Intune**, these events are useful for determining whether the device is successfully synchronizing with the MDM service and whether management policies are being processed successfully.
+
+The events below can be grouped into two areas:
+
+1. **MDM synchronization**
+2. **Policy processing**
+
+##### MDM Synchronization Events
+
+| Event ID |        Result        | Description                                                                                                                                      |
+| -------: | :------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+|  **201** |      ❌ Failure      | Indicates an MDM synchronization operation that failed. This can be used as evidence of a failed device sync.                                    |
+|  **202** |      ✅ Success      | Indicates a successful MDM synchronization operation. This can be used to identify the most recent successful device sync.                       |
+|  **209** | ⚠️ Depends on result | Indicates an MDM synchronization operation where the **HRESULT/result value in the event determines whether the operation succeeded or failed**. |
+
+##### Event 209 is special
+
+Unlike events **201** and **202**, event **209** cannot be classified as success or failure based on the event ID alone.
+
+The result is determined by the **HRESULT** contained in the event:
+
+```text
+Event 209
+   │
+   ├── HRESULT indicates success → ✅ Sync Success
+   │
+   └── HRESULT indicates failure → ❌ Sync Failure
+```
+
+This is why a monitoring script should inspect the event's HRESULT rather than automatically treating every **209** as either a success or a failure.
+
+In the example logic:
+
+```powershell
+$lastSyncSuccess = $syncEvents | Where-Object {
+    $_.Id -eq 202 -or
+    ($_.Id -eq 209 -and (Test-HResultSuccess -EventInput $_))
+}
+```
+
+**202** is always considered a successful sync, while **209** is considered successful only when its HRESULT indicates success.
+
+Similarly:
+
+```powershell
+$lastSyncFailure = $syncEvents | Where-Object {
+    $_.Id -eq 201 -or
+    ($_.Id -eq 209 -and -not (Test-HResultSuccess -EventInput $_))
+}
+```
+
+**201** is treated as a sync failure, while **209** is treated as a failure when its HRESULT indicates an unsuccessful operation.
+
+---
+
+##### Policy Processing Events
+
+| Event ID |   Result   | Description                                                               |
+| -------: | :--------: | ------------------------------------------------------------------------- |
+|  **813** | ✅ Success | Indicates successful processing of an MDM policy/configuration operation. |
+|  **814** | ✅ Success | Indicates successful processing of an MDM policy/configuration operation. |
+|  **820** | ❌ Failure | Indicates that MDM policy processing encountered a failure.               |
+
+These events are useful for determining whether **MDM policies/configuration were successfully processed on the Windows device**, rather than simply whether the device was able to perform an MDM synchronization.
+
+The monitoring logic therefore treats:
+
+```text
+813 / 814 → Policy Success
+820       → Policy Failure
+```
+
+---
+
+##### Quick Reference
+
+| Event ID | Category          |          Result          |
+| -------: | ----------------- | :----------------------: |
+|  **201** | MDM Sync          |        ❌ Failure        |
+|  **202** | MDM Sync          |        ✅ Success        |
+|  **209** | MDM Sync          | ⚠️ Determined by HRESULT |
+|  **813** | Policy Processing |        ✅ Success        |
+|  **814** | Policy Processing |        ✅ Success        |
+|  **820** | Policy Processing |        ❌ Failure        |
+
+##### Sync vs. Policy
+
+It is useful to distinguish **synchronization** from **policy processing**:
+
+```text
+                 Windows MDM
+                      │
+          ┌───────────┴───────────┐
+          │                       │
+      MDM Sync              Policy Processing
+          │                       │
+   ┌──────┼──────┐          ┌─────┼─────┐
+   │      │      │          │     │     │
+  201    202    209        813   814   820
+   ❌     ✅    ⚠️          ✅     ✅     ❌
+```
+
+A **successful sync does not necessarily mean that every policy was successfully applied**. For example, a device may successfully synchronize with Intune while a particular policy subsequently fails during processing.
+
+Therefore, when troubleshooting an Intune-managed Windows device, it can be useful to look at both:
+
+- **201 / 202 / 209** → _Did the device successfully synchronize with the MDM service?_
+- **813 / 814 / 820** → _Was the MDM policy/configuration successfully processed?_
+
+##### In short
+
+**201 / 202 / 209** provide information about the **MDM synchronization state**, with **209 requiring inspection of the HRESULT** to determine success or failure.
+
+**813 / 814 / 820** provide information about **MDM policy processing**, where **813 and 814 represent successful processing and 820 represents a failure**.
+
+For monitoring purposes, this distinction is important because **"sync succeeded" and "policy succeeded" are two different things**.
+
+### PowerShell Script
+
+```powershell
+function Get-IntuneDeviceHealth {
+
+    [CmdletBinding()]
+    param(
+        [ValidateRange(1, 90)]
+        [int]$LookbackDays = 30
+    )
+
+    # ---------------------------------------------------------
+    # Helpers
+    # ---------------------------------------------------------
+
+    function Select-LatestEvent {
+        [CmdletBinding()]
+        param(
+            [Parameter(Mandatory = $false)]
+            [object[]]$Events,
+
+            [Parameter(Mandatory = $true)]
+            [int[]]$Ids
+        )
+
+        if (-not $Events) { return $null }
+
+        return $Events |
+        Where-Object { $_.Id -in $Ids } |
+        Sort-Object TimeCreated -Descending |
+        Select-Object -First 1
+    }
+
+    function Get-HResultValue {
+        [CmdletBinding()]
+        param(
+            [Parameter(Mandatory = $true)]
+            [System.Diagnostics.Eventing.Reader.EventRecord]$EventInput
+        )
+
+        try {
+            # Prefer XML because it allows us to identify the
+            # HRESULT by name rather than relying on property position.
+            [xml]$xml = $EventInput.ToXml()
+
+            $hResultNode = $xml.Event.EventData.Data |
+            Where-Object { $_.Name -eq 'HRESULT' } |
+            Select-Object -First 1
+
+            if ($null -ne $hResultNode) { return [string]$hResultNode.'#text' }
+
+            # Fallback for event schemas where HRESULT isn't exposed
+            # through EventData with the expected name.
+            # '^0x[0-9a-fA-F]+$' = The entire string must start with 0x and then contain one or more valid hexadecimal characters (0–9, a–f, or A–F) until the end.
+            #'^-?\d+$' = The entire string must contain an optional minus sign (-) followed by one or more decimal digits (0–9), from start to end.
+            if ($EventInput.Properties.Count -gt 0) {
+                foreach ($property in $EventInput.Properties) {
+                    if ($null -ne $property.Value) {
+                        $value = [string]$property.Value
+
+                        if ($value -match '^0x[0-9a-fA-F]+$' -or $value -match '^-?\d+$') { return $value } # Regexes: Does $value represent either a hexadecimal number starting with 0x, or a decimal integer?
+                    }
+                }
+            }
+        }
+        catch { return $null }
+
+        return $null
+    }
+
+    function Test-HResultSuccess {
+        [CmdletBinding()]
+        param(
+            [Parameter(Mandatory = $true)]
+            [System.Diagnostics.Eventing.Reader.EventRecord]$EventInput
+        )
+
+        $hResult = Get-HResultValue -EventInput $EventInput
+
+        if ([string]::IsNullOrWhiteSpace($hResult)) { return $false }
+
+        $normalized = $hResult.Trim()
+
+        # '^0x0+$' = The entire string must start with 0x, followed by one or more 0 characters, and then end.
+        # '^0+$' = The entire string must contain one or more zeros.
+        if ($normalized -match '^0x0+$') { return $true }
+        if ($normalized -match '^0+$') { return $true }
+        return $false
+    }
+
+    function Get-ErrorState {
+        [CmdletBinding()]
+        param(
+            [Parameter(Mandatory = $false)]
+            $FailureEvent,
+
+            [Parameter(Mandatory = $false)]
+            $SuccessEvent
+        )
+
+        if ($null -eq $FailureEvent) { return $false }
+        if ($null -eq $SuccessEvent) { return $true }
+        return $FailureEvent.TimeCreated -gt $SuccessEvent.TimeCreated
+    }
+
+    function Get-EventState {
+        [CmdletBinding()]
+        param(
+            [Parameter(Mandatory = $false)]
+            $SuccessEvent,
+
+            [Parameter(Mandatory = $false)]
+            $FailureEvent
+        )
+
+        if ($null -eq $SuccessEvent -and $null -eq $FailureEvent) { return 'Unknown' }
+        if ($null -eq $FailureEvent) { return 'Healthy' }
+        if ($null -eq $SuccessEvent) { return 'Failed' }
+        if ($FailureEvent.TimeCreated -gt $SuccessEvent.TimeCreated) { return 'Failed' }
+        return 'Healthy'
+    }
+
+
+    # ---------------------------------------------------------
+    # Initialization
+    # ---------------------------------------------------------
+
+    $collectionWarnings = @()
+
+    $now = Get-Date
+    $lookbackStart = $now.AddDays(-$LookbackDays)
+
+    # ---------------------------------------------------------
+    # Certificate
+    # ---------------------------------------------------------
+
+    $certificate = $null
+
+    try {
+        $certificate = Get-ChildItem Cert:\ -Recurse -ErrorAction Stop | Where-Object { $_.Subject -like '*Microsoft Intune MDM Device CA*' } |
+        Sort-Object NotAfter -Descending |
+        Select-Object -First 1
+    }
+    catch { $collectionWarnings += "Unable to enumerate the Windows certificate stores: $($_.Exception.Message)" }
+
+    $certificateInstalled = $null -ne $certificate
+    $certificateValid = $false
+    $certificateExpiryDate = $null
+    $daysToCertificateExpiry = 0
+
+    if ($certificate) {
+
+        $certificateExpiryDate = $certificate.NotAfter
+        $certificateValid = $certificateExpiryDate -gt $now
+
+        if ($certificateValid) {
+            $daysToCertificateExpiry = [math]::Max(0, [int][math]::Floor(($certificateExpiryDate - $now).TotalDays))
+        }
+    }
+
+    # This is intentionally a heuristic.
+    # Presence of the Intune MDM certificate is treated as evidence
+    # that the device has an Intune MDM enrollment.
+    $intuneManaged = $certificateInstalled
+
+    # ---------------------------------------------------------
+    # Services
+    # ---------------------------------------------------------
+
+    $imeService = $null
+    $enrollmentService = $null
+
+    try { $imeService = Get-Service -Name 'IntuneManagementExtension' -ErrorAction SilentlyContinue }
+    catch { $collectionWarnings += "Unable to query the Intune Management Extension service." }
+
+    try { $enrollmentService = Get-Service -Name 'DmEnrollmentSvc' -ErrorAction SilentlyContinue }
+    catch { $collectionWarnings += "Unable to query the Device Enrollment Service." }
+
+    $imeServiceInstalled = $null -ne $imeService
+
+    $imeServiceRunning =
+    $imeServiceInstalled -and
+    $imeService.Status -eq 'Running'
+
+    $enrollmentServiceInstalled =
+    $null -ne $enrollmentService
+
+    $enrollmentServiceRunning =
+    $enrollmentServiceInstalled -and
+    $enrollmentService.Status -eq 'Running'
+
+    # ---------------------------------------------------------
+    # Enrollment / Auto-enrollment Events
+    # ---------------------------------------------------------
+
+    $adminEvents = @()
+
+    try {
+        $adminEvents = @(
+            Get-WinEvent -FilterHashtable @{
+                LogName   = 'Microsoft-Windows-DeviceManagement-Enterprise-Diagnostics-Provider/Admin'
+                Id        = 71, 72, 75, 76
+                StartTime = $lookbackStart
+                EndTime   = $now
+            } -ErrorAction Stop
+        )
+    }
+    catch { $collectionWarnings += "Unable to query the MDM Admin event log: $($_.Exception.Message)" }
+
+    $failure71 = Select-LatestEvent -Events $adminEvents -Ids 71
+    $success72 = Select-LatestEvent -Events $adminEvents -Ids 72
+    $failure76 = Select-LatestEvent -Events $adminEvents -Ids 76
+    $success75 = Select-LatestEvent -Events $adminEvents -Ids 75
+
+    # Enrollment
+    $enrollmentErrorDetected = Get-ErrorState -FailureEvent $failure71 -SuccessEvent $success72
+    $enrollmentHealth = Get-EventState -SuccessEvent $success72 -FailureEvent $failure71
+
+    # Automatic enrollment
+    $autoEnrollmentErrorDetected = Get-ErrorState -FailureEvent $failure76 -SuccessEvent $success75
+    $autoEnrollmentHealth = Get-EventState -SuccessEvent $success75 -FailureEvent $failure76
+
+    # ---------------------------------------------------------
+    # Synchronization / Policy Events
+    # ---------------------------------------------------------
+
+    $syncEvents = @()
+
+    try {
+        $syncEvents = @(
+            Get-WinEvent -FilterHashtable @{
+                ProviderName = 'Microsoft-Windows-DeviceManagement-Enterprise-Diagnostics-Provider'
+                Id           = 201, 202, 209, 813, 814, 820
+                StartTime    = $lookbackStart
+                EndTime      = $now
+            } -ErrorAction Stop
+        )
+    }
+    catch { $collectionWarnings += "Unable to query MDM synchronization events: $($_.Exception.Message)" }
+
+    # ---------------------------------------------------------
+    # Sync Success / Failure
+    # ---------------------------------------------------------
+
+    $lastSyncSuccess = $syncEvents | Where-Object { $_.Id -eq 202 -or ($_.Id -eq 209 -and (Test-HResultSuccess -EventInput $_)) } |
+    Sort-Object TimeCreated -Descending |
+    Select-Object -First 1
+
+    $lastSyncFailure = $syncEvents | Where-Object { $_.Id -eq 201 -or ($_.Id -eq 209 -and -not (Test-HResultSuccess -EventInput $_)) } |
+    Sort-Object TimeCreated -Descending |
+    Select-Object -First 1
+
+    # ---------------------------------------------------------
+    # Policy Success / Failure
+    # ---------------------------------------------------------
+
+    $lastPolicySuccess = Select-LatestEvent -Events $syncEvents -Ids @(813, 814)
+    $lastPolicyFailure = Select-LatestEvent -Events $syncEvents -Ids 820
+
+    # ---------------------------------------------------------
+    # Derived Sync / Policy State
+    # ---------------------------------------------------------
+
+    $syncHealth = Get-EventState -SuccessEvent $lastSyncSuccess -FailureEvent $lastSyncFailure
+    $policyHealth = Get-EventState -SuccessEvent $lastPolicySuccess -FailureEvent $lastPolicyFailure
+
+    $lastSyncFailed = $syncHealth -eq 'Failed'
+    $lastPolicyApplyError = $policyHealth -eq 'Failed'
+
+    # ---------------------------------------------------------
+    # Health Checks
+    # ---------------------------------------------------------
+
+    $certificateHealth = $certificateInstalled -and $certificateValid
+    $imeHealth = $imeServiceInstalled -and $imeServiceRunning
+    $enrollmentServiceHealth = $enrollmentServiceInstalled -and $enrollmentServiceRunning
+
+    # "Unknown" means there were no relevant events in the
+    # configured lookback period. We don't automatically classify
+    # an unknown state as failed.
+    $enrollmentHealthPassed = $enrollmentHealth -ne 'Failed'
+    $autoEnrollmentHealthPassed = $autoEnrollmentHealth -ne 'Failed'
+    $syncHealthPassed = $syncHealth -ne 'Failed'
+    $policyHealthPassed = $policyHealth -ne 'Failed'
+
+    $healthChecksAllPassed =
+    $intuneManaged `
+        -and $certificateHealth `
+        -and $imeHealth `
+        -and $enrollmentServiceHealth `
+        -and $enrollmentHealthPassed `
+        -and $autoEnrollmentHealthPassed `
+        -and $syncHealthPassed `
+        -and $policyHealthPassed
+
+    # ---------------------------------------------------------
+    # Output
+    # ---------------------------------------------------------
+
+    [PSCustomObject]@{
+
+        # -----------------------------------------------------
+        # General
+        # -----------------------------------------------------
+
+        IntuneManaged                    = $intuneManaged
+        HealthChecksAllPassed            = $healthChecksAllPassed
+        LookbackDays                     = $LookbackDays
+        DataCollectionWarnings           = if ($collectionWarnings.Count -gt 0) { $collectionWarnings -join ' | ' }else { $null }
+
+        # -----------------------------------------------------
+        # Certificate
+        # -----------------------------------------------------
+
+        CertificateInstalled             = $certificateInstalled
+        CertificateValid                 = $certificateValid
+        CertificateExpiryDate            = $certificateExpiryDate
+        DaysToCertificateExpiry          = $daysToCertificateExpiry
+        CertificateHealth                =
+        if (-not $certificateInstalled) { 'Missing' }
+        elseif (-not $certificateValid) { 'Expired' }
+        else { 'Healthy' }
+
+        # -----------------------------------------------------
+        # Intune Management Extension
+        # -----------------------------------------------------
+
+        IMEServiceInstalled              = $imeServiceInstalled
+        IMEServiceRunning                = $imeServiceRunning
+        IMEHealth                        =
+        if (-not $imeServiceInstalled) { 'Missing' }
+        elseif (-not $imeServiceRunning) { 'Stopped' }
+        else { 'Healthy' }
+
+        # -----------------------------------------------------
+        # Device Enrollment Service
+        # -----------------------------------------------------
+
+        DeviceEnrollmentServiceInstalled = $enrollmentServiceInstalled
+        DeviceEnrollmentServiceRunning   = $enrollmentServiceRunning
+        DeviceEnrollmentServiceHealth    =
+        if (-not $enrollmentServiceInstalled) { 'Missing' }
+        elseif (-not $enrollmentServiceRunning) { 'Stopped' }
+        else { 'Healthy' }
+
+        # -----------------------------------------------------
+        # Enrollment
+        # -----------------------------------------------------
+
+        EnrollmentHealth                 = $enrollmentHealth
+        EnrollmentErrorDetected          = $enrollmentErrorDetected
+        EnrollmentErrorMessage           = if ($enrollmentErrorDetected -and $failure71) { $failure71.Message } else { $null }
+        EnrollmentErrorDateTime          = if ($failure71) { $failure71.TimeCreated }else { $null }
+
+        # -----------------------------------------------------
+        # Automatic Enrollment
+        # -----------------------------------------------------
+
+        AutoEnrollmentHealth             = $autoEnrollmentHealth
+        AutoEnrollmentErrorDetected      = $autoEnrollmentErrorDetected
+        AutoEnrollmentErrorMessage       = if ($autoEnrollmentErrorDetected -and $failure76) { $failure76.Message }else { $null }
+        AutoEnrollmentErrorDateTime      = if ($failure76) { $failure76.TimeCreated }else { $null }
+
+        # -----------------------------------------------------
+        # Synchronization
+        # -----------------------------------------------------
+
+        SyncHealth                       = $syncHealth
+        LastSyncSuccessTime              = if ($lastSyncSuccess) { $lastSyncSuccess.TimeCreated }else { $null }
+        LastSyncFailed                   = $lastSyncFailed
+        LastSyncFailedTime               = if ($lastSyncFailure) { $lastSyncFailure.TimeCreated }else { $null }
+        LastSyncFailureMessage           = if ($lastSyncFailure) { $lastSyncFailure.Message }else { $null }
+
+        # -----------------------------------------------------
+        # Policy
+        # -----------------------------------------------------
+
+        PolicyHealth                     = $policyHealth
+        LastPolicyApplyError             = $lastPolicyApplyError
+        LastPolicyErrorDetails           = if ($lastPolicyFailure) { $lastPolicyFailure.Message }else { $null }
+        LastPolicyErrorTime              = if ($lastPolicyFailure) { $lastPolicyFailure.TimeCreated }else { $null }
+    }
+}
+
+Get-IntuneDeviceHealth -LookbackDays 30
+
+
 ```
