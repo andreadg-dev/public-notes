@@ -32,5 +32,6 @@ const markdownNotes = {
     "notes_comparative_syntax_cheat_sheet",
     "notes_useful_powershell_functions",
     "howto_faster-whisper_AI_STT",
+    "notes_useful_python_scripts",
   ],
 };

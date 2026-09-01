@@ -1,10 +1,22 @@
-# faster-whisper on Windows — Installation & Usage Guide
+# USEFUL PYTHON FUNCTIONS
+
+`Tag: [NOTES_ALL_PYTHON]`
+
+You can use these commands to upgrade pip if needed, to make sure that a library is installed and to show where the library executable is:
+
+```bash
+python -m pip install --upgrade pip       # upgrade pip
+python -m pip show [LIBRARY]    # check whether [LIBRARY] is installed
+python -m pip show -f [LIBRARY]     # find where the executable was installed
+```
+
+## CONVERT SPEECH TO TEXT WITH FASTER-WHISPER
 
 `Tag: [HOWTO_WINDOWS_FASTER-WHISPER]`
 
 A practical guide to installing and using `faster-whisper` locally with Python on Windows, including Git Bash and PowerShell, batch transcription, model caching, and common errors.
 
-## 1. What is faster-whisper?
+### 1. What is faster-whisper?
 
 `faster-whisper` is a local implementation of OpenAI's Whisper speech-to-text (STT) model.
 
@@ -17,7 +29,7 @@ It can be used to:
 - Run completely locally after the model has been downloaded
 - Use CPU or NVIDIA GPU acceleration
 
-## 2. Recommended Windows setup
+### 2. Recommended Windows setup
 
 For a new installation, use:
 
@@ -31,7 +43,7 @@ For a new installation, use:
 
 Python 3.14 may work with recent packages, but Python 3.13 is currently the safer choice for a stable setup.
 
-## 3. Python and faster-whisper Setup
+### 3. Python and faster-whisper Setup
 
 The following table covers the initial Windows setup. Choose the command column corresponding to the terminal you are using.
 
@@ -50,7 +62,7 @@ The following table covers the initial Windows setup. Choose the command column 
 | **Test installation**                   | `python -c "from faster_whisper import WhisperModel; print('faster-whisper OK')"` | Same                                   | Same                                             | `faster-whisper OK`                                                       |
 | **Deactivate**                          | `deactivate`                                                                      | Same                                   | Same                                             | Deactive faster-whisper environment after the script was run successfully |
 
-### Important: verify the environment
+#### Important: verify the environment
 
 Before running `transcribe.py`, make sure the virtual environment is actually active.
 
@@ -83,25 +95,25 @@ Activate it again:
 source ~/whisper-env/Scripts/activate
 ```
 
-### Remember
+#### Remember
 
 The virtual environment only needs to be **created once**.
 
 After closing and reopening a terminal, you need to **activate it again**, but you do not need to reinstall anything.
 
-### Git Bash
+#### Git Bash
 
 ```bash
 source ~/whisper-env/Scripts/activate
 ```
 
-### PowerShell
+#### PowerShell
 
 ```powershell
 .\whisper-env\Scripts\Activate.ps1
 ```
 
-### CMD
+#### CMD
 
 ```cmd
 %USERPROFILE%\whisper-env\Scripts\activate.bat
@@ -115,7 +127,7 @@ python transcribe.py # or whatever the python script is called
 
 The `large-v3` model is downloaded separately on its first successful run and is subsequently reused from the local Hugging Face cache.
 
-## 4. The first run downloads the model
+### 4. The first run downloads the model
 
 When you use:
 
@@ -145,7 +157,7 @@ Use local model
 Transcribe
 ```
 
-# 5. Process multiple MP3 files
+### 5. Process multiple MP3 files
 
 If the Python script is in the same directory as your MP3 files:
 
@@ -250,9 +262,9 @@ print("=" * 50)
 
 ```
 
-## Tips
+### Tips
 
-### Why use `Path(__file__).parent`?
+#### Why use `Path(__file__).parent`?
 
 This:
 
@@ -284,7 +296,7 @@ python ~/Downloads/podcast/transcribe.py
 ~/Downloads/podcast/
 ```
 
-### Language detection
+#### Language detection
 
 For a podcast where you don't know the language beforehand, use:
 
@@ -310,7 +322,7 @@ However, there is an important limitation:
 
 `info.language` represents the **detected/dominant language for the transcription**, not necessarily the language spoken in every individual segment.
 
-### Multilingual podcasts
+#### Multilingual podcasts
 
 If the podcast contains multiple languages, for example:
 
@@ -346,7 +358,7 @@ Translation
 TTS
 ```
 
-### Speaker identification
+#### Speaker identification
 
 Whisper itself does not reliably tell you:
 
@@ -376,7 +388,7 @@ It's great to have you here.
 
 This is particularly useful if the eventual goal is to translate the podcast and generate different TTS voices for different speakers.
 
-### CPU versus GPU
+#### CPU versus GPU
 
 You can run faster-whisper without a GPU:
 
@@ -411,7 +423,7 @@ model = WhisperModel(
 
 Exact performance depends heavily on your CPU/GPU.
 
-### Model sizes
+#### Model sizes
 
 Whisper provides several model sizes.
 
@@ -437,7 +449,7 @@ For podcasts:
 
 For high-quality podcast transcription, `large-v3` is a strong choice if your computer can handle it.
 
-### Hugging Face authentication warning
+#### Hugging Face authentication warning
 
 You may see:
 
@@ -453,7 +465,7 @@ For normal personal use and a one-time model download, you can generally ignore 
 
 A token may be useful if you perform many downloads and need higher rate limits.
 
-### Windows symlink warning
+#### Windows symlink warning
 
 You may also see:
 
@@ -467,7 +479,7 @@ The model can still be downloaded and used.
 
 Hugging Face is warning that its cache may consume more disk space because Windows is not allowing the preferred symlink behavior.
 
-### SSL certificate error
+#### SSL certificate error
 
 A particularly important error is:
 
@@ -494,7 +506,7 @@ HTTPS
 Certificate validation fails
 ```
 
-### Fixing the SSL problem
+#### Fixing the SSL problem
 
 First, make sure you are using the correct virtual environment.
 
@@ -553,7 +565,7 @@ Then:
 python transcribe.py
 ```
 
-### Python 3.14 confusion
+#### Python 3.14 confusion
 
 One of the easiest mistakes on Windows is having multiple Python installations.
 
@@ -590,7 +602,7 @@ If necessary:
 source ~/whisper-env/Scripts/activate
 ```
 
-### Key points to remember
+#### Key points to remember
 
 1. **Create the virtual environment once.**
 2. **Activate it each time you open a new terminal.**
@@ -606,3 +618,126 @@ source ~/whisper-env/Scripts/activate
 12. An incomplete model download must be completed before offline transcription will work.
 13. CPU operation is possible; an NVIDIA GPU can make transcription much faster.
 14. For multiple MP3s, load the model once and process the files in a loop.
+
+## CONVERT TTF INTO WOFF2 WITH PYFONTCONVERTER
+
+Install `PyFontConverter`, make sure the library is installed and look for the executable:
+
+```bash
+python -m pip install brotli PyFontConverter  # install PyFontConverter and brotli
+python -m pip install --upgrade pip       # upgrade pip if required
+python -m pip show PyFontConverter    # check whether PyFontConverter is installed
+python -m pip show -f PyFontConverter     # find where the executable was installed
+```
+
+Specify the input and output file and file where the font-converter executable is found:
+
+```python
+from pathlib import Path
+import subprocess
+
+input_file = Path("path\\font.ttf")
+output_dir = Path("output_path")
+
+font_converter = Path(
+    r"path\\Python\\pythoncore-3.14-64\\Scripts\\font-converter.exe"
+)
+
+subprocess.run([
+    str(font_converter),
+    "ft2wf",
+    "--flavor", "woff2",
+    "--output-dir", str(output_dir),
+    str(input_file),
+], check=True)
+
+```
+
+## CONVERT WORD INTO MD WITH MARKITDOWN
+
+Converting word files in bulk into md:
+
+```python
+from markitdown import MarkItDown
+from pathlib import Path
+
+current_folder = Path(__file__).parent
+files_docxglob = current_folder.glob("file*.docx")
+files_docx = sorted(files_docxglob)
+print(f"Found {len(files_docx)} file(s).")
+
+
+# Function to convert word to md
+def convert_word_to_md(docx_path, md_path):
+    # Initialize the converter
+    md_converter = MarkItDown()
+
+    # Perform the conversion
+    result = md_converter.convert(docx_path)
+
+    # Save the markdown content to a file
+    with open(md_path, "w", encoding="utf-8") as f:
+        f.write(result.text_content)
+
+
+# Iterating on all found docx files
+for docx in files_docx:
+    md_output = docx.with_suffix(".md")
+    print(f"Working on '{docx.name}' to output to '{md_output.name}'")
+
+    # Don't transcribe files that already have a transcript
+    if md_output.exists():
+        print(f"Skipping: {docx.name} (converted md already exists)")
+        continue
+
+    # Try converting the docx to md
+    try:
+        convert_word_to_md(docx, md_output)
+
+    except Exception as e:
+        print(f"\nERROR processing {docx.name}:")
+        print(e)
+
+```
+
+## CONVERT PDF TO MD
+
+Install the library with `pip install pymupdf4llm`
+
+```python
+
+import pymupdf4llm  # pip install pymupdf4llm
+from pathlib import Path
+
+pdfFiles = Path(__file__).glob("files.pdf")
+pdfFiles = sorted(pdfFiles)
+print(f"{len(pdfFiles)} files found!")
+
+# Function to convert word to md
+def convert_pdf_to_md(pdf_path, md_path):
+    # Initialize the converter
+    markdown = pymupdf4llm.to_markdown(pdf_path)
+
+    # Perform the conversion
+    with open(md_path, "w", encoding="utf-8") as f:
+        f.write(markdown)
+
+for pdfFile in pdfFiles:
+    md_output = pdfFile.with_suffix(".md")
+    print(f"Working on '{pdfFile.name}' to output to '{md_output.name}'")
+
+    if md_output.exists():
+        print(f"{md_output.name} already exists. Skipping!")
+        continue
+
+    # Try converting the pdf to md
+    try:
+        convert_pdf_to_md(pdfFile, md_output)
+        print(f"'{pdfFile.name}' converted successfully to '{md_output.name}'")
+
+    except Exception as e:
+        print(f"\nERROR processing {pdfFile.name}:")
+        print(e)
+
+
+```
