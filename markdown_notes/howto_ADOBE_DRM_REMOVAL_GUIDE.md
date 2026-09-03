@@ -58,12 +58,12 @@ The script will automatically locate the aforementioned registry key and convert
 
 3. You should see output like:
 
-   ```
-   adobekey.py v7.0
-   Copyright © 2009-2020 i♥cabbages, Apprentice Harper et al.
-   Found 1 keys
-   Saved a key to [path]\AdobeAdept.der
-   ```
+```plaintext
+adobekey.py v7.0
+Copyright © 2009-2020 i♥cabbages, Apprentice Harper et al.
+Found 1 keys
+Saved a key to [path]\AdobeAdept.der
+```
 
 4. The `.der` file has been created in the same directory as the script.
 
