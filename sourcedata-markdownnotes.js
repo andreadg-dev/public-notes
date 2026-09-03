@@ -33,5 +33,6 @@ const markdownNotes = {
     "notes_useful_powershell_functions",
     "howto_faster-whisper_AI_STT",
     "notes_useful_python_scripts",
+    "howto_ADOBE_DRM_REMOVAL_GUIDE",
   ],
 };
