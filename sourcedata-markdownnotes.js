@@ -31,7 +31,6 @@ const markdownNotes = {
     "errors_device_not_in_nexthink",
     "notes_comparative_syntax_cheat_sheet",
     "notes_useful_powershell_functions",
-    "howto_faster-whisper_AI_STT",
     "notes_useful_python_scripts",
     "howto_ADOBE_DRM_REMOVAL_GUIDE",
   ],
