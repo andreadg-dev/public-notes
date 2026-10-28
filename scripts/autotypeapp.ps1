@@ -27,38 +27,28 @@ $script:LastTargetProcess = $null
 
 function Send-AutoTypeText {
     param(
-        [string]$Text
+        [string]$Text,
+        [bool]$StripIndent = $false
     )
 
     if ([string]::IsNullOrEmpty($Text)) { return }
 
-    # SendKeys uses special syntax for characters such as
-    # + ^ % ~ ( ) { }
-    #
-    # Escape those characters so they are typed literally.
-    
-    <#  
-        $escaped = $Text
-  
-    $escaped = $escaped.Replace('{', '{{}')
-    $escaped = $escaped.Replace('}', '{}}')
-    $escaped = $escaped.Replace('+', '{+}')
-    $escaped = $escaped.Replace('^', '{^}')
-    $escaped = $escaped.Replace('%', '{%}')
-    $escaped = $escaped.Replace('~', '{~}')
-    $escaped = $escaped.Replace('(', '{(}')
-    $escaped = $escaped.Replace(')', '{)}')
-
-    # Convert newlines to the SendKeys ENTER command
-    $escaped = $escaped.Replace("`r`n", "{ENTER}")
-    $escaped = $escaped.Replace("`n", "{ENTER}")
-    $escaped = $escaped.Replace("`r", "{ENTER}") #>
-
     $escaped = New-Object System.Text.StringBuilder
+
+    # Normalize line endings so each line break is a single ENTER
+    $Text = $Text -replace "`r`n|`r", "`n"
+
+    # Target editors usually auto-indent after ENTER, so drop our own leading whitespace
+    if ($StripIndent) {
+        $Text = ($Text -split "`n" | ForEach-Object { $_.TrimStart(" ", "`t") }) -join "`n"
+    }
 
     foreach ($char in $Text.ToCharArray()) {
 
         switch ($char) {
+
+            "`n" { [void]$escaped.Append('{ENTER}') }
+            "`t" { [void]$escaped.Append('{TAB}') }
 
             '+' { [void]$escaped.Append('{+}') }
             '^' { [void]$escaped.Append('{^}') }
@@ -147,7 +137,7 @@ $form.Controls.Add($textBox)
 $status = New-Object System.Windows.Forms.Label
 $status.Text = "Ready"
 $status.Location = New-Object System.Drawing.Point(20, 310)
-$status.Size = New-Object System.Drawing.Size(250, 25)
+$status.Size = New-Object System.Drawing.Size(150, 25)
 $status.ForeColor = [System.Drawing.Color]::DarkGreen
 
 $form.Controls.Add($status)
@@ -171,7 +161,7 @@ $button.Add_Click({
             return
         }
 
-        Send-AutoTypeText -Text $text
+        Send-AutoTypeText -Text $text -StripIndent $stripCheck.Checked
 
         $status.Text = "Text sent."
         $status.ForeColor = [System.Drawing.Color]::DarkGreen
@@ -193,6 +183,35 @@ $cancelButton.Add_Click({
     })
 
 $form.Controls.Add($cancelButton)
+
+# ------------------------------------------------------------
+# Clear button
+# ------------------------------------------------------------
+
+$clearButton = New-Object System.Windows.Forms.Button
+$clearButton.Text = "Clear"
+$clearButton.Location = New-Object System.Drawing.Point(185, 300)
+$clearButton.Size = New-Object System.Drawing.Size(150, 30)
+$clearButton.Add_Click({
+        $textBox.Clear()
+        $textBox.Focus()
+        $status.Text = "Cleared."
+        $status.ForeColor = [System.Drawing.Color]::DarkGreen
+    })
+
+$form.Controls.Add($clearButton)
+
+# ------------------------------------------------------------
+# Strip indentation option
+# ------------------------------------------------------------
+
+$stripCheck = New-Object System.Windows.Forms.CheckBox
+$stripCheck.Text = "Strip leading indentation (for auto-indenting editors)"
+$stripCheck.Location = New-Object System.Drawing.Point(20, 275)
+$stripCheck.Size = New-Object System.Drawing.Size(400, 22)
+$stripCheck.Checked = $true
+
+$form.Controls.Add($stripCheck)
 
 
 
